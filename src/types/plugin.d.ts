@@ -6,6 +6,13 @@ declare namespace kintone {
     };
 
     /** プラグインの制御単位の設定情報🔌 */
-    type Condition = { field: string };
+    type Condition = {
+      srcAppId: string;
+      srcField: string;
+      dstField: string;
+      copies: { from: string; to: string }[];
+      sees: string[];
+      enablesCache: boolean;
+    };
   }
 }

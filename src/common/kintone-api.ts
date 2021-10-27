@@ -7,6 +7,7 @@ import { KintoneRestAPIClient } from '@kintone/rest-api-client';
 import { getAppId } from './kintone';
 import { OneOf as FieldProperty } from '@kintone/rest-api-client/lib/KintoneFields/types/property';
 import { OneOf as Field } from '@kintone/rest-api-client/lib/KintoneFields/types/field';
+import { App as KintoneApp } from '@kintone/rest-api-client/lib/client/types';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
 const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
@@ -17,6 +18,13 @@ const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
   'MODIFIER',
   'STATUS',
 ];
+
+export const getKintoneApps = async (): Promise<KintoneApp[]> => {
+  const client = new KintoneRestAPIClient();
+  const { apps } = await client.app.getApps({});
+
+  return apps;
+};
 
 export const getFieldProperties = async (targetApp?: string | number): Promise<FieldProperties> => {
   const app = targetApp || kintone.app.getId();
@@ -89,5 +97,38 @@ export const controlField = (
         }
       }
     }
+  }
+};
+
+/** 対象レコードの各フィールドから、指定文字列に一致するフィールドが１つでもあればTrueを返します */
+export const someRecord = (record: KintoneRecord, searchValue: string): boolean => {
+  return Object.values(record).some((field) => someFieldValue(field, searchValue));
+};
+
+export const someFieldValue = (field: KintoneRecord[string], searchValue: string) => {
+  switch (field.type) {
+    case 'CREATOR':
+    case 'MODIFIER':
+      return ~field.value.name.indexOf(searchValue);
+
+    case 'CHECK_BOX':
+    case 'MULTI_SELECT':
+    case 'CATEGORY':
+      return field.value.some((value) => ~value.indexOf(searchValue));
+
+    case 'USER_SELECT':
+    case 'ORGANIZATION_SELECT':
+    case 'GROUP_SELECT':
+    case 'STATUS_ASSIGNEE':
+      return field.value.some(({ name }) => ~name.indexOf(searchValue));
+
+    case 'FILE':
+      return field.value.some(({ name }) => ~name.indexOf(searchValue));
+
+    case 'SUBTABLE':
+      return field.value.some(({ value }) => someRecord(value, searchValue));
+
+    default:
+      return field.value && ~field.value.indexOf(searchValue);
   }
 };

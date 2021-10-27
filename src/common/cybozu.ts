@@ -29,3 +29,14 @@ export const getFieldMap = () => {
 
   return new Map(fields.map((field) => [field.var, field]));
 };
+
+export const getFieldId = (code: string) => {
+  const fields = getFields();
+
+  for (const field of fields) {
+    if (field.var === code) {
+      return field.id;
+    }
+  }
+  return null;
+};

@@ -1,4 +1,5 @@
-import { LOCAL_STORAGE_KEY, PLUGIN_NAME } from '@common/statics';
+import { PLUGIN_NAME } from '@common/statics';
+import { pushPluginName } from './local-storage';
 
 class Launcher {
   private readonly _pluginId: string;
@@ -8,7 +9,9 @@ class Launcher {
    */
   public constructor(pluginId: string) {
     this._pluginId = pluginId;
-    this.pushLocalStorage();
+    try {
+      pushPluginName();
+    } catch (error) {}
   }
 
   /**
@@ -41,16 +44,6 @@ class Launcher {
       kintone.events.on([...desktopEvents, ...mobileEvents], handler);
     }
   };
-
-  private pushLocalStorage() {
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    const local = stored ? JSON.parse(stored) : {};
-    local.pluginNames = local.pluginNames || [];
-    if (!local.pluginNames.includes(PLUGIN_NAME)) {
-      local.pluginNames.push(PLUGIN_NAME);
-    }
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stored));
-  }
 }
 
 export default Launcher;

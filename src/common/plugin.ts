@@ -32,4 +32,11 @@ const createConfig = (): kintone.plugin.Storage => ({
   conditions: [getNewCondition()],
 });
 
-export const getNewCondition = (): kintone.plugin.Condition => ({ field: '' });
+export const getNewCondition = (): kintone.plugin.Condition => ({
+  srcAppId: '',
+  srcField: '',
+  dstField: '',
+  copies: [{ from: '', to: '' }],
+  sees: [''],
+  enablesCache: true,
+});
