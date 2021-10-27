@@ -26,7 +26,7 @@ const Container: VFC = () => {
         if (!app) {
           throw new Error('アプリ情報が取得できませんでした');
         }
-        const fields = ['$id', ...condition.sees];
+        const fields = ['$id', condition.srcField, ...condition.sees];
         await getAllRecords({ app, fields, onAdvance: (records) => setAllRecords(records) });
       } finally {
         setAlreadyCache(true);
