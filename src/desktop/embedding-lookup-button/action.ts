@@ -1,8 +1,7 @@
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
-import { getAppId, getCurrentRecord, setCurrentRecord } from '@common/kintone';
-import { KintoneRestAPIClient } from '@kintone/rest-api-client';
+import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
 import { getAllRecords } from '@common/kintone-rest-api';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 
@@ -22,11 +21,7 @@ export const lookup = async (
 
   const app = condition.srcAppId;
   const query = value ? `${condition.srcField} like "${value}"` : '';
-  const fields = [
-    ...new Set(
-      [condition.copies.map(({ from }) => from), condition.sees, condition.srcField].flat()
-    ),
-  ];
+  const fields = getLookupSrcFields(condition);
 
   let onlyOneRecord = true;
   const lookupRecords = await getAllRecords({
@@ -47,6 +42,15 @@ export const lookup = async (
   }
 
   apply(lookupRecords[0], condition, enqueueSnackbar);
+};
+
+export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
+  const fields = [
+    ...new Set(
+      [condition.copies.map(({ from }) => from), condition.sees, condition.srcField].flat()
+    ),
+  ];
+  return fields;
 };
 
 export const apply = (
@@ -74,24 +78,4 @@ export const clearLookup = (condition: kintone.plugin.Condition) => {
   }
 
   setCurrentRecord({ record });
-};
-
-const getRecords = async (value: string, condition: kintone.plugin.Condition): Promise<any[]> => {
-  const client = new KintoneRestAPIClient();
-
-  const app = condition.srcAppId;
-
-  if (!app) {
-    throw new Error('アプリ情報の取得に失敗したため、ルックアップを実行できませんでした。');
-  }
-
-  const query = value ? `${condition.srcField} like "${value}"` : '';
-
-  const fields = [
-    ...new Set(
-      [condition.copies.map(({ from }) => from), condition.sees, condition.srcField].flat()
-    ),
-  ];
-
-  return client.record.getAllRecordsWithCursor({ app, query, fields });
 };

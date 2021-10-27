@@ -9,6 +9,7 @@ import {
   alreadyCacheState,
   cacheValidationState,
 } from '../states';
+import { getLookupSrcFields } from '../action';
 
 const Container: VFC = () => {
   const setAllRecords = useSetRecoilState(srcAllRecordsState);
@@ -26,7 +27,7 @@ const Container: VFC = () => {
         if (!app) {
           throw new Error('アプリ情報が取得できませんでした');
         }
-        const fields = ['$id', condition.srcField, ...condition.sees];
+        const fields = getLookupSrcFields(condition);
         await getAllRecords({ app, fields, onAdvance: (records) => setAllRecords(records) });
       } finally {
         setAlreadyCache(true);

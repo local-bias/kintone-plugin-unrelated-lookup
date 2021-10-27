@@ -16,6 +16,7 @@ import { Loading } from '@common/components/loading';
 
 import Layout from './layout';
 import Empty from './empty';
+import Cell from './cell';
 
 type Props = {
   records: KintoneRecord[];
@@ -40,9 +41,13 @@ const Component: VFC<Props> = ({ records, onRowClick, condition, hasCached }) =>
           {!!condition &&
             records.map((record, i) => (
               <tr key={i} onClick={() => onRowClick(record)}>
-                <td>{record[condition.srcField].value}</td>
+                <td>
+                  <Cell field={record[condition.srcField]} />
+                </td>
                 {condition.sees.map((code, j) => (
-                  <td key={j}>{record[code]?.value || ''}</td>
+                  <td key={j}>
+                    <Cell field={record[code]} />
+                  </td>
                 ))}
               </tr>
             ))}
