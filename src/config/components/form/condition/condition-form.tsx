@@ -10,7 +10,7 @@ import {
 import { appFieldsState, storageState } from '../../../states';
 import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
 import { kintoneAppsState } from '../../../states/kintone-apps';
-import { getFieldProperties } from '@common/kintone-api';
+import { getFieldProperties, omitFieldProperties } from '@common/kintone-api';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -223,7 +223,8 @@ const Container: VFC<ContainerProps> = ({ condition, index }) => {
     setSrcAppProperties(null);
     (async () => {
       const props = await getFieldProperties(condition.srcAppId);
-      setSrcAppProperties(props);
+      const filterd = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
+      setSrcAppProperties(filterd);
     })();
   }, [condition.srcAppId]);
 

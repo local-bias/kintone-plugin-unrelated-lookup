@@ -11,6 +11,7 @@ import { App as KintoneApp } from '@kintone/rest-api-client/lib/client/types';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
 const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
+  'RECORD_NUMBER',
   'UPDATED_TIME',
   'CREATOR',
   'CREATED_TIME',
@@ -40,14 +41,44 @@ export const getFieldProperties = async (targetApp?: string | number): Promise<F
   return properties;
 };
 
-export const getUserDefinedFields = async (): Promise<FieldProperties> => {
-  const properties = await getFieldProperties();
+/**
+ * APIから取得したフィールド情報から、指定した関数の条件に当てはまるフィールドのみを返却します
+ *
+ * @param properties APIから取得したフィールド情報
+ * @param callback 絞り込み条件
+ * @returns 条件に当てはまるフィールド
+ */
+export const filterFieldProperties = (
+  properties: FieldProperties,
+  callback: (field: FieldProperty) => boolean
+): FieldProperties => {
+  const filterd = Object.entries(properties).filter(([_, value]) => callback(value));
 
-  const filterd = Object.entries(properties).filter(
-    ([_, value]) => !DEFAULT_DEFINED_FIELDS.includes(value.type)
+  const reduced = filterd.reduce<FieldProperties>(
+    (acc, [key, value]) => ({ ...acc, [key]: value }),
+    {}
   );
 
-  return filterd.reduce<FieldProperties>((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+  return reduced;
+};
+
+/**
+ * APIから取得したフィールド情報から、指定したフィールドタイプを除いたフィールド一覧を返却します
+ *
+ * @param properties APIから取得したフィールド情報
+ * @param omittingTypes 除外するフィールドタイプ
+ * @returns 指定したフィールドタイプを除いた一覧
+ */
+export const omitFieldProperties = (
+  properties: FieldProperties,
+  omittingTypes: PickType<FieldProperties[string], 'type'>[]
+): FieldProperties => {
+  return filterFieldProperties(properties, (property) => !omittingTypes.includes(property.type));
+};
+
+export const getUserDefinedFields = async (): Promise<FieldProperties> => {
+  const properties = await getFieldProperties();
+  return omitFieldProperties(properties, DEFAULT_DEFINED_FIELDS);
 };
 
 /** サブテーブルをばらしてフィールドを返却します */
