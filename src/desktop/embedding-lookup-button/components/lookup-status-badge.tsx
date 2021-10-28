@@ -22,8 +22,8 @@ const StyledComponent = styled(Component)`
   transform: ${({ visible }) => (visible ? 'scale(1)' : 'scale(0)')};
   transition: transform 0.2s ease;
 
-  left: -15px;
-  top: -15px;
+  left: -16px;
+  top: -8px;
   width: 24px;
   height: 24px;
   background-color: #80beaf;
