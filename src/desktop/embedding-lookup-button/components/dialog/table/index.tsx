@@ -8,6 +8,7 @@ import {
   dialogVisibleState,
   pluginConditionState,
   alreadyCacheState,
+  alreadyLookupState,
 } from '../../../states';
 import { apply } from '../../../action';
 import { useSnackbar } from 'notistack';
@@ -63,13 +64,14 @@ const Container: VFC = () => {
   const index = useRecoilValue(dialogPageIndexState);
   const chunk = useRecoilValue(dialogPageChunkState);
   const setDialogShown = useSetRecoilState(dialogVisibleState);
+  const setLookuped = useSetRecoilState(alreadyLookupState);
   const hasCached = useRecoilValue(alreadyCacheState);
   const { enqueueSnackbar } = useSnackbar();
 
   const records = filterd.slice((index - 1) * chunk, index * chunk);
 
   const onRowClick = (record: KintoneRecord) => {
-    apply(record, condition!, enqueueSnackbar);
+    apply(record, condition!, enqueueSnackbar, setLookuped);
     setDialogShown(false);
   };
 

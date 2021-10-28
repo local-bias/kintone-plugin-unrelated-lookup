@@ -13,6 +13,7 @@ type EnqueueSnackbar = (
 export const lookup = async (
   enqueueSnackbar: EnqueueSnackbar,
   setShown: SetterOrUpdater<boolean>,
+  setLookuped: SetterOrUpdater<boolean>,
   condition: kintone.plugin.Condition
 ) => {
   const { record } = getCurrentRecord();
@@ -41,7 +42,7 @@ export const lookup = async (
     return;
   }
 
-  apply(lookupRecords[0], condition, enqueueSnackbar);
+  apply(lookupRecords[0], condition, enqueueSnackbar, setLookuped);
 };
 
 export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
@@ -56,7 +57,8 @@ export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
 export const apply = (
   selected: KintoneRecord,
   condition: kintone.plugin.Condition,
-  enqueueSnackbar: EnqueueSnackbar
+  enqueueSnackbar: EnqueueSnackbar,
+  setLookuped: SetterOrUpdater<boolean>
 ) => {
   const { record } = getCurrentRecord()!;
 
@@ -67,6 +69,7 @@ export const apply = (
 
   setCurrentRecord({ record });
   enqueueSnackbar('参照先からデータが取得されました。', { variant: 'success' });
+  setLookuped(true);
 };
 
 export const clearLookup = (condition: kintone.plugin.Condition) => {

@@ -6,5 +6,6 @@ export { default as dialogTitleState } from './dialog/dialog-title';
 export { default as searchInputState } from './search-input';
 export { default as pluginConditionState } from './plugin-condition';
 export { default as alreadyCacheState } from './already-cache';
+export { default as alreadyLookupState } from './already-lookup';
 export { default as srcAllRecordsState } from './src-all-records';
 export { default as cacheValidationState } from './cache-validation';

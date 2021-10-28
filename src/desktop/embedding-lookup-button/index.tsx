@@ -37,9 +37,10 @@ const action: launcher.Action = async (event, pluginId) => {
     `);
 
     const div = document.createElement('div');
-    wrapper?.append(div);
+    wrapper.append(div);
     div.classList.add(css`
       display: flex;
+      position: relative;
     `);
 
     render(<App {...{ condition }} />, div);

@@ -7,9 +7,9 @@ import { useSnackbar } from 'notistack';
 import { useRecoilCallback, useSetRecoilState } from 'recoil';
 import {
   alreadyCacheState,
+  alreadyLookupState,
   cacheValidationState,
   dialogPageIndexState,
-  dialogTitleState,
   dialogVisibleState,
   pluginConditionState,
   searchInputState,
@@ -63,12 +63,14 @@ const Container: VFC = () => {
   const setInput = useSetRecoilState(searchInputState);
   const setPageIndex = useSetRecoilState(dialogPageIndexState);
   const setCacheValidation = useSetRecoilState(cacheValidationState);
+  const setAlreadyLookup = useSetRecoilState(alreadyLookupState);
   const [loading, setLoading] = useState(false);
 
   const onLookupButtonClick = useRecoilCallback(({ snapshot }) => async () => {
     setLoading(true);
 
     try {
+      setAlreadyLookup(false);
       setPageIndex(1);
       setCacheValidation(true);
 
@@ -92,12 +94,12 @@ const Container: VFC = () => {
         const filterd = cachedRecords.filter((r) => someFieldValue(r[condition.srcField], input));
 
         if (filterd.length === 1) {
-          apply(filterd[0], condition, enqueueSnackbar);
+          apply(filterd[0], condition, enqueueSnackbar, setAlreadyLookup);
           return;
         }
       }
 
-      await lookup(enqueueSnackbar, setShown, condition);
+      await lookup(enqueueSnackbar, setShown, setAlreadyLookup, condition);
     } catch (error) {
       enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
       throw error;
@@ -108,6 +110,7 @@ const Container: VFC = () => {
 
   const onClearButtonClick = useRecoilCallback(({ snapshot }) => async () => {
     const condition = await snapshot.getPromise(pluginConditionState);
+    setAlreadyLookup(false);
     clearLookup(condition!);
     enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
   });
