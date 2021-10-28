@@ -15,7 +15,7 @@ type Props = Readonly<{
 }>;
 
 const Component: VFCX<Props> = ({ className, open, onClose }) => (
-  <Dialog {...{ open, onClose, className }} maxWidth='lg' fullWidth>
+  <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
     <Suspense fallback={<DialogTitle>"アプリからデータを取得"</DialogTitle>}>
       <Title />
     </Suspense>
