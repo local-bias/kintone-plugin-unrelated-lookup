@@ -1,22 +1,8 @@
-import React, { useState, VFC, VFCX } from 'react';
+import React, { VFC, VFCX } from 'react';
 import styled from '@emotion/styled';
 import { Button, CircularProgress } from '@mui/material';
 
-import { apply, clearLookup, lookup } from '../action';
-import { useSnackbar } from 'notistack';
-import { useRecoilCallback, useSetRecoilState } from 'recoil';
-import {
-  alreadyCacheState,
-  alreadyLookupState,
-  cacheValidationState,
-  dialogPageIndexState,
-  dialogVisibleState,
-  pluginConditionState,
-  searchInputState,
-  srcAllRecordsState,
-} from '../states';
-import { getCurrentRecord } from '@common/kintone';
-import { someFieldValue } from '@common/kintone-api';
+import { useLookup } from '../hooks/use-lookup';
 
 type Props = {
   onLookupButtonClick: () => void;
@@ -58,62 +44,10 @@ const StyledComponent = styled(Component)`
 `;
 
 const Container: VFC = () => {
-  const { enqueueSnackbar } = useSnackbar();
-  const setShown = useSetRecoilState(dialogVisibleState);
-  const setInput = useSetRecoilState(searchInputState);
-  const setPageIndex = useSetRecoilState(dialogPageIndexState);
-  const setCacheValidation = useSetRecoilState(cacheValidationState);
-  const setAlreadyLookup = useSetRecoilState(alreadyLookupState);
-  const [loading, setLoading] = useState(false);
+  const { loading, start, clear } = useLookup();
 
-  const onLookupButtonClick = useRecoilCallback(({ snapshot }) => async () => {
-    setLoading(true);
-
-    try {
-      setAlreadyLookup(false);
-      setPageIndex(1);
-      setCacheValidation(true);
-
-      const condition = (await snapshot.getPromise(pluginConditionState))!;
-
-      const { record } = getCurrentRecord();
-      const input = (record[condition.dstField].value as string) || '';
-      setInput(input);
-
-      if (!input) {
-        setShown(true);
-        return;
-      }
-
-      const hasCached = await snapshot.getPromise(alreadyCacheState);
-      const cachedRecords = await snapshot.getPromise(srcAllRecordsState);
-
-      // 全レコードのキャッシュが取得済みであれば、キャッシュから対象レコードを検索します
-      // 対象レコードが１件だけであれば、ルックアップ対象を確定します
-      if (hasCached) {
-        const filterd = cachedRecords.filter((r) => someFieldValue(r[condition.srcField], input));
-
-        if (filterd.length === 1) {
-          apply(filterd[0], condition, enqueueSnackbar, setAlreadyLookup);
-          return;
-        }
-      }
-
-      await lookup(enqueueSnackbar, setShown, setAlreadyLookup, condition);
-    } catch (error) {
-      enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  });
-
-  const onClearButtonClick = useRecoilCallback(({ snapshot }) => async () => {
-    const condition = await snapshot.getPromise(pluginConditionState);
-    setAlreadyLookup(false);
-    clearLookup(condition!);
-    enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
-  });
+  const onClearButtonClick = clear;
+  const onLookupButtonClick = start;
 
   return <StyledComponent {...{ onLookupButtonClick, onClearButtonClick, loading }} />;
 };

@@ -4,6 +4,7 @@ import { SnackbarProvider } from 'notistack';
 
 import { pluginConditionState } from './states';
 
+import EventObserver from './components/event-observer';
 import SrcCacheController from './components/src-cache-controller';
 import LookupStatusBadge from './components/lookup-status-badge';
 import LookupButton from './components/lookup-button';
@@ -20,6 +21,7 @@ const Component: VFC<Props> = ({ condition }) => (
     <SrcCacheController />
     <LookupStatusBadge />
     <SnackbarProvider maxSnack={1}>
+      <EventObserver />
       <LookupButton />
       <SearchDialog />
     </SnackbarProvider>

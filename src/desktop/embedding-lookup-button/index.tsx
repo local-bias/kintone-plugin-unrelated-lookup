@@ -19,7 +19,7 @@ const action: launcher.Action = async (event, pluginId) => {
 
     // コピーするフィールドは入力不可
     for (const { to } of condition.copies) {
-      if (to) {
+      if (event.record[to]?.disabled) {
         event.record[to].disabled = true;
       }
     }

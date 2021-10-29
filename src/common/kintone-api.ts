@@ -10,7 +10,7 @@ import { OneOf as Field } from '@kintone/rest-api-client/lib/KintoneFields/types
 import { App as KintoneApp } from '@kintone/rest-api-client/lib/client/types';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
-const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
+export const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
   'RECORD_NUMBER',
   'UPDATED_TIME',
   'CREATOR',
