@@ -3,7 +3,7 @@ import { selector } from 'recoil';
 import { searchInputState, srcAllRecordsState } from '.';
 
 const state = selector<any[]>({
-  key: 'filterdRecordsState',
+  key: 'filteredRecordsState',
   get: ({ get }) => {
     const cachedRecords = get(srcAllRecordsState);
     const input = get(searchInputState);

@@ -23,10 +23,10 @@ export const lookup = async (
   // 全レコードのキャッシュが取得済みであれば、キャッシュから対象レコードを検索します
   // 対象レコードが１件だけであれば、ルックアップ対象を確定します
   if (hasCached) {
-    const filterd = cachedRecords.filter((r) => someFieldValue(r[condition.srcField], input));
+    const filtered = cachedRecords.filter((r) => someFieldValue(r[condition.srcField], input));
 
-    if (filterd.length === 1) {
-      apply(filterd[0], condition, enqueueSnackbar, setLookuped);
+    if (filtered.length === 1) {
+      apply(filtered[0], condition, enqueueSnackbar, setLookuped);
       return;
     }
   }

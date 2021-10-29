@@ -223,8 +223,8 @@ const Container: VFC<ContainerProps> = ({ condition, index }) => {
     setSrcAppProperties(null);
     (async () => {
       const props = await getFieldProperties(condition.srcAppId);
-      const filterd = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
-      setSrcAppProperties(filterd);
+      const filtered = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
+      setSrcAppProperties(filtered);
     })();
   }, [condition.srcAppId]);
 

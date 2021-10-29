@@ -2,7 +2,7 @@ import React, { VFC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
-  filterdRecordsState,
+  filteredRecordsState,
   dialogPageChunkState,
   dialogPageIndexState,
   dialogVisibleState,
@@ -60,7 +60,7 @@ const Component: VFC<Props> = ({ records, onRowClick, condition, hasCached }) =>
 
 const Container: VFC = () => {
   const condition = useRecoilValue(pluginConditionState);
-  const filterd = useRecoilValue(filterdRecordsState);
+  const filtered = useRecoilValue(filteredRecordsState);
   const index = useRecoilValue(dialogPageIndexState);
   const chunk = useRecoilValue(dialogPageChunkState);
   const setDialogShown = useSetRecoilState(dialogVisibleState);
@@ -68,7 +68,7 @@ const Container: VFC = () => {
   const hasCached = useRecoilValue(alreadyCacheState);
   const { enqueueSnackbar } = useSnackbar();
 
-  const records = filterd.slice((index - 1) * chunk, index * chunk);
+  const records = filtered.slice((index - 1) * chunk, index * chunk);
 
   const onRowClick = (record: KintoneRecord) => {
     apply(record, condition!, enqueueSnackbar, setLookuped);
