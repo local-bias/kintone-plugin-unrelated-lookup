@@ -33,6 +33,7 @@ type Props = ContainerProps & {
   addDisplayingField: (rowIndex: number) => void;
   removeDisplayingField: (rowIndex: number) => void;
   onEnableCacheChange: (checked: boolean) => void;
+  onAutoLookupChange: (checked: boolean) => void;
 };
 
 const Component: VFCX<Props> = ({
@@ -52,6 +53,7 @@ const Component: VFCX<Props> = ({
   addDisplayingField,
   removeDisplayingField,
   onEnableCacheChange,
+  onAutoLookupChange,
 }) => (
   <div {...{ className }}>
     <div>
@@ -169,6 +171,11 @@ const Component: VFCX<Props> = ({
         control={<Switch color='primary' checked={condition.enablesCache} />}
         onChange={(_, checked) => onEnableCacheChange(checked)}
         label='事前に参照アプリのレコードを取得し、検索を高速化する(レコード数の少ないアプリ向け)'
+      />
+      <FormControlLabel
+        control={<Switch color='primary' checked={condition.autoLookup} />}
+        onChange={(_, checked) => onAutoLookupChange(checked)}
+        label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する。'
       />
     </div>
   </div>
@@ -342,6 +349,7 @@ const Container: VFC<ContainerProps> = ({ condition, index }) => {
   };
 
   const onEnableCacheChange = (checked: boolean) => onSwitchChange(checked, 'enablesCache');
+  const onAutoLookupChange = (checked: boolean) => onSwitchChange(checked, 'autoLookup');
 
   return (
     <StyledComponent
@@ -362,6 +370,7 @@ const Container: VFC<ContainerProps> = ({ condition, index }) => {
         addDisplayingField,
         removeDisplayingField,
         onEnableCacheChange,
+        onAutoLookupChange,
       }}
     />
   );

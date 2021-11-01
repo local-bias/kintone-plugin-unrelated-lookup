@@ -13,6 +13,7 @@ declare namespace kintone {
       copies: { from: string; to: string }[];
       sees: string[];
       enablesCache: boolean;
+      autoLookup: boolean;
     };
   }
 }
