@@ -79,7 +79,7 @@ export const apply = (
   for (const { from, to } of condition.copies) {
     record[to].value = selected[from].value;
 
-    if (condition.autoLookup && record[to].type === 'SINGLE_LINE_TEXT') {
+    if (condition.autoLookup && ['SINGLE_LINE_TEXT', 'NUMBER'].includes(record[to].type)) {
       setTimeout(() => {
         const { record } = getCurrentRecord()!;
         //@ts-ignore
