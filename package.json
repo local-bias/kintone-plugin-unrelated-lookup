@@ -38,7 +38,7 @@
     "dompurify": "2.3.3",
     "esbuild-loader": "2.16.0",
     "eslint": "8.1.0",
-    "fork-ts-checker-webpack-plugin": "6.3.4",
+    "fork-ts-checker-webpack-plugin": "6.4.0",
     "immer": "9.0.6",
     "luxon": "2.0.2",
     "notistack": "2.0.3",
