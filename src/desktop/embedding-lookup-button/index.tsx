@@ -24,6 +24,9 @@ const action: launcher.Action = async (event, pluginId) => {
       }
     }
 
+    // 対象フィールドは入力可
+    event.record[condition.dstField].disabled = false;
+
     // 対象文字列フィールドにルックアップっぽいボタンを設置
     const fieldId = getFieldId(condition.dstField);
 
