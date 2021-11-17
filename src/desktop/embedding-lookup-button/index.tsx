@@ -30,10 +30,12 @@ const action: launcher.Action = async (event, pluginId) => {
     // 対象文字列フィールドにルックアップっぽいボタンを設置
     const fieldId = getFieldId(condition.dstField);
 
-    const wrapper = document.querySelector(`.value-${fieldId} > div`);
+    const wrapper = document.querySelector<HTMLDivElement>(`.value-${fieldId} > div`);
     if (!wrapper) {
       return event;
     }
+
+    wrapper.classList.remove('disabled-cybozu');
 
     wrapper.classList.add(css`
       display: flex;
