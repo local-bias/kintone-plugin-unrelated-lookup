@@ -30,7 +30,10 @@ const action: launcher.Action = async (event, pluginId) => {
     // 対象文字列フィールドにルックアップっぽいボタンを設置
     const fieldId = getFieldId(condition.dstField);
 
-    const wrapper = document.querySelector<HTMLDivElement>(`.value-${fieldId} > div`);
+    const wrapper =
+      document.querySelector<HTMLDivElement>(`.value-${fieldId} > div`) ||
+      document.querySelector<HTMLDivElement>(`.value-${fieldId}`);
+
     if (!wrapper) {
       return event;
     }
