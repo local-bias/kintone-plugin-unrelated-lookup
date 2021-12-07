@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { css } from '@emotion/css';
 
-import { restoreStorage } from '@common/plugin';
+import { cleanseStorage, restoreStorage } from '@common/plugin';
 import { getFieldId } from '@common/cybozu';
 
 import App from './app';
@@ -10,7 +10,7 @@ import App from './app';
 const events: launcher.EventTypes = ['app.record.create.show', 'app.record.edit.show'];
 
 const action: launcher.Action = async (event, pluginId) => {
-  const { conditions } = restoreStorage(pluginId);
+  const { conditions } = cleanseStorage(restoreStorage(pluginId));
 
   for (const condition of conditions) {
     if (!condition.dstField || !condition.srcAppId || !condition.srcField) {

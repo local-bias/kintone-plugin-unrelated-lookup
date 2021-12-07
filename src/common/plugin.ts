@@ -19,9 +19,7 @@ export const restoreStorage = (id: string): kintone.plugin.Storage => {
  * アプリにプラグインの設定情報を保存します
  */
 export const storeStorage = (target: kintone.plugin.Storage, callback?: () => void): void => {
-  const cleansed = cleanse(target);
-
-  const converted = Object.entries(cleansed).reduce(
+  const converted = Object.entries(target).reduce(
     (acc, [key, value]) => ({ ...acc, [key]: JSON.stringify(value) }),
     {}
   );
@@ -34,7 +32,7 @@ export const storeStorage = (target: kintone.plugin.Storage, callback?: () => vo
  * @param target プラグインの設定情報
  * @returns 整理したプラグインの設定情報
  */
-const cleanse = (target: kintone.plugin.Storage): kintone.plugin.Storage => {
+export const cleanseStorage = (target: kintone.plugin.Storage): kintone.plugin.Storage => {
   const cleansed = produce(target, (draft) => {
     for (const condition of draft.conditions) {
       condition.copies = condition.copies.filter(({ from, to }) => from && to);
