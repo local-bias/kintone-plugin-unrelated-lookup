@@ -7,7 +7,6 @@ import { KintoneRestAPIClient } from '@kintone/rest-api-client';
 import { getAppId } from './kintone';
 import { OneOf as FieldProperty } from '@kintone/rest-api-client/lib/KintoneFields/types/property';
 import { OneOf as Field } from '@kintone/rest-api-client/lib/KintoneFields/types/field';
-import { App as KintoneApp } from '@kintone/rest-api-client/lib/client/types';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
 export const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
@@ -19,13 +18,6 @@ export const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
   'MODIFIER',
   'STATUS',
 ];
-
-export const getKintoneApps = async (): Promise<KintoneApp[]> => {
-  const client = new KintoneRestAPIClient();
-  const { apps } = await client.app.getApps({});
-
-  return apps;
-};
 
 export const getFieldProperties = async (targetApp?: string | number): Promise<FieldProperties> => {
   const app = targetApp || kintone.app.getId();

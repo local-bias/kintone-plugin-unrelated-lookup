@@ -84,7 +84,7 @@ const Component: VFCX<Props> = ({
         label='アプリ名'
         value={condition.srcAppId}
         onChange={onSrcAppIdChange}
-        className='input'
+        sx={{ width: 400 }}
       >
         {kintoneApps.map(({ appId, name }, i) => (
           <MenuItem key={i} value={appId}>
