@@ -9,6 +9,6 @@
 
 一括更新や一括取込の障害となってしまうことのある、ルックアップの関連付け機能のみを取り除いたルックアップを実装するプラグインです。文字列１行フィールドを使用します。
 
-[詳細はこちら](https://ribbit.work)
+[詳細はこちら](https://ribbit.konomi.app/blog/kintone-plugin-unrelated-lookup/)
 
-[ホームページ](https://ribbit.work)
+[ホームページ](https://ribbit.konomi.app)
