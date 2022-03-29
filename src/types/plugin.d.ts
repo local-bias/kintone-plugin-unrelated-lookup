@@ -15,6 +15,7 @@ declare namespace kintone {
       enablesCache: boolean;
       enablesValidation: boolean;
       autoLookup: boolean;
+      saveAndLookup: boolean;
     };
   }
 }

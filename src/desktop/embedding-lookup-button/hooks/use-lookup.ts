@@ -1,4 +1,4 @@
-import { getCurrentRecord } from '@common/kintone';
+import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useRecoilCallback, useSetRecoilState } from 'recoil';
@@ -45,15 +45,16 @@ export const useLookup = () => {
       const hasCached = await snapshot.getPromise(alreadyCacheState);
       const cachedRecords = await snapshot.getPromise(srcAllRecordsState);
 
-      await lookup(
+      const lookuped = await lookup(condition, record, {
         input,
         hasCached,
         cachedRecords,
         enqueueSnackbar,
         setShown,
-        setAlreadyLookup,
-        condition
-      );
+        setLookuped: setAlreadyLookup,
+      });
+
+      setCurrentRecord({ record: lookuped });
     } catch (error) {
       enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
       throw error;

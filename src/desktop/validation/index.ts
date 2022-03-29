@@ -1,5 +1,5 @@
 import { cleanseStorage, restoreStorage } from '@common/plugin';
-import { KintoneRestAPIClient } from '@kintone/rest-api-client';
+import { lookupObserver } from '../lookup-observer';
 
 const events: launcher.EventTypes = ['app.record.create.submit', 'app.record.edit.submit'];
 
@@ -14,21 +14,23 @@ const action: launcher.Action = async (event, pluginId) => {
     return event;
   }
 
-  const client = new KintoneRestAPIClient();
-
   for (const condition of targetConditions) {
-    if (!event.record[condition.dstField] || !event.record[condition.dstField].value) {
+    if (
+      !event.record[condition.dstField] ||
+      !event.record[condition.dstField].value ||
+      !lookupObserver[condition.dstField]
+    ) {
       continue;
     }
-    const app = condition.srcAppId;
-    const value = event.record[condition.dstField].value;
-    const query = `${condition.srcField} = "${value}"`;
 
-    const { records } = await client.record.getRecords({ app, query });
-
-    if (!records.length) {
+    // レコード編集開始時から値が変更されており、かつルックアップが実行されていない場合はエラー
+    if (
+      lookupObserver[condition.dstField].atStart !== event.record[condition.dstField].value &&
+      !lookupObserver[condition.dstField].lookuped
+    ) {
       event.record[condition.dstField].error = '[取得]を押し、参照先からデータを取得してください。';
       event.error = 'ルックアップが完了していないフィールドが存在します';
+      continue;
     }
   }
 

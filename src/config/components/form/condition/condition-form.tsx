@@ -35,37 +35,19 @@ type Props = ContainerProps & {
   onEnableCacheChange: (checked: boolean) => void;
   onValidationCheckChange: (checked: boolean) => void;
   onAutoLookupChange: (checked: boolean) => void;
+  onSaveAndLookupChange: (checked: boolean) => void;
 };
 
-const Component: VFCX<Props> = ({
-  className,
-  condition,
-  dstAppProperties,
-  srcAppProperties,
-  kintoneApps,
-  onDstFieldChange,
-  onSrcAppIdChange,
-  onSrcFieldChange,
-  onCopyFromChange,
-  onCopyToChange,
-  onDisplayingFieldsChange,
-  addCopy,
-  removeCopy,
-  addDisplayingField,
-  removeDisplayingField,
-  onEnableCacheChange,
-  onValidationCheckChange,
-  onAutoLookupChange,
-}) => (
-  <div {...{ className }}>
+const Component: VFCX<Props> = (props) => (
+  <div className={props.className}>
     <div>
       <h3>対象フィールド(ルックアップボタンを設置するフィールド)</h3>
       <div>
         <FieldPropertiesSelect
-          properties={dstAppProperties}
+          properties={props.dstAppProperties}
           label='フィールド名'
-          value={condition.dstField}
-          onChange={onDstFieldChange}
+          value={props.condition.dstField}
+          onChange={props.onDstFieldChange}
         />
       </div>
       <div>
@@ -82,11 +64,11 @@ const Component: VFCX<Props> = ({
       <TextField
         select
         label='アプリ名'
-        value={condition.srcAppId}
-        onChange={onSrcAppIdChange}
+        value={props.condition.srcAppId}
+        onChange={props.onSrcAppIdChange}
         sx={{ width: 400 }}
       >
-        {kintoneApps.map(({ appId, name }, i) => (
+        {props.kintoneApps.map(({ appId, name }, i) => (
           <MenuItem key={i} value={appId}>
             {name}(id: {appId})
           </MenuItem>
@@ -97,10 +79,10 @@ const Component: VFCX<Props> = ({
       <h3>取得するフィールド(ボタンを設置したフィールドに反映するフィールド)</h3>
       <div>
         <FieldPropertiesSelect
-          properties={srcAppProperties}
+          properties={props.srcAppProperties}
           label='フィールド名'
-          value={condition.srcField}
-          onChange={onSrcFieldChange}
+          value={props.condition.srcField}
+          onChange={props.onSrcFieldChange}
         />
       </div>
     </div>
@@ -108,29 +90,29 @@ const Component: VFCX<Props> = ({
     <div>
       <h3>他のフィールドのコピー</h3>
       <div className='rows'>
-        {condition.copies.map(({ from, to }, i) => (
+        {props.condition.copies.map(({ from, to }, i) => (
           <div key={i}>
             <FieldPropertiesSelect
-              properties={srcAppProperties}
+              properties={props.srcAppProperties}
               label='コピー元'
               value={from}
-              onChange={(e) => onCopyFromChange(i, e.target.value)}
+              onChange={(e) => props.onCopyFromChange(i, e.target.value)}
             />
             <ArrowForwardIcon />
             <FieldPropertiesSelect
-              properties={dstAppProperties}
+              properties={props.dstAppProperties}
               label='コピー先'
               value={to}
-              onChange={(e) => onCopyToChange(i, e.target.value)}
+              onChange={(e) => props.onCopyToChange(i, e.target.value)}
             />
             <Tooltip title='コピー設定を追加する'>
-              <IconButton size='small' onClick={() => addCopy(i)}>
+              <IconButton size='small' onClick={() => props.addCopy(i)}>
                 <AddIcon fontSize='small' />
               </IconButton>
             </Tooltip>
-            {condition.copies.length > 1 && (
+            {props.condition.copies.length > 1 && (
               <Tooltip title='このコピー設定を削除する'>
-                <IconButton size='small' onClick={() => removeCopy(i)}>
+                <IconButton size='small' onClick={() => props.removeCopy(i)}>
                   <DeleteIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
@@ -142,23 +124,23 @@ const Component: VFCX<Props> = ({
     <div>
       <h3>コピー元のレコードの選択時に表示するフィールド</h3>
       <div className='rows'>
-        {condition.sees.map((field, i) => (
+        {props.condition.sees.map((field, i) => (
           <div key={i}>
             <FieldPropertiesSelect
-              properties={srcAppProperties}
+              properties={props.srcAppProperties}
               label='表示するフィールド'
               value={field}
-              onChange={(e) => onDisplayingFieldsChange(i, e.target.value)}
+              onChange={(e) => props.onDisplayingFieldsChange(i, e.target.value)}
             />
 
             <Tooltip title='表示フィールドを追加する'>
-              <IconButton size='small' onClick={() => addDisplayingField(i)}>
+              <IconButton size='small' onClick={() => props.addDisplayingField(i)}>
                 <AddIcon fontSize='small' />
               </IconButton>
             </Tooltip>
-            {condition.sees.length > 1 && (
+            {props.condition.sees.length > 1 && (
               <Tooltip title='この表示フィールドを削除する'>
-                <IconButton size='small' onClick={() => removeDisplayingField(i)}>
+                <IconButton size='small' onClick={() => props.removeDisplayingField(i)}>
                   <DeleteIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
@@ -170,19 +152,24 @@ const Component: VFCX<Props> = ({
     <div>
       <h3>その他のオプション</h3>
       <FormControlLabel
-        control={<Switch color='primary' checked={condition.enablesCache} />}
-        onChange={(_, checked) => onEnableCacheChange(checked)}
+        control={<Switch color='primary' checked={props.condition.enablesCache} />}
+        onChange={(_, checked) => props.onEnableCacheChange(checked)}
         label='事前に参照アプリのレコードを取得し、検索を高速化する(レコード数の少ないアプリ向け)'
       />
       <FormControlLabel
-        control={<Switch color='primary' checked={condition.autoLookup} />}
-        onChange={(_, checked) => onAutoLookupChange(checked)}
+        control={<Switch color='primary' checked={props.condition.autoLookup} />}
+        onChange={(_, checked) => props.onAutoLookupChange(checked)}
         label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する。'
       />
       <FormControlLabel
-        control={<Switch color='primary' checked={condition.enablesValidation} />}
-        onChange={(_, checked) => onValidationCheckChange(checked)}
+        control={<Switch color='primary' checked={props.condition.enablesValidation} />}
+        onChange={(_, checked) => props.onValidationCheckChange(checked)}
         label='レコード保存時に、入力値を検証する。'
+      />
+      <FormControlLabel
+        control={<Switch color='primary' checked={props.condition.saveAndLookup} />}
+        onChange={(_, checked) => props.onSaveAndLookupChange(checked)}
+        label='レコード保存時に、ルックアップを実行する'
       />
     </div>
   </div>
@@ -361,6 +348,7 @@ const Container: VFC<ContainerProps> = ({ condition, index }) => {
   const onValidationCheckChange = (checked: boolean) =>
     onSwitchChange(checked, 'enablesValidation');
   const onAutoLookupChange = (checked: boolean) => onSwitchChange(checked, 'autoLookup');
+  const onSaveAndLookupChange = (checked: boolean) => onSwitchChange(checked, 'saveAndLookup');
 
   return (
     <StyledComponent
@@ -383,6 +371,7 @@ const Container: VFC<ContainerProps> = ({ condition, index }) => {
         onEnableCacheChange,
         onValidationCheckChange,
         onAutoLookupChange,
+        onSaveAndLookupChange,
       }}
     />
   );

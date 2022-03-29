@@ -5,6 +5,7 @@ import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
 import { getAllRecords } from '@common/kintone-rest-api';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { someFieldValue } from '@common/kintone-api';
+import { lookupObserver } from '../lookup-observer';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -12,26 +13,29 @@ type EnqueueSnackbar = (
 ) => SnackbarKey;
 
 export const lookup = async (
-  input: string,
-  hasCached: boolean,
-  cachedRecords: KintoneRecord[],
-  enqueueSnackbar: EnqueueSnackbar,
-  setShown: SetterOrUpdater<boolean>,
-  setLookuped: SetterOrUpdater<boolean>,
-  condition: kintone.plugin.Condition
-) => {
+  condition: kintone.plugin.Condition,
+  record: KintoneRecord,
+  option?: {
+    input: string;
+    hasCached: boolean;
+    cachedRecords: KintoneRecord[];
+    enqueueSnackbar: EnqueueSnackbar;
+    setShown: SetterOrUpdater<boolean>;
+    setLookuped: SetterOrUpdater<boolean>;
+  }
+): Promise<KintoneRecord> => {
   // 全レコードのキャッシュが取得済みであれば、キャッシュから対象レコードを検索します
   // 対象レコードが１件だけであれば、ルックアップ対象を確定します
-  if (hasCached) {
-    const filtered = cachedRecords.filter((r) => someFieldValue(r[condition.srcField], input));
+  if (option && option.hasCached) {
+    const filtered = option.cachedRecords.filter((r) =>
+      someFieldValue(r[condition.srcField], option.input)
+    );
 
     if (filtered.length === 1) {
-      apply(filtered[0], condition, enqueueSnackbar, setLookuped);
-      return;
+      const applied = apply(condition, record, filtered[0], option);
+      return applied;
     }
   }
-
-  const { record } = getCurrentRecord();
 
   const value = record[condition.dstField].value as string;
 
@@ -46,16 +50,26 @@ export const lookup = async (
     fields,
     onTotalGet: (total) => {
       if (total !== 1) {
-        setShown(true);
+        if (option) {
+          option.setShown(true);
+        } else {
+          throw '入力された値に一致するレコードが見つかりませんでした';
+        }
         onlyOneRecord = false;
       }
     },
   });
   if (!onlyOneRecord) {
-    return;
+    return record;
   }
 
-  apply(lookupRecords[0], condition, enqueueSnackbar, setLookuped);
+  if (option) {
+    return apply(condition, record, lookupRecords[0], {
+      enqueueSnackbar: option.enqueueSnackbar,
+      setLookuped: option.setLookuped,
+    });
+  }
+  return apply(condition, record, lookupRecords[0]);
 };
 
 export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
@@ -68,18 +82,25 @@ export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
 };
 
 export const apply = (
-  selected: KintoneRecord,
   condition: kintone.plugin.Condition,
-  enqueueSnackbar: EnqueueSnackbar,
-  setLookuped: SetterOrUpdater<boolean>
+  srcRecord: KintoneRecord,
+  dstRecord: KintoneRecord,
+  option?: {
+    enqueueSnackbar: EnqueueSnackbar;
+    setLookuped: SetterOrUpdater<boolean>;
+  }
 ) => {
-  const { record } = getCurrentRecord()!;
+  const record = { ...srcRecord };
 
-  record[condition.dstField].value = selected[condition.srcField].value;
+  record[condition.dstField].value = dstRecord[condition.srcField].value;
   for (const { from, to } of condition.copies) {
-    record[to].value = selected[from].value;
+    record[to].value = dstRecord[from].value;
 
-    if (condition.autoLookup && ['SINGLE_LINE_TEXT', 'NUMBER'].includes(record[to].type)) {
+    if (
+      option &&
+      condition.autoLookup &&
+      ['SINGLE_LINE_TEXT', 'NUMBER'].includes(record[to].type)
+    ) {
       setTimeout(() => {
         const { record } = getCurrentRecord()!;
         //@ts-ignore
@@ -89,9 +110,13 @@ export const apply = (
     }
   }
 
-  setCurrentRecord({ record });
-  enqueueSnackbar('参照先からデータが取得されました。', { variant: 'success' });
-  setLookuped(true);
+  if (option) {
+    option.enqueueSnackbar('参照先からデータが取得されました。', { variant: 'success' });
+    option.setLookuped(true);
+    lookupObserver[condition.dstField].lookuped = true;
+    console.log(lookupObserver);
+  }
+  return record;
 };
 
 export const clearLookup = (condition: kintone.plugin.Condition) => {
@@ -106,5 +131,6 @@ export const clearLookup = (condition: kintone.plugin.Condition) => {
     }
   }
 
+  lookupObserver[condition.dstField].lookuped = false;
   setCurrentRecord({ record });
 };

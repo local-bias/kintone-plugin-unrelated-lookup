@@ -18,6 +18,7 @@ import { Loading } from '@common/components/loading';
 import Layout from './layout';
 import Empty from './empty';
 import Cell from './cell';
+import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
 
 type Props = {
   records: KintoneRecord[];
@@ -70,8 +71,13 @@ const Container: VFC = () => {
 
   const records = filtered.slice((index - 1) * chunk, index * chunk);
 
-  const onRowClick = (record: KintoneRecord) => {
-    apply(record, condition!, enqueueSnackbar, setLookuped);
+  const onRowClick = (selectedRecord: KintoneRecord) => {
+    const { record } = getCurrentRecord();
+    const applied = apply(condition!, record, selectedRecord, {
+      enqueueSnackbar,
+      setLookuped,
+    });
+    setCurrentRecord({ record: applied });
     setDialogShown(false);
   };
 

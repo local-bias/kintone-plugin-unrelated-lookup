@@ -58,4 +58,5 @@ export const getNewCondition = (): kintone.plugin.Condition => ({
   enablesCache: true,
   enablesValidation: false,
   autoLookup: true,
+  saveAndLookup: false,
 });
