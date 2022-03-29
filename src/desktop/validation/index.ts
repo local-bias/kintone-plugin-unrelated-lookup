@@ -18,7 +18,8 @@ const action: launcher.Action = async (event, pluginId) => {
     if (
       !event.record[condition.dstField] ||
       !event.record[condition.dstField].value ||
-      !lookupObserver[condition.dstField]
+      !lookupObserver[condition.dstField] ||
+      condition.saveAndLookup
     ) {
       continue;
     }
