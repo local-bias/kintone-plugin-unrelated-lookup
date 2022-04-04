@@ -159,12 +159,12 @@ const Component: VFCX<Props> = (props) => (
       <FormControlLabel
         control={<Switch color='primary' checked={props.condition.autoLookup} />}
         onChange={(_, checked) => props.onAutoLookupChange(checked)}
-        label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する。'
+        label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する'
       />
       <FormControlLabel
         control={<Switch color='primary' checked={props.condition.enablesValidation} />}
         onChange={(_, checked) => props.onValidationCheckChange(checked)}
-        label='レコード保存時に、入力値を検証する。'
+        label='レコード保存時に、ルックアップが実行されていない場合はエラーを表示する'
       />
       <FormControlLabel
         control={<Switch color='primary' checked={props.condition.saveAndLookup} />}
