@@ -12,7 +12,13 @@ type Props = ContainerProps & {
 
 const Component: VFCX<Props> = ({ className, condition, index, expanded, onChange }) => (
   <Accordion {...{ expanded, onChange, className }} variant='outlined' square>
-    <AccordionSummary>設定{index + 1}</AccordionSummary>
+    <AccordionSummary>
+      設定{index + 1}
+      {!!condition.srcAppId &&
+        !!condition.srcField &&
+        !!condition.dstField &&
+        ` [${condition.srcField} → ${condition.dstField}]`}
+    </AccordionSummary>
     <AccordionDetails>
       <ConditionForm {...{ condition, index }} />
     </AccordionDetails>
