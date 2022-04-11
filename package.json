@@ -20,7 +20,7 @@
     "lint": "eslint ./src --cache --ext .js,.ts,.tsx"
   },
   "devDependencies": {
-    "@emotion/css": "11.7.1",
+    "@emotion/css": "11.9.0",
     "@emotion/styled": "11.8.1",
     "@kintone/dts-gen": "5.0.22",
     "@kintone/plugin-packer": "5.0.38",
