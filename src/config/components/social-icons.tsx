@@ -7,9 +7,15 @@ import HomeIcon from '@mui/icons-material/Home';
 
 import { URL_HOMEPAGE, URL_TWITTER, URL_GITHUB } from '@common/statics';
 
+import GradientButton from './gradient-button';
+
 const openNewTab = (path: string) => window.open(path, '_blank');
 
-const Icon: FC<{ title: string; url: string }> = ({ children, title, url }) => (
+const Icon: FC<{ children: React.ReactNode; title: string; url: string }> = ({
+  children,
+  title,
+  url,
+}) => (
   <Tooltip title={title} aria-label={title}>
     <Fab size='small' onClick={() => openNewTab(url)}>
       {children as any}
@@ -28,6 +34,11 @@ const Component: VFCX = ({ className }) => (
     <Icon title='GitHub' url={URL_GITHUB}>
       <GitHubIcon />
     </Icon>
+    <div>
+      <GradientButton onClick={() => openNewTab('https://kula.konomi.app')}>
+        kintoneだけでブログが書けます
+      </GradientButton>
+    </div>
   </aside>
 );
 
@@ -35,9 +46,11 @@ const StyledComponent = styled(Component)`
   position: absolute;
   right: 10px;
   bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   & > button {
     color: #78909c;
-    margin: 4px;
     box-shadow: none;
   }
 `;
