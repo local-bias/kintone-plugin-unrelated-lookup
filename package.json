@@ -35,7 +35,7 @@
     "@types/react-dom": "18.0.4",
     "@typescript-eslint/eslint-plugin": "5.20.0",
     "@typescript-eslint/parser": "5.20.0",
-    "dompurify": "2.3.6",
+    "dompurify": "2.3.8",
     "dotenv": "16.0.0",
     "esbuild-loader": "2.18.0",
     "eslint": "8.15.0",
