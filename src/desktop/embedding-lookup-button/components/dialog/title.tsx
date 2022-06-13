@@ -1,13 +1,13 @@
-import React, { VFC } from 'react';
+import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import { dialogTitleState } from '../../states';
 import { DialogTitle } from '@mui/material';
 
 type Props = Readonly<{ title: string }>;
 
-const Component: VFC<Props> = ({ title }) => <DialogTitle>{title}</DialogTitle>;
+const Component: FC<Props> = ({ title }) => <DialogTitle>{title}</DialogTitle>;
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const title = useRecoilValue(dialogTitleState);
   return <Component {...{ title }} />;
 };

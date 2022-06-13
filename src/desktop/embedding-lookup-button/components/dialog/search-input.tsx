@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, VFC } from 'react';
+import React, { ChangeEventHandler, FC } from 'react';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { TextField } from '@mui/material';
 
@@ -9,7 +9,7 @@ type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-const Component: VFC<Props> = ({ value, onChange }) => (
+const Component: FC<Props> = ({ value, onChange }) => (
   <TextField
     label='レコードを検索'
     variant='outlined'
@@ -19,7 +19,7 @@ const Component: VFC<Props> = ({ value, onChange }) => (
   />
 );
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const [value, setValue] = useRecoilState(searchInputState);
   const setPageIndex = useSetRecoilState(dialogPageIndexState);
 

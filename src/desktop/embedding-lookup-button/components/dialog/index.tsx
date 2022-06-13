@@ -1,4 +1,4 @@
-import React, { Suspense, VFC, VFCX } from 'react';
+import React, { Suspense, FC, FCX } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
@@ -14,7 +14,7 @@ type Props = Readonly<{
   onClose: () => void;
 }>;
 
-const Component: VFCX<Props> = ({ className, open, onClose }) => (
+const Component: FCX<Props> = ({ className, open, onClose }) => (
   <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
     <Suspense fallback={<DialogTitle>アプリからデータを取得</DialogTitle>}>
       <Title />
@@ -44,7 +44,7 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const [open, setOpen] = useRecoilState(dialogVisibleState);
 
   const onClose = () => setOpen(false);

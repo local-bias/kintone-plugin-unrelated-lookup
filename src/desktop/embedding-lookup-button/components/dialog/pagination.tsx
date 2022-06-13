@@ -1,4 +1,4 @@
-import React, { VFC, VFCX } from 'react';
+import React, { FC, FCX } from 'react';
 import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import styled from '@emotion/styled';
 import { Pagination } from '@mui/material';
@@ -12,7 +12,7 @@ type Props = {
   chunkSize: number;
 };
 
-const Component: VFCX<Props> = ({ className, size, index, setIndex, chunkSize }) => (
+const Component: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) => (
   <div className={className}>
     <Pagination
       count={Math.ceil(size / chunkSize)}
@@ -25,7 +25,7 @@ const Component: VFCX<Props> = ({ className, size, index, setIndex, chunkSize })
 
 const StyledComponent = styled(Component)``;
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const records = useRecoilValue(filteredRecordsState);
   const [index, setIndex] = useRecoilState(dialogPageIndexState);
   const chunkSize = useRecoilValue(dialogPageChunkState);

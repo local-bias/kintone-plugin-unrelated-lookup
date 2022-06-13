@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler, useEffect, useState, VFC, VFCX } from 'react';
+import React, { ChangeEventHandler, useEffect, useState, FC, FCX } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import produce from 'immer';
@@ -38,7 +38,7 @@ type Props = ContainerProps & {
   onSaveAndLookupChange: (checked: boolean) => void;
 };
 
-const Component: VFCX<Props> = (props) => (
+const Component: FCX<Props> = (props) => (
   <div className={props.className}>
     <div>
       <h3>対象フィールド(ルックアップボタンを設置するフィールド)</h3>
@@ -216,7 +216,7 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: VFC<ContainerProps> = ({ condition, index }) => {
+const Container: FC<ContainerProps> = ({ condition, index }) => {
   const dstAppProperties = useRecoilValue(appFieldsState);
   const setStorage = useSetRecoilState(storageState);
   const kintoneApps = useRecoilValue(kintoneAppsState);

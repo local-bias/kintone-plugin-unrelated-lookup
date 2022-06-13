@@ -1,4 +1,4 @@
-import React, { useEffect, VFC } from 'react';
+import React, { useEffect, FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { getAllRecords } from '@common/kintone-rest-api';
@@ -11,7 +11,7 @@ import {
 } from '../states';
 import { getLookupSrcFields } from '../action';
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const setAllRecords = useSetRecoilState(srcAllRecordsState);
   const setAlreadyCache = useSetRecoilState(alreadyCacheState);
   const condition = useRecoilValue(pluginConditionState);

@@ -1,4 +1,4 @@
-import React, { VFC } from 'react';
+import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
 import { SnackbarProvider } from 'notistack';
 
@@ -12,7 +12,7 @@ import SearchDialog from './components/dialog';
 
 type Props = { condition: kintone.plugin.Condition };
 
-const Component: VFC<Props> = ({ condition }) => (
+const Component: FC<Props> = ({ condition }) => (
   <RecoilRoot
     initializeState={({ set }) => {
       set(pluginConditionState, condition);

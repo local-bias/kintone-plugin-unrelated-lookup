@@ -1,7 +1,7 @@
-import React, { VFCX } from 'react';
+import React, { FCX } from 'react';
 import styled from '@emotion/styled';
 
-const Component: VFCX = ({ className }) => (
+const Component: FCX = ({ className }) => (
   <div {...{ className }}>
     <svg height='200' viewBox='0 0 512 512' width='200'>
       <g>

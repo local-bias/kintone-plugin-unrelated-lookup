@@ -1,10 +1,10 @@
-import React, { VFCX } from 'react';
+import React, { FCX } from 'react';
 import styled from '@emotion/styled';
 
 import Pagination from './pagination';
 import Input from './search-input';
 
-const Component: VFCX = ({ className }) => (
+const Component: FCX = ({ className }) => (
   <div {...{ className }}>
     <Input />
     <Pagination />

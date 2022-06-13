@@ -1,7 +1,7 @@
-import React, { FCX } from 'react';
+import React, { FCwC } from 'react';
 import styled from '@emotion/styled';
 
-const Component: FCX = ({ className, children }) => <div {...{ className }}>{children}</div>;
+const Component: FCwC = ({ className, children }) => <div {...{ className }}>{children}</div>;
 
 const StyledComponent = styled(Component)`
   table {

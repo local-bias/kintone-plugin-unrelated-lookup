@@ -1,4 +1,4 @@
-import React, { VFC } from 'react';
+import React, { FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
@@ -27,7 +27,7 @@ type Props = {
   hasCached: boolean;
 };
 
-const Component: VFC<Props> = ({ records, onRowClick, condition, hasCached }) => (
+const Component: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
   <Layout>
     {!records.length && !hasCached && <Loading label='レコードを取得しています' />}
     {!records.length && hasCached && <Empty />}
@@ -59,7 +59,7 @@ const Component: VFC<Props> = ({ records, onRowClick, condition, hasCached }) =>
   </Layout>
 );
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const condition = useRecoilValue(pluginConditionState);
   const filtered = useRecoilValue(filteredRecordsState);
   const index = useRecoilValue(dialogPageIndexState);

@@ -1,4 +1,4 @@
-import React, { VFC, VFCX } from 'react';
+import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
 import { Button, CircularProgress } from '@mui/material';
 
@@ -10,12 +10,7 @@ type Props = {
   loading: boolean;
 };
 
-const Component: VFCX<Props> = ({
-  className,
-  onLookupButtonClick,
-  onClearButtonClick,
-  loading,
-}) => (
+const Component: FCX<Props> = ({ className, onLookupButtonClick, onClearButtonClick, loading }) => (
   <div {...{ className }}>
     <div>
       <Button color='primary' onClick={onLookupButtonClick} disabled={loading}>
@@ -43,7 +38,7 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const { loading, start, clear } = useLookup();
 
   const onClearButtonClick = clear;

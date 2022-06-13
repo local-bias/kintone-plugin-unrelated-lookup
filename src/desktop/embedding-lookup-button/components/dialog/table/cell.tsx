@@ -1,10 +1,10 @@
-import React, { VFC } from 'react';
+import React, { FC } from 'react';
 import { OneOf as KintoneField } from '@kintone/rest-api-client/lib/KintoneFields/types/field';
 import { sanitize } from 'dompurify';
 
 type ContainerProps = Readonly<{ field: KintoneField }>;
 
-const Container: VFC<ContainerProps> = ({ field }) => {
+const Container: FC<ContainerProps> = ({ field }) => {
   if (!field) {
     return null;
   }

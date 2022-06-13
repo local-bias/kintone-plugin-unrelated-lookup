@@ -1,10 +1,10 @@
 import { getFields } from '@common/cybozu';
-import { useEffect, VFC } from 'react';
+import { useEffect, FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useLookup } from '../hooks/use-lookup';
 import { pluginConditionState } from '../states';
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const condition = useRecoilValue(pluginConditionState);
   const { start } = useLookup();
 

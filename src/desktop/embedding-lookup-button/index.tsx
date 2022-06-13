@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { css } from '@emotion/css';
 
 import { cleanseStorage, restoreStorage } from '@common/plugin';
@@ -51,7 +51,7 @@ const action: launcher.Action = async (event, pluginId) => {
       position: relative;
     `);
 
-    render(<App {...{ condition }} />, div);
+    createRoot(div).render(<App {...{ condition }} />);
   }
 
   return event;

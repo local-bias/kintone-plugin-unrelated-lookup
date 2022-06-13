@@ -1,4 +1,4 @@
-import React, { VFC, VFCX } from 'react';
+import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
 import CheckIcon from '@mui/icons-material/Check';
 import { useRecoilValue } from 'recoil';
@@ -6,7 +6,7 @@ import { alreadyLookupState } from '../states';
 
 type Props = Readonly<{ visible: boolean }>;
 
-const Component: VFCX<Props> = ({ className }) => (
+const Component: FCX<Props> = ({ className }) => (
   <div {...{ className }}>
     <CheckIcon />
   </div>
@@ -35,7 +35,7 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: VFC = () => {
+const Container: FC = () => {
   const visible = useRecoilValue(alreadyLookupState);
   return <StyledComponent {...{ visible }} />;
 };

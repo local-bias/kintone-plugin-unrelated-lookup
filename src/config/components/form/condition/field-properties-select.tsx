@@ -1,4 +1,4 @@
-import React, { VFC, VFCX } from 'react';
+import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
 import { Properties as FieldProperties } from '@kintone/rest-api-client/lib/client/types';
 import { MenuItem, TextField, Skeleton, TextFieldProps } from '@mui/material';
@@ -6,7 +6,7 @@ import { MenuItem, TextField, Skeleton, TextFieldProps } from '@mui/material';
 type ContainerProps = TextFieldProps & { properties: FieldProperties | null };
 type Props = ContainerProps;
 
-const Component: VFCX<Props> = ({ className, properties, ...others }) => (
+const Component: FCX<Props> = ({ className, properties, ...others }) => (
   <>
     {!properties && <Skeleton {...{ className }} />}
     {!!properties && (
@@ -26,7 +26,7 @@ const StyledComponent = styled(Component)`
   height: 56px;
 `;
 
-const Container: VFC<ContainerProps> = (props) => {
+const Container: FC<ContainerProps> = (props) => {
   return <StyledComponent {...{ ...props }} />;
 };
 

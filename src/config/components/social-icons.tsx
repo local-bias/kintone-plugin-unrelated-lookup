@@ -1,4 +1,4 @@
-import React, { FC, VFCX } from 'react';
+import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
 import { Fab, Tooltip } from '@mui/material';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -23,7 +23,7 @@ const Icon: FC<{ children: React.ReactNode; title: string; url: string }> = ({
   </Tooltip>
 );
 
-const Component: VFCX = ({ className }) => (
+const Component: FCX = ({ className }) => (
   <aside className={className}>
     <Icon title='ホームページ' url={URL_HOMEPAGE}>
       <HomeIcon />
