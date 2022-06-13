@@ -16,6 +16,7 @@ declare namespace kintone {
       enablesValidation: boolean;
       autoLookup: boolean;
       saveAndLookup: boolean;
+      query: string;
     };
   }
 }

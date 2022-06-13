@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler, useEffect, useState, FC, FCX } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import produce from 'immer';
 import {
@@ -149,6 +149,11 @@ const Component: FCX<Props> = (props) => (
         ))}
       </div>
     </div>
+    <SortingForm
+      condition={props.condition}
+      index={props.index}
+      srcAppProperties={props.srcAppProperties}
+    />
     <div>
       <h3>その他のオプション</h3>
       <FormControlLabel
@@ -378,3 +383,37 @@ const Container: FC<ContainerProps> = ({ condition, index }) => {
 };
 
 export default Container;
+
+const SortingForm: FC<{
+  condition: kintone.plugin.Condition;
+  index: number;
+  srcAppProperties: FieldProperties | null;
+}> = ({ condition, index, srcAppProperties }) => {
+  const onQueryChange = useRecoilCallback(
+    ({ set }) =>
+      (value: string) => {
+        set(storageState, (_storage) =>
+          produce(_storage, (draft) => {
+            if (!draft) {
+              return;
+            }
+            draft.conditions[index].query = value;
+          })
+        );
+      },
+    [index]
+  );
+
+  return (
+    <div>
+      <h3>コピー元レコードの取得条件</h3>
+      <TextField
+        label='クエリー'
+        placeholder='例: 契約ステータス not in ("解約")'
+        value={condition.query || ''}
+        onChange={(e) => onQueryChange(e.target.value)}
+        sx={{ width: 400 }}
+      />
+    </div>
+  );
+};

@@ -40,7 +40,10 @@ export const lookup = async (
   const value = record[condition.dstField].value as string;
 
   const app = condition.srcAppId;
-  const query = value ? `${condition.srcField} like "${value}"` : '';
+  const additionalQuery = condition.query || '';
+  const query = value
+    ? `${condition.srcField} like "${value}" ${additionalQuery}`
+    : additionalQuery;
   const fields = getLookupSrcFields(condition);
 
   let onlyOneRecord = true;

@@ -27,8 +27,9 @@ const Container: FC = () => {
         if (!app) {
           throw new Error('アプリ情報が取得できませんでした');
         }
+        const query = condition.query || '';
         const fields = getLookupSrcFields(condition);
-        await getAllRecords({ app, fields, onAdvance: (records) => setAllRecords(records) });
+        await getAllRecords({ app, query, fields, onAdvance: (records) => setAllRecords(records) });
       } finally {
         setAlreadyCache(true);
       }
