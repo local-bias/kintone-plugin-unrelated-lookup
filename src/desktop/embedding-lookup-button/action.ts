@@ -41,9 +41,19 @@ export const lookup = async (
 
   const app = condition.srcAppId;
   const additionalQuery = condition.query || '';
-  const query = value
-    ? `${condition.srcField} like "${value}" ${additionalQuery}`
-    : additionalQuery;
+
+  let query = '';
+  if (value) {
+    query = `${condition.srcField} like "${value}"`;
+    if (additionalQuery) {
+      query += `and ${additionalQuery}`;
+    }
+  } else {
+    if (additionalQuery) {
+      query += additionalQuery;
+    }
+  }
+
   const fields = getLookupSrcFields(condition);
 
   let onlyOneRecord = true;
