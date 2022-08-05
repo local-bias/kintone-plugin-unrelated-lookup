@@ -6,6 +6,7 @@ import { getAllRecords } from '@common/kintone-rest-api';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { someFieldValue } from '@common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
+import { PLUGIN_NAME } from '@common/statics';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -38,13 +39,57 @@ export const lookup = async (
   }
 
   const value = record[condition.dstField].value as string;
+  const dstType = record[condition.dstField].type;
 
   const app = condition.srcAppId;
   const additionalQuery = condition.query || '';
 
   let query = '';
   if (value) {
-    query = `${condition.srcField} like "${value}"`;
+    const requireEscaping: KintoneRecord[string]['type'][] = [
+      'SINGLE_LINE_TEXT',
+      'MULTI_LINE_TEXT',
+      'RICH_TEXT',
+      'CHECK_BOX',
+      'RADIO_BUTTON',
+      'DROP_DOWN',
+      'MULTI_SELECT',
+      'STATUS',
+    ];
+
+    const valueQuery = requireEscaping.includes(dstType) ? `"${value}"` : value;
+
+    const likeSearchFields: KintoneRecord[string]['type'][] = [
+      'SINGLE_LINE_TEXT',
+      'LINK',
+      'MULTI_LINE_TEXT',
+      'RICH_TEXT',
+      'FILE',
+    ];
+
+    const inSearchFields: KintoneRecord[string]['type'][] = [
+      'CREATOR',
+      'MODIFIER',
+      'CHECK_BOX',
+      'RADIO_BUTTON',
+      'DROP_DOWN',
+      'MULTI_SELECT',
+      'USER_SELECT',
+      'ORGANIZATION_SELECT',
+      'GROUP_SELECT',
+    ];
+
+    if (likeSearchFields.includes(dstType)) {
+      query = `${condition.srcField} like ${valueQuery}`;
+    } else if (inSearchFields.includes(dstType)) {
+      query = `${condition.srcField} in (${valueQuery})`;
+    } else {
+      console.warn(
+        `[${PLUGIN_NAME}] あいまい検索に対応していないフィールドのため、完全一致するレコードのみ絞り込まれます`
+      );
+      query = `${condition.srcField} = ${valueQuery}`;
+    }
+
     if (additionalQuery) {
       query += `and ${additionalQuery}`;
     }
@@ -53,6 +98,8 @@ export const lookup = async (
       query += additionalQuery;
     }
   }
+
+  console.log(`[${PLUGIN_NAME}] 検索クエリ`, query);
 
   const fields = getLookupSrcFields(condition);
 
@@ -124,7 +171,6 @@ export const apply = (
   }
 
   if (option) {
-    option.enqueueSnackbar('参照先からデータが取得されました。', { variant: 'success' });
     option.setLookuped(true);
     lookupObserver[condition.dstField].lookuped = true;
     console.log(lookupObserver);
