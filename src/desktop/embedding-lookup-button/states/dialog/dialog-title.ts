@@ -1,4 +1,4 @@
-import { KintoneRestAPIClient } from '@kintone/rest-api-client';
+import { kintoneClient } from '@common/kintone-api';
 import { selector } from 'recoil';
 import { pluginConditionState } from '..';
 
@@ -11,8 +11,7 @@ const state = selector<string>({
       return 'アプリから情報を取得';
     }
 
-    const client = new KintoneRestAPIClient();
-    const appProps = await client.app.getApp({ id: condition.srcAppId });
+    const appProps = await kintoneClient.app.getApp({ id: condition.srcAppId });
 
     return appProps.name;
   },

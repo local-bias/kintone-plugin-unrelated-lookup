@@ -19,6 +19,26 @@ export const DEFAULT_DEFINED_FIELDS: PickType<FieldProperty, 'type'>[] = [
   'STATUS',
 ];
 
+class FlexKintone extends KintoneRestAPIClient {
+  constructor(...options: ConstructorParameters<typeof KintoneRestAPIClient>) {
+    const url = kintone.api.url('/k/v1/app', true);
+    const found = url.match(/k\/guest\/([0-9]+)\//);
+
+    if (found && found.length > 1) {
+      super({
+        guestSpaceId: found[1],
+        ...(options[0] || {}),
+      });
+      return;
+    }
+
+    super(...options);
+  }
+}
+
+/** REST APIクライアント(シングルトン) */
+export const kintoneClient = new FlexKintone();
+
 export const getFieldProperties = async (targetApp?: string | number): Promise<FieldProperties> => {
   const app = targetApp || kintone.app.getId();
 
@@ -26,9 +46,7 @@ export const getFieldProperties = async (targetApp?: string | number): Promise<F
     throw new Error('アプリのフィールド情報が取得できませんでした');
   }
 
-  const client = new KintoneRestAPIClient();
-
-  const { properties } = await client.app.getFormFields({ app });
+  const { properties } = await kintoneClient.app.getFormFields({ app });
 
   return properties;
 };
@@ -94,9 +112,7 @@ export const getAppLayout = async (): Promise<Layout> => {
     throw new Error('アプリのフィールド情報が取得できませんでした');
   }
 
-  const client = new KintoneRestAPIClient();
-
-  const { layout } = await client.app.getFormLayout({ app });
+  const { layout } = await kintoneClient.app.getFormLayout({ app });
 
   return layout;
 };
