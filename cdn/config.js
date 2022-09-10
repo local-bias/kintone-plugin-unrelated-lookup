@@ -295,7 +295,7 @@
   background: linear-gradient(45deg, #acb6e5, #64bde4);
   color: #fff;
   padding: 10px 24px;
-`,Rw=e=>window.open(e,"_blank"),Cw=({children:t,title:n,url:r})=>e.createElement(Jy,{title:n,"aria-label":n},e.createElement(hw,{size:"small",onClick:()=>Rw(r)},t)),Pw=(0,cu.Z)((({className:t})=>e.createElement("aside",{className:t},e.createElement(Cw,{title:"ホームページ",url:sc},e.createElement(yw.Z,null)),e.createElement(Cw,{title:"ツイッター",url:"https://twitter.com/LbRibbit"},e.createElement(vw.Z,null)),e.createElement(Cw,{title:"GitHub",url:"https://github.com/Local-Bias"},e.createElement(mw.Z,null)),e.createElement("div",null,e.createElement(Ew,{onClick:()=>Rw("https://kula.konomi.app")},"kintoneだけでブログが書けます")))))`
+`,Rw=e=>window.open(e,"_blank"),Cw=({children:t,title:n,url:r})=>e.createElement(Jy,{title:n,"aria-label":n},e.createElement(hw,{size:"small",onClick:()=>Rw(r)},t)),Pw=(0,cu.Z)((({className:t})=>e.createElement("aside",{className:t},e.createElement(Cw,{title:"ホームページ",url:sc},e.createElement(yw.Z,null)),e.createElement(Cw,{title:"ツイッター",url:"https://twitter.com/LbRibbit"},e.createElement(vw.Z,null)),e.createElement(Cw,{title:"GitHub",url:"https://github.com/Local-Bias"},e.createElement(mw.Z,null)),e.createElement(ic,{color:"inherit",variant:"contained",disableElevation:!0,onClick:()=>Rw("https://form.konomi.app")},"お問い合わせ"),e.createElement("div",null,e.createElement(Ew,{onClick:()=>Rw("https://kula.konomi.app")},"kintoneだけでブログが書けます")))))`
   position: absolute;
   right: 10px;
   bottom: 10px;
