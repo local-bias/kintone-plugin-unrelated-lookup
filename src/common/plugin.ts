@@ -60,4 +60,6 @@ export const getNewCondition = (): kintone.plugin.Condition => ({
   autoLookup: true,
   saveAndLookup: false,
   query: '',
+  ignoresLetterCase: true,
+  ignoresKatakana: true,
 });

@@ -11,8 +11,8 @@ import {
   dialogVisibleState,
   pluginConditionState,
   searchInputState,
-  srcAllRecordsState,
 } from '../states';
+import { srcAllRecordsState } from '../states/records';
 
 export const useLookup = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -43,7 +43,9 @@ export const useLookup = () => {
       }
 
       const hasCached = await snapshot.getPromise(alreadyCacheState);
-      const cachedRecords = await snapshot.getPromise(srcAllRecordsState);
+      const handledRecords = await snapshot.getPromise(srcAllRecordsState);
+
+      const cachedRecords = handledRecords.map(({ record }) => record);
 
       const lookuped = await lookup(condition, record, {
         input,

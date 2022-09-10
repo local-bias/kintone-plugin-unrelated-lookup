@@ -36,6 +36,8 @@ type Props = ContainerProps & {
   onValidationCheckChange: (checked: boolean) => void;
   onAutoLookupChange: (checked: boolean) => void;
   onSaveAndLookupChange: (checked: boolean) => void;
+  setIgnoreLetterCase: (checked: boolean) => void;
+  setIgnoreKatakana: (checked: boolean) => void;
 };
 
 const Component: FCX<Props> = (props) => (
@@ -175,6 +177,16 @@ const Component: FCX<Props> = (props) => (
         control={<Switch color='primary' checked={props.condition.saveAndLookup} />}
         onChange={(_, checked) => props.onSaveAndLookupChange(checked)}
         label='レコード保存時に、ルックアップを実行する'
+      />
+      <FormControlLabel
+        control={<Switch color='primary' checked={props.condition.ignoresLetterCase} />}
+        onChange={(_, checked) => props.setIgnoreLetterCase(checked)}
+        label='絞り込みの際、大文字と小文字を区別しない'
+      />
+      <FormControlLabel
+        control={<Switch color='primary' checked={props.condition.ignoresKatakana} />}
+        onChange={(_, checked) => props.setIgnoreKatakana(checked)}
+        label='絞り込みの際、カタカナとひらがなを区別しない'
       />
     </div>
   </div>
@@ -354,6 +366,8 @@ const Container: FC<ContainerProps> = ({ condition, index }) => {
     onSwitchChange(checked, 'enablesValidation');
   const onAutoLookupChange = (checked: boolean) => onSwitchChange(checked, 'autoLookup');
   const onSaveAndLookupChange = (checked: boolean) => onSwitchChange(checked, 'saveAndLookup');
+  const setIgnoreLetterCase = (checked: boolean) => onSwitchChange(checked, 'ignoresLetterCase');
+  const setIgnoreKatakana = (checked: boolean) => onSwitchChange(checked, 'ignoresKatakana');
 
   return (
     <StyledComponent
@@ -377,6 +391,8 @@ const Container: FC<ContainerProps> = ({ condition, index }) => {
         onValidationCheckChange,
         onAutoLookupChange,
         onSaveAndLookupChange,
+        setIgnoreLetterCase,
+        setIgnoreKatakana,
       }}
     />
   );

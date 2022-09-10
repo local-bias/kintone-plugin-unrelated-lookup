@@ -3,7 +3,8 @@ import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import styled from '@emotion/styled';
 import { Pagination } from '@mui/material';
 
-import { filteredRecordsState, dialogPageChunkState, dialogPageIndexState } from '../../states';
+import { dialogPageChunkState, dialogPageIndexState } from '../../states';
+import { filteredRecordsState } from '../../states/records';
 
 type Props = {
   size: number;

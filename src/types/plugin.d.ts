@@ -17,6 +17,8 @@ declare namespace kintone {
       autoLookup: boolean;
       saveAndLookup: boolean;
       query: string;
+      ignoresLetterCase?: boolean;
+      ignoresKatakana?: boolean;
     };
   }
 }

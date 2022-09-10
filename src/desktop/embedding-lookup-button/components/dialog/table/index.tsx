@@ -2,9 +2,6 @@ import React, { FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import {
-  filteredRecordsState,
-  dialogPageChunkState,
-  dialogPageIndexState,
   dialogVisibleState,
   pluginConditionState,
   alreadyCacheState,
@@ -19,6 +16,7 @@ import Layout from './layout';
 import Empty from './empty';
 import Cell from './cell';
 import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
+import { displayingRecordsState } from '../../../states/records';
 
 type Props = {
   records: KintoneRecord[];
@@ -61,15 +59,11 @@ const Component: FC<Props> = ({ records, onRowClick, condition, hasCached }) => 
 
 const Container: FC = () => {
   const condition = useRecoilValue(pluginConditionState);
-  const filtered = useRecoilValue(filteredRecordsState);
-  const index = useRecoilValue(dialogPageIndexState);
-  const chunk = useRecoilValue(dialogPageChunkState);
+  const records = useRecoilValue(displayingRecordsState);
   const setDialogShown = useSetRecoilState(dialogVisibleState);
   const setLookuped = useSetRecoilState(alreadyLookupState);
   const hasCached = useRecoilValue(alreadyCacheState);
   const { enqueueSnackbar } = useSnackbar();
-
-  const records = filtered.slice((index - 1) * chunk, index * chunk);
 
   const onRowClick = (selectedRecord: KintoneRecord) => {
     const { record } = getCurrentRecord();
