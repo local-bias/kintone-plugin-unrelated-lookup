@@ -27,7 +27,7 @@
     "@kintone/plugin-packer": "6.0.15",
     "@kintone/plugin-uploader": "7.1.2",
     "@kintone/rest-api-client": "3.1.14",
-    "@kintone/webpack-plugin-kintone-plugin": "6.0.13",
+    "@kintone/webpack-plugin-kintone-plugin": "6.0.15",
     "@mui/icons-material": "5.10.6",
     "@mui/material": "5.10.8",
     "@types/dompurify": "2.3.4",
