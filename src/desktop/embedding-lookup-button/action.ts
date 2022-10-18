@@ -1,7 +1,7 @@
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
-import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
+import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { getAllRecords } from '@common/kintone-rest-api';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { someFieldValue } from '@common/kintone-api';

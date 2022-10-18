@@ -1,4 +1,4 @@
-import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
+import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useRecoilCallback, useSetRecoilState } from 'recoil';

@@ -15,7 +15,7 @@ import { Loading } from '@common/components/loading';
 import Layout from './layout';
 import Empty from './empty';
 import Cell from './cell';
-import { getCurrentRecord, setCurrentRecord } from '@common/kintone';
+import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { displayingRecordsState } from '../../../states/records';
 
 type Props = {
