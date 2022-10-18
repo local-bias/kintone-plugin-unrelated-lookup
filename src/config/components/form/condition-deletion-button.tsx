@@ -4,7 +4,7 @@ import { produce } from 'immer';
 import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-import { storageState } from '../../states';
+import { storageState } from '../../states/plugin';
 
 type ContainerProps = Readonly<{ index: number }>;
 type Props = Readonly<{ onClick: () => void }>;

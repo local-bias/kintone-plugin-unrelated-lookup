@@ -7,9 +7,10 @@ import {
   Properties as FieldProperties,
 } from '@kintone/rest-api-client/lib/client/types';
 
-import { appFieldsState, storageState } from '../../../states';
+import { appFieldsState } from '../../../states/kintone';
+import { storageState } from '../../../states/plugin';
 import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
-import { kintoneAppsState } from '../../../states/kintone-apps';
+import { kintoneAppsState } from '../../../states/kintone';
 import { getFieldProperties, omitFieldProperties } from '@common/kintone-api';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AddIcon from '@mui/icons-material/Add';

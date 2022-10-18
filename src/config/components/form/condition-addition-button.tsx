@@ -6,7 +6,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import { getNewCondition } from '@common/plugin';
 
-import { storageState } from '../../states';
+import { storageState } from '../../states/plugin';
 
 type Props = Readonly<{ addCondition: () => void }>;
 

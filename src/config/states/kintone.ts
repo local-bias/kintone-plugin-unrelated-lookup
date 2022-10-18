@@ -5,9 +5,20 @@ import {
   getFieldProperties,
   omitFieldProperties,
 } from '@common/kintone-api';
+import { getAllApps } from '@common/kintone-rest-api';
 
-const state = selector<Properties>({
-  key: 'AppFields',
+const PREFIX = 'kintone';
+
+export const kintoneAppsState = selector({
+  key: `${PREFIX}kintoneAppsState`,
+  get: async () => {
+    const apps = await getAllApps();
+    return apps;
+  },
+});
+
+export const appFieldsState = selector<Properties>({
+  key: `${PREFIX}AppFields`,
   get: async () => {
     const properties = await getFieldProperties();
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
@@ -15,5 +26,3 @@ const state = selector<Properties>({
     return omitted;
   },
 });
-
-export default state;
