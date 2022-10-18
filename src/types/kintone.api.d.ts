@@ -18,6 +18,10 @@ import {
   OneOf as DefaultLayoutField,
   Label as DefaultLayoutLabel,
 } from '@kintone/rest-api-client/lib/KintoneFields/types/fieldLayout';
+import {
+  Group as DefaultGroup,
+  Row as DefaultRow,
+} from '@kintone/rest-api-client/lib/KintoneFields/types/layout';
 
 declare namespace kx {
   type App = DefaultApp;
@@ -29,9 +33,6 @@ declare namespace kx {
   type FieldEntry = [string, FieldProperty];
 
   type RecordData = DefaultRecord;
-
-  type Layout = DefaultLayout;
-  type LayoutField = DefaultLayoutField;
 
   namespace property {
     type CheckBox = DefaultCheckBox;
@@ -45,8 +46,12 @@ declare namespace kx {
     type UserEntity = Creator['value'];
   }
 
+  type Layout = DefaultLayout;
   namespace layout {
+    type Field = DefaultLayoutField;
     type Label = DefaultLayoutLabel;
+    type Row = DefaultRow<Field[]>;
+    type Group = DefaultGroup<Row[]>;
   }
 
   namespace response {

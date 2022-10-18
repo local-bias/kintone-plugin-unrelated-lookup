@@ -1,6 +1,6 @@
-import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
+import { kx } from '../types/kintone.api';
 
-export const getQuickSearchString = (record: KintoneRecord): string => {
+export const getQuickSearchString = (record: kx.RecordData): string => {
   const values = Object.values(record).map((field) => {
     switch (field.type) {
       case 'CREATOR':

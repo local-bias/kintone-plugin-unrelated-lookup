@@ -1,6 +1,6 @@
 import { Record } from '@kintone/rest-api-client/lib/client/types';
-import { App as KintoneApp } from '@kintone/rest-api-client/lib/client/types';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
+import { kx } from '../types/kintone.api';
 
 const END_POINT = '/k/v1/records';
 
@@ -58,11 +58,8 @@ const getRecordsByCursorId = async ({
     : newRecords;
 };
 
-export const getAllApps = async (
-  offset: number = 0,
-  _apps: KintoneApp[] = []
-): Promise<KintoneApp[]> => {
-  const { apps }: { apps: KintoneApp[] } = await kintone.api(
+export const getAllApps = async (offset: number = 0, _apps: kx.App[] = []): Promise<kx.App[]> => {
+  const { apps }: { apps: kx.App[] } = await kintone.api(
     kintone.api.url(`/k/v1/apps`, true),
     'GET',
     {
