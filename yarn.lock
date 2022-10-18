@@ -311,7 +311,7 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@kintone/dts-gen@6.1.12":
+"@kintone/dts-gen@6.1.12", "@kintone/dts-gen@^6.1.12":
   version "6.1.12"
   resolved "https://registry.yarnpkg.com/@kintone/dts-gen/-/dts-gen-6.1.12.tgz#426db3a42ccb22241b1b5ec021aa750045d300ba"
   integrity sha512-8phczZsbY4hnU/OUtkb2fngRbpxM8ZX1BvlO7HlGxGEjawGehW/RS00IjAu3ykKib15J5duGD/6DAlhoJjk0Qg==
@@ -359,7 +359,7 @@
     os-locale "^5.0.0"
     puppeteer "^15.1.1"
 
-"@kintone/rest-api-client@3.1.14":
+"@kintone/rest-api-client@3.1.14", "@kintone/rest-api-client@^3.1.14":
   version "3.1.14"
   resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.1.14.tgz#7ee97c4fe94ea809c35c4ee369fbc4d6e365d53d"
   integrity sha512-Ldpebaf6HRXZfvDze0NNQVVO0pWNSzJhSXbA/IZOXgg/312nleD43jhnMZOWFLVATVapKjVJUeHsLr8RA7tPsw==
@@ -377,6 +377,14 @@
   dependencies:
     "@kintone/plugin-packer" "^6.0.15"
     mkdirp "^1.0.4"
+
+"@lb-ribbit/kintone-xapp@^0.3.4":
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/@lb-ribbit/kintone-xapp/-/kintone-xapp-0.3.4.tgz#336dcc15beeeafdd9b05d1a5ec1251b640683e15"
+  integrity sha512-Hj6ibt9k9PUWwxDIwwBSXTlNKtZ7OvkcC1B9q0wh46n9VZOUWN/6fa/vPRhyxOQajXeEldzL1YzCM/Z4pVy2bw==
+  dependencies:
+    "@kintone/dts-gen" "^6.1.12"
+    "@kintone/rest-api-client" "^3.1.14"
 
 "@mui/base@5.0.0-alpha.101":
   version "5.0.0-alpha.101"
