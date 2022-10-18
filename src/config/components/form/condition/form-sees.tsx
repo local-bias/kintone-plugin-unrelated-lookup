@@ -83,12 +83,12 @@ const Container: FC<Props> = (props) => {
     <Suspense
       fallback={
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 380px)', gap: '8px' }}>
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
+          <Skeleton height={56} />
         </div>
       }
     >

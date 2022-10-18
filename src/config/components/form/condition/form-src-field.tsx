@@ -26,7 +26,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
 
 const Container: FC<Props> = (props) => {
   return (
-    <Suspense fallback={<Skeleton width={400} height={80} />}>
+    <Suspense fallback={<Skeleton width={350} height={56} />}>
       <Component {...props} />
     </Suspense>
   );
