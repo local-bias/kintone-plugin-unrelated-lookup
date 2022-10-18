@@ -1,38 +1,21 @@
-import React, { ChangeEventHandler, useEffect, useState, FC, FCX } from 'react';
-import { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil';
+import React, { useEffect, useState, FC, FCX } from 'react';
+import { useRecoilCallback, useSetRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import produce from 'immer';
-import {
-  App as KintoneApp,
-  Properties as FieldProperties,
-} from '@kintone/rest-api-client/lib/client/types';
+import { Properties as FieldProperties } from '@kintone/rest-api-client/lib/client/types';
 
-import { appFieldsState } from '../../../states/kintone';
 import { storageState } from '../../../states/plugin';
-import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
-import { kintoneAppsState } from '../../../states/kintone';
+import { FormControlLabel, Switch, TextField } from '@mui/material';
 import { getFieldProperties, omitFieldProperties } from '@common/kintone-api';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
 
-import FieldPropertiesSelect from './field-properties-select';
+import DstFieldForm from './form-dst-field';
+import SrcAppForm from './form-src-app';
+import SrcFieldForm from './form-src-field';
+import CopiesForm from './form-copies';
+import DisplayFieldsForm from './form-sees';
 
 type ContainerProps = { condition: kintone.plugin.Condition; index: number };
 type Props = ContainerProps & {
-  dstAppProperties: FieldProperties;
-  srcAppProperties: FieldProperties | null;
-  kintoneApps: KintoneApp[];
-  onDstFieldChange: ChangeEventHandler<HTMLInputElement>;
-  onSrcAppIdChange: ChangeEventHandler<HTMLInputElement>;
-  onSrcFieldChange: ChangeEventHandler<HTMLInputElement>;
-  onCopyFromChange: (rowIndex: number, value: string) => void;
-  onCopyToChange: (rowIndex: number, value: string) => void;
-  onDisplayingFieldsChange: (rowIndex: number, value: string) => void;
-  addCopy: (rowIndex: number) => void;
-  removeCopy: (rowIndex: number) => void;
-  addDisplayingField: (rowIndex: number) => void;
-  removeDisplayingField: (rowIndex: number) => void;
   onEnableCacheChange: (checked: boolean) => void;
   onValidationCheckChange: (checked: boolean) => void;
   onAutoLookupChange: (checked: boolean) => void;
@@ -45,14 +28,7 @@ const Component: FCX<Props> = (props) => (
   <div className={props.className}>
     <div>
       <h3>対象フィールド(ルックアップボタンを設置するフィールド)</h3>
-      <div>
-        <FieldPropertiesSelect
-          properties={props.dstAppProperties}
-          label='フィールド名'
-          value={props.condition.dstField}
-          onChange={props.onDstFieldChange}
-        />
-      </div>
+      <DstFieldForm conditionIndex={props.index} />
       <div>
         <small>
           ルックアップフィールドは使用しません。ここでは文字列1行フィールドを選択してください。
@@ -64,99 +40,22 @@ const Component: FCX<Props> = (props) => (
     </div>
     <div>
       <h3>関連付けないアプリ(参照先アプリ)</h3>
-      <TextField
-        select
-        label='アプリ名'
-        value={props.condition.srcAppId}
-        onChange={props.onSrcAppIdChange}
-        sx={{ width: 400 }}
-      >
-        {props.kintoneApps.map(({ appId, name }, i) => (
-          <MenuItem key={i} value={appId}>
-            {name}(id: {appId})
-          </MenuItem>
-        ))}
-      </TextField>
+      <SrcAppForm conditionIndex={props.index} />
     </div>
     <div>
       <h3>取得するフィールド(ボタンを設置したフィールドに反映するフィールド)</h3>
-      <div>
-        <FieldPropertiesSelect
-          properties={props.srcAppProperties}
-          label='フィールド名'
-          value={props.condition.srcField}
-          onChange={props.onSrcFieldChange}
-        />
-      </div>
+      <SrcFieldForm conditionIndex={props.index} />
     </div>
 
     <div>
       <h3>他のフィールドのコピー</h3>
-      <div className='rows'>
-        {props.condition.copies.map(({ from, to }, i) => (
-          <div key={i}>
-            <FieldPropertiesSelect
-              properties={props.srcAppProperties}
-              label='コピー元'
-              value={from}
-              onChange={(e) => props.onCopyFromChange(i, e.target.value)}
-            />
-            <ArrowForwardIcon />
-            <FieldPropertiesSelect
-              properties={props.dstAppProperties}
-              label='コピー先'
-              value={to}
-              onChange={(e) => props.onCopyToChange(i, e.target.value)}
-            />
-            <Tooltip title='コピー設定を追加する'>
-              <IconButton size='small' onClick={() => props.addCopy(i)}>
-                <AddIcon fontSize='small' />
-              </IconButton>
-            </Tooltip>
-            {props.condition.copies.length > 1 && (
-              <Tooltip title='このコピー設定を削除する'>
-                <IconButton size='small' onClick={() => props.removeCopy(i)}>
-                  <DeleteIcon fontSize='small' />
-                </IconButton>
-              </Tooltip>
-            )}
-          </div>
-        ))}
-      </div>
+      <CopiesForm conditionIndex={props.index} />
     </div>
     <div>
       <h3>コピー元のレコードの選択時に表示するフィールド</h3>
-      <div className='rows'>
-        {props.condition.sees.map((field, i) => (
-          <div key={i}>
-            <FieldPropertiesSelect
-              properties={props.srcAppProperties}
-              label='表示するフィールド'
-              value={field}
-              onChange={(e) => props.onDisplayingFieldsChange(i, e.target.value)}
-            />
-
-            <Tooltip title='表示フィールドを追加する'>
-              <IconButton size='small' onClick={() => props.addDisplayingField(i)}>
-                <AddIcon fontSize='small' />
-              </IconButton>
-            </Tooltip>
-            {props.condition.sees.length > 1 && (
-              <Tooltip title='この表示フィールドを削除する'>
-                <IconButton size='small' onClick={() => props.removeDisplayingField(i)}>
-                  <DeleteIcon fontSize='small' />
-                </IconButton>
-              </Tooltip>
-            )}
-          </div>
-        ))}
-      </div>
+      <DisplayFieldsForm conditionIndex={props.index} />
     </div>
-    <SortingForm
-      condition={props.condition}
-      index={props.index}
-      srcAppProperties={props.srcAppProperties}
-    />
+    <SortingForm condition={props.condition} index={props.index} />
     <div>
       <h3>その他のオプション</h3>
       <FormControlLabel
@@ -235,124 +134,7 @@ const StyledComponent = styled(Component)`
 `;
 
 const Container: FC<ContainerProps> = ({ condition, index }) => {
-  const dstAppProperties = useRecoilValue(appFieldsState);
   const setStorage = useSetRecoilState(storageState);
-  const kintoneApps = useRecoilValue(kintoneAppsState);
-  const [srcAppProperties, setSrcAppProperties] = useState<FieldProperties | null>(null);
-
-  useEffect(() => {
-    setSrcAppProperties(null);
-    (async () => {
-      const props = await getFieldProperties(condition.srcAppId);
-      const filtered = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
-      setSrcAppProperties(filtered);
-    })();
-  }, [condition.srcAppId]);
-
-  const setConditionProps = <T extends keyof kintone.plugin.Condition>(
-    key: T,
-    value: kintone.plugin.Condition[T]
-  ) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index][key] = value;
-      })
-    );
-  };
-
-  const onSrcAppIdChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setConditionProps('srcAppId', e.target.value);
-  };
-  const onSrcFieldChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setConditionProps('srcField', e.target.value);
-  };
-  const onDstFieldChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setConditionProps('dstField', e.target.value);
-  };
-
-  const onCopyFromChange = (rowIndex: number, value: string) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { copies } = draft.conditions[index];
-        copies[rowIndex].from = value;
-      })
-    );
-  };
-
-  const onCopyToChange = (rowIndex: number, value: string) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { copies } = draft.conditions[index];
-        copies[rowIndex].to = value;
-      })
-    );
-  };
-
-  const onDisplayingFieldsChange = (rowIndex: number, value: string) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { sees } = draft.conditions[index];
-        sees[rowIndex] = value;
-      })
-    );
-  };
-
-  const addCopy = (rowIndex: number) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { copies } = draft.conditions[index];
-        copies.splice(rowIndex + 1, 0, { from: '', to: '' });
-      })
-    );
-  };
-
-  const removeCopy = (rowIndex: number) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { copies } = draft.conditions[index];
-        copies.splice(rowIndex, 1);
-      })
-    );
-  };
-
-  const addDisplayingField = (rowIndex: number) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { sees } = draft.conditions[index];
-        sees.splice(rowIndex + 1, 0, '');
-      })
-    );
-  };
-
-  const removeDisplayingField = (rowIndex: number) => {
-    setStorage((_storage) =>
-      produce(_storage, (draft) => {
-        if (!draft) {
-          return;
-        }
-        const { sees } = draft.conditions[index];
-        sees.splice(rowIndex, 1);
-      })
-    );
-  };
 
   const onSwitchChange = (checked: boolean, option: keyof kintone.plugin.Condition) => {
     setStorage((_, _storage = _!) =>
@@ -375,19 +157,6 @@ const Container: FC<ContainerProps> = ({ condition, index }) => {
       {...{
         condition,
         index,
-        dstAppProperties,
-        srcAppProperties,
-        kintoneApps,
-        onDstFieldChange,
-        onSrcAppIdChange,
-        onSrcFieldChange,
-        onCopyFromChange,
-        onCopyToChange,
-        onDisplayingFieldsChange,
-        addCopy,
-        removeCopy,
-        addDisplayingField,
-        removeDisplayingField,
         onEnableCacheChange,
         onValidationCheckChange,
         onAutoLookupChange,
@@ -404,8 +173,7 @@ export default Container;
 const SortingForm: FC<{
   condition: kintone.plugin.Condition;
   index: number;
-  srcAppProperties: FieldProperties | null;
-}> = ({ condition, index, srcAppProperties }) => {
+}> = ({ condition, index }) => {
   const onQueryChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
