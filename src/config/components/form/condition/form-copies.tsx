@@ -50,7 +50,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
           })
         );
       },
-    []
+    [conditionIndex]
   );
 
   const removeCopy = useRecoilCallback(
@@ -62,7 +62,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
           })
         );
       },
-    []
+    [conditionIndex]
   );
 
   return (

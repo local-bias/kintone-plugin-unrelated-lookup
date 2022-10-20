@@ -35,7 +35,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
           })
         );
       },
-    []
+    [conditionIndex]
   );
 
   const removeField = useRecoilCallback(
@@ -47,7 +47,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
           })
         );
       },
-    []
+    [conditionIndex]
   );
 
   return (
