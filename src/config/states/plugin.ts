@@ -40,6 +40,11 @@ export const storageState = atom<kintone.plugin.Storage | null>({
   default: null,
 });
 
+export const loadingState = atom<boolean>({
+  key: `${PREFIX}loadingState`,
+  default: false,
+});
+
 export const pluginIdState = atom<string>({ key: `${PREFIX}pluginIdState`, default: '' });
 
 export const dstFieldState = selectorFamily<string, number>({
