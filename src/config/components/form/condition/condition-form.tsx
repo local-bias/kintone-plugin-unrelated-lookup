@@ -1,18 +1,20 @@
-import React, { useEffect, useState, FC, FCX } from 'react';
+import React, { FC, FCX } from 'react';
 import { useRecoilCallback, useSetRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import produce from 'immer';
-import { Properties as FieldProperties } from '@kintone/rest-api-client/lib/client/types';
 
 import { storageState } from '../../../states/plugin';
 import { FormControlLabel, Switch, TextField } from '@mui/material';
-import { getFieldProperties, omitFieldProperties } from '@common/kintone-api';
 
 import DstFieldForm from './form-dst-field';
 import SrcAppForm from './form-src-app';
 import SrcFieldForm from './form-src-field';
 import CopiesForm from './form-copies';
 import DisplayFieldsForm from './form-sees';
+import LetterCaseForm from '../../functional/form-letter-case';
+import KatakanaForm from '../../functional/form-katakana';
+import ZenkakuEisujiForm from '../../functional/form-zenkaku-eisuji';
+import HankakuKatakanaForm from '../../functional/form-hankaku-katakana';
 
 type ContainerProps = { condition: kintone.plugin.Condition; index: number };
 type Props = ContainerProps & {
@@ -20,8 +22,6 @@ type Props = ContainerProps & {
   onValidationCheckChange: (checked: boolean) => void;
   onAutoLookupChange: (checked: boolean) => void;
   onSaveAndLookupChange: (checked: boolean) => void;
-  setIgnoreLetterCase: (checked: boolean) => void;
-  setIgnoreKatakana: (checked: boolean) => void;
 };
 
 const Component: FCX<Props> = (props) => (
@@ -78,16 +78,10 @@ const Component: FCX<Props> = (props) => (
         onChange={(_, checked) => props.onSaveAndLookupChange(checked)}
         label='レコード保存時に、ルックアップを実行する'
       />
-      <FormControlLabel
-        control={<Switch color='primary' checked={props.condition.ignoresLetterCase} />}
-        onChange={(_, checked) => props.setIgnoreLetterCase(checked)}
-        label='絞り込みの際、大文字と小文字を区別しない'
-      />
-      <FormControlLabel
-        control={<Switch color='primary' checked={props.condition.ignoresKatakana} />}
-        onChange={(_, checked) => props.setIgnoreKatakana(checked)}
-        label='絞り込みの際、カタカナとひらがなを区別しない'
-      />
+      <LetterCaseForm />
+      <KatakanaForm />
+      <HankakuKatakanaForm />
+      <ZenkakuEisujiForm />
     </div>
   </div>
 );
@@ -149,8 +143,6 @@ const Container: FC<ContainerProps> = ({ condition, index }) => {
     onSwitchChange(checked, 'enablesValidation');
   const onAutoLookupChange = (checked: boolean) => onSwitchChange(checked, 'autoLookup');
   const onSaveAndLookupChange = (checked: boolean) => onSwitchChange(checked, 'saveAndLookup');
-  const setIgnoreLetterCase = (checked: boolean) => onSwitchChange(checked, 'ignoresLetterCase');
-  const setIgnoreKatakana = (checked: boolean) => onSwitchChange(checked, 'ignoresKatakana');
 
   return (
     <StyledComponent
@@ -161,8 +153,6 @@ const Container: FC<ContainerProps> = ({ condition, index }) => {
         onValidationCheckChange,
         onAutoLookupChange,
         onSaveAndLookupChange,
-        setIgnoreLetterCase,
-        setIgnoreKatakana,
       }}
     />
   );

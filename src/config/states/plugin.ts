@@ -166,3 +166,99 @@ export const seesState = selectorFamily<string[], number>({
       );
     },
 });
+
+export const ignoresLetterCaseState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresLetterCaseState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresLetterCase',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresLetterCase',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresKatakanaState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresKatakanaState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresKatakana',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresKatakana',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresZenkakuEisujiState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresZenkakuEisujiState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresZenkakuEisuji',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresZenkakuEisuji',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresHankakuKatakanaState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresHankakuKatakanaState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresHankakuKatakana',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresHankakuKatakana',
+          value: newValue as boolean,
+        })
+      );
+    },
+});

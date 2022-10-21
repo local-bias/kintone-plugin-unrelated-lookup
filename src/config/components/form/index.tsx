@@ -6,6 +6,7 @@ import { storageState } from '../../states/plugin';
 import ConditionAdditionButton from './condition-addition-button';
 import Condition from './condition';
 import { Loading } from '@common/components/loading';
+import { ConditionIndexProvider } from '../functional/condition-index-provider';
 
 type Props = Readonly<{
   storage: kintone.plugin.Storage | null;
@@ -17,7 +18,9 @@ const Component: FCX<Props> = ({ className, storage }) => (
     {!!storage && (
       <>
         {storage.conditions.map((condition, index) => (
-          <Condition key={index} {...{ condition, index }} />
+          <ConditionIndexProvider key={index} conditionIndex={index}>
+            <Condition key={index} {...{ condition, index }} />
+          </ConditionIndexProvider>
         ))}
         <ConditionAdditionButton />
       </>
