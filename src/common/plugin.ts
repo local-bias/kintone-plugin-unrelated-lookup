@@ -62,4 +62,6 @@ export const getNewCondition = (): kintone.plugin.Condition => ({
   query: '',
   ignoresLetterCase: true,
   ignoresKatakana: true,
+  ignoresZenkakuEisuji: true,
+  ignoresHankakuKatakana: true,
 });
