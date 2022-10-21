@@ -44,20 +44,17 @@ const Component: FCX = ({ className }) => (
     </Button>
     <div>
       <GradientButton onClick={() => openNewTab('https://kula.konomi.app')}>
-        kintoneだけでブログが書けます
+        kintoneでブログが書けます
       </GradientButton>
     </div>
   </aside>
 );
 
 const StyledComponent = styled(Component)`
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  z-index: 50;
+  justify-content: flex-end;
+  gap: 8px;
   & > button {
     color: #78909c;
     box-shadow: none;
