@@ -1,34 +1,26 @@
-import React, { FC, FCX } from 'react';
-import { useRecoilCallback, useSetRecoilState } from 'recoil';
+import React, { FC, FCX, memo } from 'react';
 import styled from '@emotion/styled';
-import produce from 'immer';
 
-import { storageState } from '../../../states/plugin';
-import { FormControlLabel, Switch, TextField } from '@mui/material';
-
-import DstFieldForm from './form-dst-field';
-import SrcAppForm from './form-src-app';
-import SrcFieldForm from './form-src-field';
-import CopiesForm from './form-copies';
-import DisplayFieldsForm from './form-sees';
+import DstFieldForm from '../../functional/form-dst-field';
+import SrcAppForm from '../../functional/form-src-app';
+import SrcFieldForm from '../../functional/form-src-field';
+import CopiesForm from '../../functional/form-copies';
+import DisplayFieldsForm from '../../functional/form-sees';
+import QueryForm from '../../functional/form-query';
+import EnablesCacheForm from '../../functional/form-enables-cache';
+import AutoLookupForm from '../../functional/form-auto-lookup';
+import EnablesValidationForm from '../../functional/form-enables-validation';
+import SaveAndLookupState from '../../functional/form-save-and-lookup';
 import LetterCaseForm from '../../functional/form-letter-case';
 import KatakanaForm from '../../functional/form-katakana';
 import ZenkakuEisujiForm from '../../functional/form-zenkaku-eisuji';
 import HankakuKatakanaForm from '../../functional/form-hankaku-katakana';
 
-type ContainerProps = { condition: kintone.plugin.Condition; index: number };
-type Props = ContainerProps & {
-  onEnableCacheChange: (checked: boolean) => void;
-  onValidationCheckChange: (checked: boolean) => void;
-  onAutoLookupChange: (checked: boolean) => void;
-  onSaveAndLookupChange: (checked: boolean) => void;
-};
-
-const Component: FCX<Props> = (props) => (
-  <div className={props.className}>
+const Component: FCX = ({ className }) => (
+  <div className={className}>
     <div>
       <h3>対象フィールド(ルックアップボタンを設置するフィールド)</h3>
-      <DstFieldForm conditionIndex={props.index} />
+      <DstFieldForm />
       <div>
         <small>
           ルックアップフィールドは使用しません。ここでは文字列1行フィールドを選択してください。
@@ -40,44 +32,31 @@ const Component: FCX<Props> = (props) => (
     </div>
     <div>
       <h3>関連付けないアプリ(参照先アプリ)</h3>
-      <SrcAppForm conditionIndex={props.index} />
+      <SrcAppForm />
     </div>
     <div>
       <h3>取得するフィールド(ボタンを設置したフィールドに反映するフィールド)</h3>
-      <SrcFieldForm conditionIndex={props.index} />
+      <SrcFieldForm />
     </div>
 
     <div>
       <h3>他のフィールドのコピー</h3>
-      <CopiesForm conditionIndex={props.index} />
+      <CopiesForm />
     </div>
     <div>
       <h3>コピー元のレコードの選択時に表示するフィールド</h3>
-      <DisplayFieldsForm conditionIndex={props.index} />
+      <DisplayFieldsForm />
     </div>
-    <SortingForm condition={props.condition} index={props.index} />
+    <div>
+      <h3>コピー元レコードの取得条件</h3>
+      <QueryForm />
+    </div>
     <div>
       <h3>その他のオプション</h3>
-      <FormControlLabel
-        control={<Switch color='primary' checked={props.condition.enablesCache} />}
-        onChange={(_, checked) => props.onEnableCacheChange(checked)}
-        label='事前に参照アプリのレコードを取得し、検索を高速化する(レコード数の少ないアプリ向け)'
-      />
-      <FormControlLabel
-        control={<Switch color='primary' checked={props.condition.autoLookup} />}
-        onChange={(_, checked) => props.onAutoLookupChange(checked)}
-        label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する'
-      />
-      <FormControlLabel
-        control={<Switch color='primary' checked={props.condition.enablesValidation} />}
-        onChange={(_, checked) => props.onValidationCheckChange(checked)}
-        label='レコード保存時に、ルックアップが実行されていない場合はエラーを表示する'
-      />
-      <FormControlLabel
-        control={<Switch color='primary' checked={props.condition.saveAndLookup} />}
-        onChange={(_, checked) => props.onSaveAndLookupChange(checked)}
-        label='レコード保存時に、ルックアップを実行する'
-      />
+      <EnablesCacheForm />
+      <AutoLookupForm />
+      <EnablesValidationForm />
+      <SaveAndLookupState />
       <LetterCaseForm />
       <KatakanaForm />
       <HankakuKatakanaForm />
@@ -127,68 +106,8 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC<ContainerProps> = ({ condition, index }) => {
-  const setStorage = useSetRecoilState(storageState);
-
-  const onSwitchChange = (checked: boolean, option: keyof kintone.plugin.Condition) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index][option] = checked as never;
-      })
-    );
-  };
-
-  const onEnableCacheChange = (checked: boolean) => onSwitchChange(checked, 'enablesCache');
-  const onValidationCheckChange = (checked: boolean) =>
-    onSwitchChange(checked, 'enablesValidation');
-  const onAutoLookupChange = (checked: boolean) => onSwitchChange(checked, 'autoLookup');
-  const onSaveAndLookupChange = (checked: boolean) => onSwitchChange(checked, 'saveAndLookup');
-
-  return (
-    <StyledComponent
-      {...{
-        condition,
-        index,
-        onEnableCacheChange,
-        onValidationCheckChange,
-        onAutoLookupChange,
-        onSaveAndLookupChange,
-      }}
-    />
-  );
+const Container: FC = () => {
+  return <StyledComponent />;
 };
 
-export default Container;
-
-const SortingForm: FC<{
-  condition: kintone.plugin.Condition;
-  index: number;
-}> = ({ condition, index }) => {
-  const onQueryChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(storageState, (_storage) =>
-          produce(_storage, (draft) => {
-            if (!draft) {
-              return;
-            }
-            draft.conditions[index].query = value;
-          })
-        );
-      },
-    [index]
-  );
-
-  return (
-    <div>
-      <h3>コピー元レコードの取得条件</h3>
-      <TextField
-        label='クエリー'
-        placeholder='例: 契約ステータス not in ("解約")'
-        value={condition.query || ''}
-        onChange={(e) => onQueryChange(e.target.value)}
-        sx={{ width: 400 }}
-      />
-    </div>
-  );
-};
+export default memo(Container);

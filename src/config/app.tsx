@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@common/components/error-boundary';
 
 import Form from './components/form';
 import Footer from './components/footer';
-import SocialIcons from './components/social-icons';
+import SocialIcons from './components/ui/social-icons';
 
 import { pluginIdState, storageState } from './states/plugin';
 import { Loading } from '@common/components/loading';

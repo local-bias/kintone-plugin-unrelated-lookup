@@ -1,39 +1,36 @@
 import React, { memo, useState, FC, FCX } from 'react';
-import { Accordion, AccordionActions, AccordionDetails, AccordionSummary } from '@mui/material';
+import { Accordion, AccordionActions, AccordionDetails } from '@mui/material';
+
+import AccordionSummary from '../../ui/accordion-summary';
 
 import ConditionForm from './condition-form';
-import ConditionDeletionButton from '../condition-deletion-button';
+import ConditionDeletionButton from '../../functional/condition-deletion-button';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
-type ContainerProps = Readonly<{ condition: kintone.plugin.Condition; index: number }>;
-type Props = ContainerProps & {
+type Props = {
   expanded: boolean;
   onChange: () => void;
 };
 
-const Component: FCX<Props> = ({ className, condition, index, expanded, onChange }) => (
+const Component: FCX<Props> = ({ className, expanded, onChange }) => (
   <Accordion {...{ expanded, onChange, className }} variant='outlined' square>
-    <AccordionSummary>
-      設定{index + 1}
-      {!!condition.srcAppId &&
-        !!condition.srcField &&
-        !!condition.dstField &&
-        ` [${condition.srcField} → ${condition.dstField}]`}
-    </AccordionSummary>
+    <AccordionSummary />
     <AccordionDetails>
-      <ConditionForm {...{ condition, index }} />
+      <ConditionForm />
     </AccordionDetails>
     <AccordionActions>
-      <ConditionDeletionButton {...{ index }} />
+      <ConditionDeletionButton />
     </AccordionActions>
   </Accordion>
 );
 
-const Container: FC<ContainerProps> = memo(({ condition, index }) => {
+const Container: FC = memo(() => {
+  const index = useConditionIndex();
   const [expanded, setExpanded] = useState<boolean>(index === 0);
 
   const onChange = () => setExpanded((_expanded) => !_expanded);
 
-  return <Component {...{ condition, index, expanded, onChange }} />;
+  return <Component {...{ expanded, onChange }} />;
 });
 
 export default Container;
