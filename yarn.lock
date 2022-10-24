@@ -378,7 +378,7 @@
     "@kintone/plugin-packer" "^6.0.15"
     mkdirp "^1.0.4"
 
-"@lb-ribbit/kintone-xapp@^0.3.4":
+"@lb-ribbit/kintone-xapp@0.3.4":
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/@lb-ribbit/kintone-xapp/-/kintone-xapp-0.3.4.tgz#336dcc15beeeafdd9b05d1a5ec1251b640683e15"
   integrity sha512-Hj6ibt9k9PUWwxDIwwBSXTlNKtZ7OvkcC1B9q0wh46n9VZOUWN/6fa/vPRhyxOQajXeEldzL1YzCM/Z4pVy2bw==
