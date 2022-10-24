@@ -1,8 +1,8 @@
 import { AccordionSummary } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useRecoilValue } from 'recoil';
-import { dstFieldState, srcAppIdState, srcFieldState } from '../../states/plugin';
-import { useConditionIndex } from '../functional/condition-index-provider';
+import { dstFieldState, srcAppIdState, srcFieldState } from '../../../states/plugin';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
 const Component: FC = () => {
   const conditionIndex = useConditionIndex();

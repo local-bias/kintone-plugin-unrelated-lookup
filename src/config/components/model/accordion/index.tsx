@@ -1,9 +1,9 @@
 import React, { memo, useState, FC, FCX } from 'react';
 import { Accordion, AccordionActions, AccordionDetails } from '@mui/material';
 
-import AccordionSummary from '../../ui/accordion-summary';
+import AccordionSummary from './accordion-summary';
 
-import ConditionForm from './condition-form';
+import ConditionForm from '../form';
 import ConditionDeletionButton from '../../functional/condition-deletion-button';
 import { useConditionIndex } from '../../functional/condition-index-provider';
 

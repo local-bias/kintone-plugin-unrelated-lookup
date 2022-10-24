@@ -1,17 +1,17 @@
 import { FormControlLabel, Switch } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { ignoresHankakuKatakanaState } from '../../states/plugin';
-import { useConditionIndex } from './condition-index-provider';
+import { enablesCacheState } from '../../../states/plugin';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
 const Component: FC = () => {
   const conditionIndex = useConditionIndex();
-  const enables = useRecoilValue(ignoresHankakuKatakanaState(conditionIndex));
+  const enables = useRecoilValue(enablesCacheState(conditionIndex));
 
   const onChange = useRecoilCallback(
     ({ set }) =>
       (checked: boolean) => {
-        set(ignoresHankakuKatakanaState(conditionIndex), checked);
+        set(enablesCacheState(conditionIndex), checked);
       },
     [conditionIndex]
   );
@@ -20,7 +20,7 @@ const Component: FC = () => {
     <FormControlLabel
       control={<Switch color='primary' checked={enables} />}
       onChange={(_, checked) => onChange(checked)}
-      label='絞り込みの際、半角カナと全角カナを区別しない'
+      label='事前に参照アプリのレコードを取得し、検索を高速化する(レコード数の少ないアプリ向け)'
     />
   );
 };

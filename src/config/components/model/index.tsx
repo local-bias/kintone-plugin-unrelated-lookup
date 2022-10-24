@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 import { storageState } from '../../states/plugin';
 import ConditionAdditionButton from '../functional/condition-addition-button';
-import Condition from './condition';
+import Condition from './accordion';
 import { ConditionIndexProvider } from '../functional/condition-index-provider';
 
 type Props = Readonly<{

@@ -1,20 +1,20 @@
 import React, { FC, FCX, memo } from 'react';
 import styled from '@emotion/styled';
 
-import DstFieldForm from '../../functional/form-dst-field';
-import SrcAppForm from '../../functional/form-src-app';
-import SrcFieldForm from '../../functional/form-src-field';
-import CopiesForm from '../../functional/form-copies';
-import DisplayFieldsForm from '../../functional/form-sees';
-import QueryForm from '../../functional/form-query';
-import EnablesCacheForm from '../../functional/form-enables-cache';
-import AutoLookupForm from '../../functional/form-auto-lookup';
-import EnablesValidationForm from '../../functional/form-enables-validation';
-import SaveAndLookupState from '../../functional/form-save-and-lookup';
-import LetterCaseForm from '../../functional/form-letter-case';
-import KatakanaForm from '../../functional/form-katakana';
-import ZenkakuEisujiForm from '../../functional/form-zenkaku-eisuji';
-import HankakuKatakanaForm from '../../functional/form-hankaku-katakana';
+import DstFieldForm from './form-dst-field';
+import SrcAppForm from './form-src-app';
+import SrcFieldForm from './form-src-field';
+import CopiesForm from './form-copies';
+import DisplayFieldsForm from './form-sees';
+import QueryForm from './form-query';
+import EnablesCacheForm from './form-enables-cache';
+import AutoLookupForm from './form-auto-lookup';
+import EnablesValidationForm from './form-enables-validation';
+import SaveAndLookupState from './form-save-and-lookup';
+import LetterCaseForm from './form-letter-case';
+import KatakanaForm from './form-katakana';
+import ZenkakuEisujiForm from './form-zenkaku-eisuji';
+import HankakuKatakanaForm from './form-hankaku-katakana';
 
 const Component: FCX = ({ className }) => (
   <div className={className}>

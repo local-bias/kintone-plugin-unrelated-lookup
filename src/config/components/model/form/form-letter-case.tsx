@@ -1,17 +1,17 @@
 import { FormControlLabel, Switch } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { saveAndLookupState } from '../../states/plugin';
-import { useConditionIndex } from './condition-index-provider';
+import { ignoresLetterCaseState } from '../../../states/plugin';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
 const Component: FC = () => {
   const conditionIndex = useConditionIndex();
-  const enables = useRecoilValue(saveAndLookupState(conditionIndex));
+  const enables = useRecoilValue(ignoresLetterCaseState(conditionIndex));
 
   const onChange = useRecoilCallback(
     ({ set }) =>
       (checked: boolean) => {
-        set(saveAndLookupState(conditionIndex), checked);
+        set(ignoresLetterCaseState(conditionIndex), checked);
       },
     [conditionIndex]
   );
@@ -20,7 +20,7 @@ const Component: FC = () => {
     <FormControlLabel
       control={<Switch color='primary' checked={enables} />}
       onChange={(_, checked) => onChange(checked)}
-      label='レコード保存時に、ルックアップを実行する'
+      label='絞り込みの際、アルファベットの大文字と小文字を区別しない'
     />
   );
 };

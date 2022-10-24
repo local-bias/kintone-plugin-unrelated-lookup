@@ -2,15 +2,15 @@ import { AutocompleteKintoneField } from '@common/components/autocomplete-field-
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { dstAppPropertiesState } from '../../states/kintone';
-import { copiesState } from '../../states/plugin';
+import { dstAppPropertiesState } from '../../../states/kintone';
+import { copiesState } from '../../../states/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DeleteIcon from '@mui/icons-material/Delete';
 import produce from 'immer';
 
-import SelectSrcFields from '../form/condition/select-src-fields';
-import { useConditionIndex } from './condition-index-provider';
+import SelectSrcFields from './select-src-fields';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
 const Component: FCX = () => {
   const conditionIndex = useConditionIndex();

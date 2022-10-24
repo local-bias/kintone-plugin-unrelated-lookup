@@ -1,9 +1,9 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { kintoneAppsState } from '../../states/kintone';
-import { srcAppIdState } from '../../states/plugin';
-import { useConditionIndex } from './condition-index-provider';
+import { kintoneAppsState } from '../../../states/kintone';
+import { srcAppIdState } from '../../../states/plugin';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
 const Component: FCX = () => {
   const conditionIndex = useConditionIndex();

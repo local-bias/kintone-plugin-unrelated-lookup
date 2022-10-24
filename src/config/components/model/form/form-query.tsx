@@ -1,8 +1,8 @@
 import { TextField } from '@mui/material';
 import React, { ChangeEventHandler, FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { queryState } from '../../states/plugin';
-import { useConditionIndex } from './condition-index-provider';
+import { queryState } from '../../../states/plugin';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
 const Component: FC = () => {
   const conditionIndex = useConditionIndex();
