@@ -1,13 +1,10 @@
 (async ([_, __, envName]) => {
   const fs = require('fs');
+  const path = require('path');
+  const config = require('../plugin.config.js');
 
-  const root = __dirname.replace('\\scripts', '');
-
-  const baseText = await fs.readFileSync(`${root}\\src\\manifest\\common.json`, 'utf-8');
-  const envText = await fs.readFileSync(`${root}\\src\\manifest\\${envName}.json`, 'utf-8');
-
-  const base = JSON.parse(baseText);
-  const env = JSON.parse(envText);
+  const base = config.manifest.base;
+  const env = envName === 'prod' ? config.manifest.prod : config.manifest.dev;
 
   const merged = (src: any, dst: any): Record<string, any> => {
     return Object.entries(src).reduce((acc, [key, value]) => {
@@ -27,5 +24,7 @@
     }, {});
   };
 
-  fs.writeFileSync(`${root}\\plugin\\manifest.json`, JSON.stringify(merged(base, env)));
+  const manifestPath = path.join(process.cwd(), 'plugin', 'manifest.json');
+
+  fs.writeFileSync(manifestPath, JSON.stringify(merged(base, env)));
 })(process.argv);
