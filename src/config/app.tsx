@@ -7,7 +7,7 @@ import { ErrorBoundary } from '@common/components/error-boundary';
 
 import Form from './components/model';
 import Footer from './components/model/footer';
-import SocialIcons from './components/ui/social-icons';
+import Promotion from './components/ui/promotion';
 
 import { pluginIdState, storageState } from './states/plugin';
 import { Loading } from '@common/components/loading';
@@ -29,7 +29,7 @@ const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
         </SnackbarProvider>
       </ErrorBoundary>
     </RecoilRoot>
-    <SocialIcons />
+    <Promotion />
   </>
 );
 
