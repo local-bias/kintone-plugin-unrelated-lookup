@@ -1,6 +1,5 @@
-import { AutocompleteKintoneField } from '@common/components/autocomplete-field-input';
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
-import React, { FC, FCX, Suspense } from 'react';
+import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { seesState } from '../../../states/plugin';
 import AddIcon from '@mui/icons-material/Add';
@@ -8,10 +7,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import produce from 'immer';
 
 import SelectSrcFields from './select-src-fields';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
-type Props = { conditionIndex: number };
-
-const Component: FCX<Props> = ({ conditionIndex }) => {
+const Component: FCX = () => {
+  const conditionIndex = useConditionIndex();
   const sees = useRecoilValue(seesState(conditionIndex));
 
   const onFieldChange = useRecoilCallback(
@@ -78,7 +77,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
   );
 };
 
-const Container: FC<Props> = (props) => {
+const Container: FC = () => {
   return (
     <Suspense
       fallback={
@@ -92,9 +91,9 @@ const Container: FC<Props> = (props) => {
         </div>
       }
     >
-      <Component {...props} />
+      <Component />
     </Suspense>
   );
 };
 
-export default Container;
+export default memo(Container);

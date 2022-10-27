@@ -1,8 +1,8 @@
 import { AutocompleteKintoneField } from '@common/components/autocomplete-field-input';
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
-import React, { FC, FCX, Suspense } from 'react';
+import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { dstAppPropertiesState, srcAppPropertiesState } from '../../../states/kintone';
+import { dstAppPropertiesState } from '../../../states/kintone';
 import { copiesState } from '../../../states/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -10,10 +10,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import produce from 'immer';
 
 import SelectSrcFields from './select-src-fields';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
-type Props = { conditionIndex: number };
-
-const Component: FCX<Props> = ({ conditionIndex }) => {
+const Component: FCX = () => {
+  const conditionIndex = useConditionIndex();
   const dstFields = useRecoilValue(dstAppPropertiesState);
 
   const copies = useRecoilValue(copiesState(conditionIndex));
@@ -102,7 +102,7 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
   );
 };
 
-const Container: FC<Props> = (props) => {
+const Container: FC = () => {
   return (
     <Suspense
       fallback={
@@ -116,9 +116,9 @@ const Container: FC<Props> = (props) => {
         </div>
       }
     >
-      <Component {...props} />
+      <Component />
     </Suspense>
   );
 };
 
-export default Container;
+export default memo(Container);

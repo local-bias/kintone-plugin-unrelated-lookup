@@ -19,6 +19,8 @@ declare namespace kintone {
       query: string;
       ignoresLetterCase?: boolean;
       ignoresKatakana?: boolean;
+      ignoresZenkakuEisuji?: boolean;
+      ignoresHankakuKatakana?: boolean;
     };
   }
 }

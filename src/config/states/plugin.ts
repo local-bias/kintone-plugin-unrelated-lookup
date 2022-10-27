@@ -166,3 +166,219 @@ export const seesState = selectorFamily<string[], number>({
       );
     },
 });
+
+export const queryState = selectorFamily<string, number>({
+  key: `${PREFIX}queryState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'query',
+        defaultValue: '',
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'query',
+          value: newValue as string,
+        })
+      );
+    },
+});
+
+export const enablesCacheState = selectorFamily<boolean, number>({
+  key: `${PREFIX}enablesCacheState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'enablesCache',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'enablesCache',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const autoLookupState = selectorFamily<boolean, number>({
+  key: `${PREFIX}autoLookupState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'autoLookup',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'autoLookup',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const enablesValidationState = selectorFamily<boolean, number>({
+  key: `${PREFIX}enablesValidationState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'enablesValidation',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'enablesValidation',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const saveAndLookupState = selectorFamily<boolean, number>({
+  key: `${PREFIX}saveAndLookupState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'saveAndLookup',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'saveAndLookup',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresLetterCaseState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresLetterCaseState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresLetterCase',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresLetterCase',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresKatakanaState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresKatakanaState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresKatakana',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresKatakana',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresZenkakuEisujiState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresZenkakuEisujiState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresZenkakuEisuji',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresZenkakuEisuji',
+          value: newValue as boolean,
+        })
+      );
+    },
+});
+
+export const ignoresHankakuKatakanaState = selectorFamily<boolean, number>({
+  key: `${PREFIX}ignoresHankakuKatakanaState`,
+  get:
+    (conditionIndex) =>
+    ({ get }) => {
+      return getConditionField(get(storageState), {
+        conditionIndex,
+        key: 'ignoresHankakuKatakana',
+        defaultValue: false,
+      });
+    },
+  set:
+    (conditionIndex) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) =>
+        updated(current, {
+          conditionIndex,
+          key: 'ignoresHankakuKatakana',
+          value: newValue as boolean,
+        })
+      );
+    },
+});

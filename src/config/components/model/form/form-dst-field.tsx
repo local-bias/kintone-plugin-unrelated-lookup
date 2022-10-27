@@ -1,13 +1,13 @@
 import { AutocompleteKintoneField } from '@common/components/autocomplete-field-input';
 import { Skeleton } from '@mui/material';
-import React, { FC, FCX, Suspense } from 'react';
+import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { dstAppPropertiesState } from '../../../states/kintone';
 import { dstFieldState } from '../../../states/plugin';
+import { useConditionIndex } from '../../functional/condition-index-provider';
 
-type Props = { conditionIndex: number };
-
-const Component: FCX<Props> = ({ conditionIndex }) => {
+const Component: FCX = () => {
+  const conditionIndex = useConditionIndex();
   const fields = useRecoilValue(dstAppPropertiesState);
   const fieldCode = useRecoilValue(dstFieldState(conditionIndex));
 
@@ -24,12 +24,12 @@ const Component: FCX<Props> = ({ conditionIndex }) => {
   );
 };
 
-const Container: FC<Props> = (props) => {
+const Container: FC = () => {
   return (
     <Suspense fallback={<Skeleton width={350} height={56} />}>
-      <Component {...props} />
+      <Component />
     </Suspense>
   );
 };
 
-export default Container;
+export default memo(Container);

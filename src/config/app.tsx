@@ -5,9 +5,9 @@ import { SnackbarProvider } from 'notistack';
 import { restoreStorage } from '@common/plugin';
 import { ErrorBoundary } from '@common/components/error-boundary';
 
-import Form from './components/form';
-import Footer from './components/footer';
-import SocialIcons from './components/social-icons';
+import Form from './components/model';
+import Footer from './components/model/footer';
+import Promotion from './components/ui/promotion';
 
 import { pluginIdState, storageState } from './states/plugin';
 import { Loading } from '@common/components/loading';
@@ -29,7 +29,7 @@ const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
         </SnackbarProvider>
       </ErrorBoundary>
     </RecoilRoot>
-    <SocialIcons />
+    <Promotion />
   </>
 );
 

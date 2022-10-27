@@ -1,4 +1,8 @@
-import { katakana2hiragana } from '@common/utilities';
+import {
+  convertHankakuKatakanaToZenkaku,
+  convertKatakanaToHiragana,
+  convertZenkakuEisujiToHankaku,
+} from '@common/utilities';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { atom, selector } from 'recoil';
 import {
@@ -29,14 +33,29 @@ export const filteredRecordsState = selector<KintoneRecord[]>({
     const cachedRecords = get(srcAllRecordsState);
     const text = get(searchInputState);
 
+    const {
+      ignoresLetterCase = true,
+      ignoresKatakana = true,
+      ignoresHankakuKatakana = true,
+      ignoresZenkakuEisuji = true,
+    } = condition || {};
+
     let input = text;
 
-    if (condition?.ignoresLetterCase) {
+    if (ignoresZenkakuEisuji) {
+      input = convertZenkakuEisujiToHankaku(input);
+    }
+
+    if (ignoresLetterCase) {
       input = input.toLowerCase();
     }
 
-    if (condition?.ignoresKatakana) {
-      input = katakana2hiragana(input);
+    if (ignoresHankakuKatakana) {
+      input = convertHankakuKatakanaToZenkaku(input);
+    }
+
+    if (ignoresKatakana) {
+      input = convertKatakanaToHiragana(input);
     }
 
     const words = input.split(/\s+/g);
