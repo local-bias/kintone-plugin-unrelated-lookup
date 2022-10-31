@@ -33,7 +33,7 @@
     "@mui/material": "5.10.11",
     "@types/dompurify": "2.3.4",
     "@types/luxon": "3.0.2",
-    "@types/react": "18.0.21",
+    "@types/react": "18.0.24",
     "@types/react-dom": "18.0.6",
     "@typescript-eslint/eslint-plugin": "5.40.0",
     "@typescript-eslint/parser": "5.40.0",
