@@ -3,7 +3,7 @@ module.exports = {
   manifest: {
     base: {
       manifest_version: 1,
-      version: 172,
+      version: 173,
       type: 'APP',
       name: {
         en: 'unrelated lookup plugin',
