@@ -7,10 +7,10 @@ import { ErrorBoundary } from '@common/components/error-boundary';
 
 import Form from './components/model';
 import Footer from './components/model/footer';
-import Promotion from './components/ui/promotion';
 
 import { pluginIdState, storageState } from './states/plugin';
 import { Loading } from '@common/components/loading';
+import { URL_PROMOTION } from '@common/statics';
 
 const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
   <>
@@ -29,7 +29,12 @@ const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
         </SnackbarProvider>
       </ErrorBoundary>
     </RecoilRoot>
-    <Promotion />
+    <iframe
+      title='promotion'
+      loading='lazy'
+      src={URL_PROMOTION}
+      style={{ border: '0', width: '100%', height: '64px' }}
+    />
   </>
 );
 
