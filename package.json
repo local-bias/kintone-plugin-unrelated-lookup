@@ -30,7 +30,7 @@
     "@kintone/webpack-plugin-kintone-plugin": "6.0.17",
     "@lb-ribbit/kintone-xapp": "0.3.4",
     "@mui/icons-material": "5.10.9",
-    "@mui/material": "5.10.11",
+    "@mui/material": "5.10.12",
     "@types/dompurify": "2.3.4",
     "@types/luxon": "3.0.2",
     "@types/react": "18.0.24",
