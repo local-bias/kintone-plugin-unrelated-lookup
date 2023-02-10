@@ -11,6 +11,9 @@ module.exports = {
     alias: {
       '@common': path.resolve(__dirname, 'src/common'),
     },
+    fallback: {
+      path: false,
+    },
   },
   module: {
     rules: [
@@ -18,10 +21,7 @@ module.exports = {
         test: /\.tsx?$/,
         exclude: /node_modules/,
         loader: 'esbuild-loader',
-        options: {
-          loader: 'tsx',
-          target: 'es2015',
-        },
+        options: { target: 'ESNext' },
       },
     ],
   },
