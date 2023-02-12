@@ -6,7 +6,7 @@
   const base = config.manifest.base;
   const env = envName === 'prod' ? config.manifest.prod : config.manifest.dev;
 
-  const merged = (src: any, dst: any): Record<string, any> => {
+  const merged = (src, dst) => {
     return Object.entries(src).reduce((acc, [key, value]) => {
       if (!dst[key]) {
         return { ...acc, [key]: value };
