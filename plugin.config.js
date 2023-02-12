@@ -15,7 +15,7 @@ module.exports = {
         ja: '一括更新や一括取込の障害となってしまうことのある、ルックアップの関連付け機能のみを取り除いたルックアップを実装するプラグインです。文字列１行フィールドを使用します。',
         zh: '插件模板',
       },
-      icon: 'image/icon.png',
+      icon: 'icon.png',
       homepage_url: {
         ja: 'https://konomi.app/',
         en: 'https://konomi.app/',
@@ -29,7 +29,7 @@ module.exports = {
         css: [],
       },
       config: {
-        html: 'html/config.html',
+        html: 'config.html',
         js: ['https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest/dist/config.js'],
         css: [],
         required_params: [],
