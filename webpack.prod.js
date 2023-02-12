@@ -1,8 +1,9 @@
 const path = require('path');
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
-const KintonePlugin = require('@kintone/webpack-plugin-kintone-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const KintonePlugin = require('@kintone/webpack-plugin-kintone-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 module.exports = merge(common, {
   mode: 'production',
@@ -11,10 +12,12 @@ module.exports = merge(common, {
     path: path.resolve(__dirname, 'cdn'),
     filename: '[name].js',
   },
+
   plugins: [
+    new ForkTsCheckerWebpackPlugin(),
     new KintonePlugin({
       manifestJSONPath: './plugin/manifest.json',
-      privateKeyPath: './private.ppk',
+      privateKeyPath: './dist/private.ppk',
       pluginZipPath: './dist/plugin-prod.zip',
     }),
   ],
@@ -25,12 +28,8 @@ module.exports = merge(common, {
       new TerserPlugin({
         parallel: true,
         terserOptions: {
-          compress: {
-            drop_console: true,
-          },
-          format: {
-            comments: false,
-          },
+          format: { comments: false },
+          compress: { drop_console: true },
         },
       }),
     ],
