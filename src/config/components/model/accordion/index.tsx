@@ -3,7 +3,7 @@ import { Accordion, AccordionActions, AccordionDetails } from '@mui/material';
 
 import AccordionSummary from './accordion-summary';
 
-import ConditionForm from '../form';
+import ConditionForm from '../form/condition';
 import ConditionDeletionButton from '../../functional/condition-deletion-button';
 import { useConditionIndex } from '../../functional/condition-index-provider';
 

@@ -1,5 +1,6 @@
-import React, { FC, FCX, useCallback } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import React, { FC, useState, FCX, useCallback } from 'react';
+import { useRecoilCallback } from 'recoil';
+import produce from 'immer';
 import styled from '@emotion/styled';
 import { useSnackbar } from 'notistack';
 import { Button, CircularProgress } from '@mui/material';
@@ -7,18 +8,22 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 
 import { storeStorage } from '@common/plugin';
-import { loadingState, storageState } from '../../../states/plugin';
+
+import { storageState } from '../../../states/plugin';
+
+import ImportButton from './import-button';
+import ExportButton from './export-button';
+import ResetButton from './reset-button';
 
 type Props = {
+  loading: boolean;
   onSaveButtonClick: () => void;
   onBackButtonClick: () => void;
 };
 
-const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick }) => {
-  const loading = useRecoilValue(loadingState);
-
-  return (
-    <div {...{ className }}>
+const Component: FCX<Props> = ({ className, loading, onSaveButtonClick, onBackButtonClick }) => (
+  <div {...{ className }}>
+    <div>
       <Button
         variant='contained'
         color='primary'
@@ -40,10 +45,20 @@ const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick
         プラグイン一覧へ戻る
       </Button>
     </div>
-  );
-};
+    <div>
+      <ExportButton />
+      <ImportButton />
+      <ResetButton />
+    </div>
+  </div>
+);
 
 const StyledComponent = styled(Component)`
+  grid-area: footer;
+
+  display: flex;
+  justify-content: space-between;
+
   position: sticky;
   bottom: 15px;
   margin-top: 20px;
@@ -58,13 +73,13 @@ const StyledComponent = styled(Component)`
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
 
   const onBackButtonClick = useCallback(() => history.back(), []);
 
   const onSaveButtonClick = useRecoilCallback(
-    ({ set, snapshot }) =>
+    ({ snapshot }) =>
       async () => {
-        set(loadingState, true);
         try {
           const storage = await snapshot.getPromise(storageState);
 
@@ -78,13 +93,13 @@ const Container: FC = () => {
             ),
           });
         } finally {
-          set(loadingState, false);
+          setLoading(false);
         }
       },
     []
   );
 
-  return <StyledComponent {...{ onSaveButtonClick, onBackButtonClick }} />;
+  return <StyledComponent {...{ loading, onSaveButtonClick, onBackButtonClick }} />;
 };
 
 export default Container;

@@ -2,19 +2,19 @@ import { AutocompleteKintoneField } from '@common/components/autocomplete-field-
 import { Skeleton } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { dstAppPropertiesState } from '../../../states/kintone';
-import { dstFieldState } from '../../../states/plugin';
-import { useConditionIndex } from '../../functional/condition-index-provider';
+import { srcAppPropertiesState } from '../../../../states/kintone';
+import { srcFieldState } from '../../../../states/plugin';
+import { useConditionIndex } from '../../../functional/condition-index-provider';
 
 const Component: FCX = () => {
   const conditionIndex = useConditionIndex();
-  const fields = useRecoilValue(dstAppPropertiesState);
-  const fieldCode = useRecoilValue(dstFieldState(conditionIndex));
+  const fields = useRecoilValue(srcAppPropertiesState(conditionIndex));
+  const fieldCode = useRecoilValue(srcFieldState(conditionIndex));
 
   const onFieldChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
-        set(dstFieldState(conditionIndex), value);
+        set(srcFieldState(conditionIndex), value);
       },
     [conditionIndex]
   );

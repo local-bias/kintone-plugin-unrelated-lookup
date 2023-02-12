@@ -1,8 +1,8 @@
 import { FormControlLabel, Switch } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { ignoresHankakuKatakanaState } from '../../../states/plugin';
-import { useConditionIndex } from '../../functional/condition-index-provider';
+import { ignoresHankakuKatakanaState } from '../../../../states/plugin';
+import { useConditionIndex } from '../../../functional/condition-index-provider';
 
 const Component: FC = () => {
   const conditionIndex = useConditionIndex();

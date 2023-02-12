@@ -1,16 +1,19 @@
-import React, { Suspense, FC } from 'react';
-import { RecoilRoot } from 'recoil';
 import { SnackbarProvider } from 'notistack';
+import React, { FC, Suspense } from 'react';
+import { RecoilRoot } from 'recoil';
 
-import { restoreStorage } from '@common/plugin';
 import { ErrorBoundary } from '@common/components/error-boundary';
+import { restoreStorage } from '@common/plugin';
 
-import Form from './components/model';
+import Form from './components/model/form';
 import Footer from './components/model/footer';
+import Layout from './components/model/layout';
+import Promotion from './components/model/promotion';
+import Sidebar from './components/model/sidebar';
 
-import { pluginIdState, storageState } from './states/plugin';
 import { Loading } from '@common/components/loading';
 import { URL_PROMOTION } from '@common/statics';
+import { pluginIdState, storageState } from './states/plugin';
 
 const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
   <>
@@ -22,10 +25,14 @@ const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
     >
       <ErrorBoundary>
         <SnackbarProvider maxSnack={1}>
-          <Suspense fallback={<Loading label='設定情報を取得しています' />}>
-            <Form />
-            <Footer />
-          </Suspense>
+          <Layout>
+            <Suspense fallback={<Loading label='設定情報を取得しています' />}>
+              <Sidebar />
+              <Form />
+              <Promotion />
+              <Footer />
+            </Suspense>
+          </Layout>
         </SnackbarProvider>
       </ErrorBoundary>
     </RecoilRoot>

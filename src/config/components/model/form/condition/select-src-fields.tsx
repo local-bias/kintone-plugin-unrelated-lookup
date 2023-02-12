@@ -1,7 +1,7 @@
 import { AutocompleteKintoneField } from '@common/components/autocomplete-field-input';
 import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
-import { srcAppPropertiesState } from '../../../states/kintone';
+import { srcAppPropertiesState } from '../../../../states/kintone';
 
 type Props = {
   conditionIndex: number;
