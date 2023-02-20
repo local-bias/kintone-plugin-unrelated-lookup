@@ -470,14 +470,15 @@
     os-locale "^5.0.0"
     puppeteer "^15.1.1"
 
-"@kintone/rest-api-client@3.3.1":
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.1.tgz#838744e8b3ad6ffecaadb1262498938663c91cea"
+"@kintone/rest-api-client@3.3.2":
+  version "3.3.2"
+  resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.2.tgz#1f3d39ad73183fe3a3b6624ec0db6cf0803cf160"
+  integrity sha512-ZcOx7TW13ff3wlOzrd7wOuIvS+vjraJp2p05X1U1o0K3xr6Pa+sGjEE9hwcbKHLgaWdW+pWRS1eTrl/ddJBmDQ==
   dependencies:
     axios "^0.27.2"
     core-js "^3.27.2"
     form-data "^4.0.0"
-    js-base64 "^3.7.4"
+    js-base64 "^3.7.5"
     mime-types "^2.1.35"
     qs "^6.10.5"
 
@@ -2790,9 +2791,10 @@ js-base64@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.2.tgz#816d11d81a8aff241603d19ce5761e13e41d7745"
 
-js-base64@^3.7.4:
-  version "3.7.4"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.4.tgz#af95b20f23efc8034afd2d1cc5b9d0adf7419037"
+js-base64@^3.7.5:
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.5.tgz#21e24cf6b886f76d6f5f165bfcd69cc55b9e3fca"
+  integrity sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==
 
 js-sdsl@^4.1.4:
   version "4.1.4"
