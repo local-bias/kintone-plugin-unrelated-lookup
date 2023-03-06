@@ -462,16 +462,16 @@
     os-locale "^5.0.0"
     puppeteer "^15.1.1"
 
-"@kintone/rest-api-client@3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.2.tgz#1f3d39ad73183fe3a3b6624ec0db6cf0803cf160"
-  integrity sha512-ZcOx7TW13ff3wlOzrd7wOuIvS+vjraJp2p05X1U1o0K3xr6Pa+sGjEE9hwcbKHLgaWdW+pWRS1eTrl/ddJBmDQ==
+"@kintone/rest-api-client@3.3.3":
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.3.tgz#abd1cb752e7cd1dadf17b3938afc4023030462be"
+  integrity sha512-+qAYgA+8RsNU6TVbB9nGQKzD5lF7Us6f+dti8JIrHXozCLqbS+JncWhpq2I1XhZl3Yy3fUYwFOtLuDdNPy+xvA==
   dependencies:
     axios "^0.27.2"
-    core-js "^3.27.2"
+    core-js "^3.29.0"
     form-data "^4.0.0"
     js-base64 "^3.7.5"
-    mime-types "^2.1.35"
+    mime "^3.0.0"
     qs "^6.10.5"
 
 "@kintone/rest-api-client@^3.1.14":
@@ -1571,9 +1571,10 @@ core-js@^3.25.5:
   version "3.25.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.25.5.tgz#e86f651a2ca8a0237a5f064c2fe56cef89646e27"
 
-core-js@^3.27.2:
-  version "3.27.2"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.27.2.tgz#85b35453a424abdcacb97474797815f4d62ebbf7"
+core-js@^3.29.0:
+  version "3.29.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.29.0.tgz#0273e142b67761058bcde5615c503c7406b572d6"
+  integrity sha512-VG23vuEisJNkGl6XQmFJd3rEG/so/CNatqeE+7uZAwTSwFeB/qaO0be8xZYUNWprJ/GIwL8aMt9cj1kvbpTZhg==
 
 cosmiconfig@^7.0.0, cosmiconfig@^7.0.1:
   version "7.0.1"
@@ -3205,11 +3206,16 @@ mime-db@1.52.0:
   version "1.52.0"
   resolved "https://registry.yarnpkg.com/mime-db/-/mime-db-1.52.0.tgz#bbabcdc02859f4987301c856e3387ce5ec43bf70"
 
-mime-types@^2.1.12, mime-types@^2.1.27, mime-types@^2.1.35:
+mime-types@^2.1.12, mime-types@^2.1.27:
   version "2.1.35"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.35.tgz#381a871b62a734450660ae3deee44813f70d959a"
   dependencies:
     mime-db "1.52.0"
+
+mime@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mime/-/mime-3.0.0.tgz#b374550dca3a0c18443b0c950a6a58f1931cf7a7"
+  integrity sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==
 
 mimic-fn@^2.1.0:
   version "2.1.0"
