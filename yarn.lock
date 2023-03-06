@@ -419,7 +419,7 @@
     ajv "^7.2.4"
     bytes "^3.1.2"
 
-"@kintone/plugin-packer@6.0.26":
+"@kintone/plugin-packer@6.0.26", "@kintone/plugin-packer@^6.0.26":
   version "6.0.26"
   resolved "https://registry.yarnpkg.com/@kintone/plugin-packer/-/plugin-packer-6.0.26.tgz#43fddc86c1a5848880d97fa7eb69be193c37d558"
   integrity sha512-axi5Xnb7RQQCv3mvpVb7NjH6yaqtgVMQWAXWPcSOl8Kb0ZUNSjUkGvaE/GVqT684NNu44mX7U2VBpQ3r9T8Sfg==
@@ -430,22 +430,6 @@
     denodeify "^1.2.1"
     meow "^9.0.0"
     mkdirp "^2.1.4"
-    node-rsa "~1.1.1"
-    stream-buffers "^3.0.2"
-    yauzl "^2.10.0"
-    yazl "^2.5.1"
-
-"@kintone/plugin-packer@^6.0.25":
-  version "6.0.25"
-  resolved "https://registry.yarnpkg.com/@kintone/plugin-packer/-/plugin-packer-6.0.25.tgz#3e9b367870b48a0224a6069e5191954a3c10f9df"
-  integrity sha512-EaJLVEmlaOkN9oqN+AcoRvq/CGvngIduw31gLl+eSa0QWXCbokhQojKlXZZ+C+Mi2cKGi0UkCyo13+kv/UDXDg==
-  dependencies:
-    "@kintone/plugin-manifest-validator" "^7.0.9"
-    chokidar "^3.5.3"
-    debug "^4.3.4"
-    denodeify "^1.2.1"
-    meow "^9.0.0"
-    mkdirp "^1.0.4"
     node-rsa "~1.1.1"
     stream-buffers "^3.0.2"
     yauzl "^2.10.0"
@@ -484,13 +468,13 @@
     js-base64 "^3.7.2"
     qs "^6.10.5"
 
-"@kintone/webpack-plugin-kintone-plugin@6.0.25":
-  version "6.0.25"
-  resolved "https://registry.yarnpkg.com/@kintone/webpack-plugin-kintone-plugin/-/webpack-plugin-kintone-plugin-6.0.25.tgz#fdd3a6bd60e3ce6ecb6619dd8fc230b32eb860c1"
-  integrity sha512-qOVJzgg5uoKqdjlPCKrWbpdXUQ28BhMrZFMm8DUEVZE9R60K4xdewiFk40Nn0s0oazdellaiI/jWvGDSo/oR4g==
+"@kintone/webpack-plugin-kintone-plugin@6.0.26":
+  version "6.0.26"
+  resolved "https://registry.yarnpkg.com/@kintone/webpack-plugin-kintone-plugin/-/webpack-plugin-kintone-plugin-6.0.26.tgz#1796e88df5292c83294c381204c52b762e239f53"
+  integrity sha512-o9rGGlgHKwIEQVGwYogQsdfDEFYVbOBLFfzFB7XVQLZ/2ChHvwtTJQQeP3tWGrgI4YBdXe8SPiHdnfcZu+yjXQ==
   dependencies:
-    "@kintone/plugin-packer" "^6.0.25"
-    mkdirp "^1.0.4"
+    "@kintone/plugin-packer" "^6.0.26"
+    mkdirp "^2.1.4"
 
 "@lb-ribbit/kintone-xapp@0.4.0":
   version "0.4.0"
@@ -3246,10 +3230,6 @@ minimist@^1.2.0, minimist@^1.2.6:
 mkdirp-classic@^0.5.2:
   version "0.5.3"
   resolved "https://registry.yarnpkg.com/mkdirp-classic/-/mkdirp-classic-0.5.3.tgz#fa10c9115cc6d8865be221ba47ee9bed78601113"
-
-mkdirp@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/mkdirp/-/mkdirp-1.0.4.tgz#3eb5ed62622756d79a5f0e2a221dfebad75c2f7e"
 
 mkdirp@^2.1.4:
   version "2.1.5"
