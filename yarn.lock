@@ -485,9 +485,9 @@
     "@kintone/plugin-packer" "^6.0.32"
     mkdirp "^2.1.6"
 
-"@konomi-app/kintone-utilities@^1.14.2":
-  version "1.14.2"
-  resolved "https://registry.yarnpkg.com/@konomi-app/kintone-utilities/-/kintone-utilities-1.14.2.tgz#8a5bd0b9756607254ec97ba89e6aa00374fa9dbb"
+"@konomi-app/kintone-utilities@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@konomi-app/kintone-utilities/-/kintone-utilities-1.17.0.tgz#62f4e60b8fc5054e22b5310f2b77550269aea3f6"
   dependencies:
     "@emotion/css" "^11.10.6"
     "@kintone/rest-api-client" "^3.3.6"
