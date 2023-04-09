@@ -3,13 +3,12 @@ import { Properties } from '@kintone/rest-api-client/lib/client/types';
 import {
   DEFAULT_DEFINED_FIELDS,
   getFieldProperties,
-  kintoneClient,
   omitFieldProperties,
 } from '@common/kintone-api';
-import { getAllApps } from '@common/kintone-rest-api';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { kx } from '@type/kintone.api';
 import { srcAppIdState } from './plugin';
+import { getAllApps, getFormFields } from '@konomi-app/kintone-utilities';
 
 const PREFIX = 'kintone';
 
@@ -29,7 +28,7 @@ export const appFieldsState = selector<Properties>({
       throw new Error('アプリのフィールド情報が取得できませんでした');
     }
 
-    const { properties } = await kintoneClient.app.getFormFields({ app, preview: true });
+    const { properties } = await getFormFields({ app, preview: true });
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
 
     return omitted;
@@ -44,7 +43,7 @@ export const dstAppPropertiesState = selector<kx.FieldProperty[]>({
       throw new Error('アプリのフィールド情報が取得できませんでした');
     }
 
-    const { properties } = await kintoneClient.app.getFormFields({ app, preview: true });
+    const { properties } = await getFormFields({ app, preview: true });
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
 
     return Object.values(omitted).sort((a, b) => a.label.localeCompare(b.label, 'ja'));

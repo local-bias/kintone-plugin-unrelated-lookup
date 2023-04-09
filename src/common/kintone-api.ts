@@ -1,6 +1,7 @@
 import { KintoneRestAPIClient } from '@kintone/rest-api-client';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { kx } from '@type/kintone.api';
+import { getFormFields } from '@konomi-app/kintone-utilities';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
 export const DEFAULT_DEFINED_FIELDS: kx.FieldPropertyType[] = [
@@ -13,26 +14,6 @@ export const DEFAULT_DEFINED_FIELDS: kx.FieldPropertyType[] = [
   'STATUS',
 ];
 
-class FlexKintone extends KintoneRestAPIClient {
-  constructor(...options: ConstructorParameters<typeof KintoneRestAPIClient>) {
-    const url = kintone.api.url('/k/v1/app', true);
-    const found = url.match(/k\/guest\/([0-9]+)\//);
-
-    if (found && found.length > 1) {
-      super({
-        guestSpaceId: found[1],
-        ...(options[0] || {}),
-      });
-      return;
-    }
-
-    super(...options);
-  }
-}
-
-/** REST APIクライアント(シングルトン) */
-export const kintoneClient = new FlexKintone();
-
 export const getFieldProperties = async (
   targetApp?: string | number,
   preview?: boolean
@@ -43,7 +24,7 @@ export const getFieldProperties = async (
     throw new Error('アプリのフィールド情報が取得できませんでした');
   }
 
-  const { properties } = await kintoneClient.app.getFormFields({ app, preview });
+  const { properties } = await getFormFields({ app, preview });
 
   return properties;
 };
@@ -67,18 +48,6 @@ export const getAllFields = async (): Promise<kx.FieldProperty[]> => {
   }, []);
 
   return fields;
-};
-
-export const getAppLayout = async (_app?: number, preview?: boolean): Promise<kx.Layout> => {
-  const app = _app || getAppId();
-
-  if (!app) {
-    throw new Error('アプリのフィールド情報が取得できませんでした');
-  }
-
-  const { layout } = await kintoneClient.app.getFormLayout({ app, preview });
-
-  return layout;
 };
 
 /**
