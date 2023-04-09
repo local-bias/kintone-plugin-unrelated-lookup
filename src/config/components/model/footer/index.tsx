@@ -1,75 +1,15 @@
-import React, { FC, useState, FCX, useCallback } from 'react';
+import React, { FC, useState, FCX, useCallback, ChangeEventHandler } from 'react';
 import { useRecoilCallback } from 'recoil';
-import produce from 'immer';
-import styled from '@emotion/styled';
 import { useSnackbar } from 'notistack';
-import { Button, CircularProgress } from '@mui/material';
-import SaveIcon from '@mui/icons-material/Save';
-import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
+import { Button } from '@mui/material';
+import { PluginFooter } from '@konomi-app/kintone-utility-component';
 
-import { storeStorage } from '@common/plugin';
+import { storeStorage } from '@konomi-app/kintone-utilities';
 
 import { storageState } from '../../../states/plugin';
 
-import ImportButton from './import-button';
-import ExportButton from './export-button';
-import ResetButton from './reset-button';
-
-type Props = {
-  loading: boolean;
-  onSaveButtonClick: () => void;
-  onBackButtonClick: () => void;
-};
-
-const Component: FCX<Props> = ({ className, loading, onSaveButtonClick, onBackButtonClick }) => (
-  <div {...{ className }}>
-    <div>
-      <Button
-        variant='contained'
-        color='primary'
-        disabled={loading}
-        onClick={onSaveButtonClick}
-        startIcon={loading ? <CircularProgress color='inherit' size={20} /> : <SaveIcon />}
-      >
-        設定を保存
-      </Button>
-      <Button
-        variant='contained'
-        color='inherit'
-        disabled={loading}
-        onClick={onBackButtonClick}
-        startIcon={
-          loading ? <CircularProgress color='inherit' size={20} /> : <SettingsBackupRestoreIcon />
-        }
-      >
-        プラグイン一覧へ戻る
-      </Button>
-    </div>
-    <div>
-      <ExportButton />
-      <ImportButton />
-      <ResetButton />
-    </div>
-  </div>
-);
-
-const StyledComponent = styled(Component)`
-  grid-area: footer;
-
-  display: flex;
-  justify-content: space-between;
-
-  position: sticky;
-  bottom: 15px;
-  margin-top: 20px;
-  background-color: #fff;
-  border-top: 1px solid #eee;
-  z-index: 30;
-
-  button {
-    margin: 8px;
-  }
-`;
+import { PLUGIN_NAME } from '@common/statics';
+import { createConfig } from '@common/plugin';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -99,7 +39,96 @@ const Container: FC = () => {
     []
   );
 
-  return <StyledComponent {...{ loading, onSaveButtonClick, onBackButtonClick }} />;
+  const onImportButtonClick: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
+    ({ set }) =>
+      async (event) => {
+        try {
+          const { files } = event.target;
+          if (!files?.length) {
+            return;
+          }
+          const [file] = Array.from(files);
+          const fileEvent = await onFileLoad(file);
+          const text = (fileEvent.target?.result ?? '') as string;
+          set(storageState, JSON.parse(text));
+          enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
+        } catch (error) {
+          enqueueSnackbar(
+            '設定情報のインポートに失敗しました、ファイルに誤りがないか確認してください',
+            { variant: 'error' }
+          );
+          throw error;
+        }
+      },
+    []
+  );
+
+  const onExportButtonClick = useRecoilCallback(
+    ({ snapshot }) =>
+      async () => {
+        try {
+          setLoading(true);
+          const storage = await snapshot.getPromise(storageState);
+          const blob = new Blob([JSON.stringify(storage, null)], {
+            type: 'application/json',
+          });
+          const url = (window.URL || window.webkitURL).createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `${PLUGIN_NAME}-config.json`;
+          link.href = url;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          enqueueSnackbar('プラグインの設定情報をエクスポートしました', { variant: 'success' });
+        } catch (error) {
+          enqueueSnackbar(
+            'プラグインの設定情報のエクスポートに失敗しました。プラグイン開発者にお問い合わせください。',
+            { variant: 'error' }
+          );
+          throw error;
+        } finally {
+          setLoading(false);
+        }
+      },
+    []
+  );
+
+  const reset = useRecoilCallback(
+    ({ set }) =>
+      () => {
+        set(storageState, createConfig());
+        enqueueSnackbar('設定をリセットしました', { variant: 'success' });
+      },
+    []
+  );
+
+  return (
+    <PluginFooter
+      {...{
+        loading,
+        onSaveButtonClick,
+        onImportButtonClick,
+        onExportButtonClick,
+        reset,
+        onBackButtonClick,
+      }}
+    />
+  );
 };
 
 export default Container;
+
+const onFileLoad = (file: File | Blob, encoding = 'Shift_JIS') => {
+  return new Promise<ProgressEvent<FileReader>>((resolve, reject) => {
+    try {
+      const reader = new FileReader();
+
+      reader.readAsText(file, encoding);
+
+      reader.onload = (event) => resolve(event);
+      reader.onerror = (event) => reject(event);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

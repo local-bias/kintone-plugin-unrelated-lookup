@@ -5,10 +5,9 @@ import { RecoilRoot } from 'recoil';
 import { ErrorBoundary } from '@common/components/error-boundary';
 import { restoreStorage } from '@common/plugin';
 
+import { PluginLayout, PluginBanner } from '@konomi-app/kintone-utility-component';
 import Form from './components/model/form';
 import Footer from './components/model/footer';
-import Layout from './components/model/layout';
-import Promotion from './components/model/promotion';
 import Sidebar from './components/model/sidebar';
 
 import { Loading } from '@common/components/loading';
@@ -25,14 +24,14 @@ const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
     >
       <ErrorBoundary>
         <SnackbarProvider maxSnack={1}>
-          <Layout>
+          <PluginLayout>
             <Suspense fallback={<Loading label='設定情報を取得しています' />}>
               <Sidebar />
               <Form />
-              <Promotion />
+              <PluginBanner url='https://promotion.konomi.app/kintone-plugin/sidebar' />
               <Footer />
             </Suspense>
-          </Layout>
+          </PluginLayout>
         </SnackbarProvider>
       </ErrorBoundary>
     </RecoilRoot>

@@ -1,49 +1,54 @@
-import styled from '@emotion/styled';
-import React, { FCX } from 'react';
+import React, { FC } from 'react';
+import {
+  PluginSidebarConditionAppendButton,
+  PluginSidebarConditionTab,
+  PluginSidebarConditionTabs,
+  PluginSidebarLayout,
+} from '@konomi-app/kintone-utility-component';
 
-import AdditionButton from './condition-addition-button';
-import Tabs from './condition-tabs';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { conditionsState, storageState, tabIndexState } from '../../../states/plugin';
 
-const Component: FCX = ({ className }) => (
-  <div className={className}>
-    <div className='condition-tab'>
-      <AdditionButton />
-      <div className='tabs'>
-        <Tabs />
-      </div>
-    </div>
-  </div>
-);
+import TabLabel from './tab-label';
+import produce from 'immer';
+import { getNewCondition } from '@common/plugin';
 
-const StyledComponent = styled(Component)`
-  grid-area: sidebar;
+const Component: FC = () => {
+  const tabIndex = useRecoilValue(tabIndexState);
+  const conditions = useRecoilValue(conditionsState);
 
-  .condition-tab {
-    position: sticky;
-    top: 48px;
-    height: calc(100vh - 200px);
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    border-right: 1px solid #0001;
-    .tabs {
-      overflow: hidden;
-      &:hover {
-        overflow: auto;
-      }
-      &::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-      }
-      &::-webkit-scrollbar-thumb {
-        background-color: #0004;
-        border-radius: 4px;
-      }
-      &::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-    }
-  }
-`;
+  const onTabChange = useRecoilCallback(
+    ({ set }) =>
+      (_: any, index: number) => {
+        set(tabIndexState, index);
+      },
+    []
+  );
 
-export default StyledComponent;
+  const appendCondition = useRecoilCallback(
+    ({ set }) =>
+      () => {
+        set(storageState, (_, _storage = _!) =>
+          produce(_storage, (draft) => {
+            draft.conditions.push(getNewCondition());
+          })
+        );
+      },
+    []
+  );
+
+  return (
+    <PluginSidebarLayout>
+      <PluginSidebarConditionAppendButton onClick={appendCondition} />
+      <PluginSidebarConditionTabs value={tabIndex} onChange={onTabChange}>
+        {conditions.map((_, i) => (
+          <PluginSidebarConditionTab key={i} index={i}>
+            <TabLabel index={i} />
+          </PluginSidebarConditionTab>
+        ))}
+      </PluginSidebarConditionTabs>
+    </PluginSidebarLayout>
+  );
+};
+
+export default Component;

@@ -1,12 +1,9 @@
 import { useEffect, FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-
-import { getAllRecords } from '@common/kintone-rest-api';
-
+import { getAllRecords, getFieldValueAsString } from '@konomi-app/kintone-utilities';
 import { pluginConditionState, alreadyCacheState, cacheValidationState } from '../states';
 import { getLookupSrcFields } from '../action';
 import { PLUGIN_NAME } from '@common/statics';
-import { getQuickSearchString } from '@common/kintone';
 import {
   convertHankakuKatakanaToZenkaku,
   convertKatakanaToHiragana,
@@ -44,9 +41,11 @@ const Container: FC = () => {
           app,
           query,
           fields,
-          onAdvance: (records) => {
+          onStep: (records) => {
             const viewRecords = records.map<HandledRecord>((record) => {
-              let __quickSearch = getQuickSearchString(record);
+              let __quickSearch = Object.values(record)
+                .map((field) => getFieldValueAsString(field))
+                .join('__');
 
               if (ignoresZenkakuEisuji) {
                 __quickSearch = convertZenkakuEisujiToHankaku(__quickSearch);

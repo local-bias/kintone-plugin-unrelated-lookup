@@ -2,11 +2,11 @@ import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
-import { getAllRecords } from '@common/kintone-rest-api';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { someFieldValue } from '@common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@common/statics';
+import { getAllRecordsWithCursor } from '@konomi-app/kintone-utilities';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -104,11 +104,12 @@ export const lookup = async (
   const fields = getLookupSrcFields(condition);
 
   let onlyOneRecord = true;
-  const lookupRecords = await getAllRecords({
+  const lookupRecords = await getAllRecordsWithCursor({
     app,
     query,
     fields,
     onTotalGet: (total) => {
+      console.log({ total });
       if (total !== 1) {
         if (option) {
           option.setShown(true);

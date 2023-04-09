@@ -1,30 +1,11 @@
 import produce from 'immer';
+import { restoreStorage as restore } from '@konomi-app/kintone-utilities';
 
 /**
  * プラグインがアプリ単位で保存している設定情報を返却します
  */
 export const restoreStorage = (id: string): kintone.plugin.Storage => {
-  const config: Record<string, string> = kintone.plugin.app.getConfig(id);
-
-  if (!Object.keys(config).length) {
-    return createConfig();
-  }
-  return Object.entries(config).reduce<any>(
-    (acc, [key, value]) => ({ ...acc, [key]: JSON.parse(value) }),
-    {}
-  );
-};
-
-/**
- * アプリにプラグインの設定情報を保存します
- */
-export const storeStorage = (target: kintone.plugin.Storage, callback?: () => void): void => {
-  const converted = Object.entries(target).reduce(
-    (acc, [key, value]) => ({ ...acc, [key]: JSON.stringify(value) }),
-    {}
-  );
-
-  kintone.plugin.app.setConfig(converted, callback);
+  return restore(id) ?? createConfig();
 };
 
 /**
