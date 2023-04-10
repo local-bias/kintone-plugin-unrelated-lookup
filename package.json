@@ -18,7 +18,7 @@
     "@kintone/plugin-packer": "6.0.33",
     "@kintone/plugin-uploader": "7.1.10",
     "@kintone/rest-api-client": "3.3.9",
-    "@kintone/webpack-plugin-kintone-plugin": "6.0.32",
+    "@kintone/webpack-plugin-kintone-plugin": "6.0.33",
     "@konomi-app/kintone-utilities": "^1.17.0",
     "@konomi-app/kintone-utility-component": "^0.7.2",
     "@lb-ribbit/kintone-xapp": "0.4.0",
