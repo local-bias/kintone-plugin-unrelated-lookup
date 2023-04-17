@@ -510,10 +510,10 @@
     "@kintone/plugin-packer" "^6.0.33"
     mkdirp "^2.1.6"
 
-"@konomi-app/kintone-utilities@^1.17.0":
-  version "1.26.1"
-  resolved "https://registry.yarnpkg.com/@konomi-app/kintone-utilities/-/kintone-utilities-1.26.1.tgz#f923e03c260af090acba3599a4f8924b8801e059"
-  integrity sha512-xyT++/rpZixg9ya+TwlWreItgUNTW/UD/X2iNFLRMKARTdII4WfHrCooToOevAIRrK2ZXSv6pYSerMyGT2QgJQ==
+"@konomi-app/kintone-utilities@^2.0.0":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@konomi-app/kintone-utilities/-/kintone-utilities-2.0.2.tgz#cf9a0e7e84bb9dc3b4b3a853c5fa359f442e21be"
+  integrity sha512-MOdnNXJkBnptWmb95t3d40gmXEg+liRL4mB1qXjyjexjREpd4duwrbBaSAi5y2B1mDYQ97Npl82uO+ucobm5kw==
   dependencies:
     "@emotion/css" "^11.10.6"
     "@kintone/rest-api-client" "^3.3.6"
