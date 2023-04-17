@@ -31,7 +31,7 @@
     "@typescript-eslint/eslint-plugin": "5.57.1",
     "@typescript-eslint/parser": "5.57.1",
     "concurrently": "^8.0.1",
-    "dompurify": "3.0.1",
+    "dompurify": "3.0.2",
     "dotenv": "16.0.3",
     "esbuild-loader": "3.0.1",
     "eslint": "8.38.0",
