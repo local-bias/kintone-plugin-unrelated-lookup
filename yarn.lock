@@ -2861,9 +2861,10 @@ ignore@^5.1.1, ignore@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
 
-immer@9.0.21:
-  version "9.0.21"
-  resolved "https://registry.yarnpkg.com/immer/-/immer-9.0.21.tgz#1e025ea31a40f24fb064f1fef23e931496330176"
+immer@10.0.0:
+  version "10.0.0"
+  resolved "https://registry.yarnpkg.com/immer/-/immer-10.0.0.tgz#3bcb52ca6613aa8a8836574f738bebe75ed9d1e0"
+  integrity sha512-U5wLsGKDt7+XnufwMYH7+RWcy4JTITNkWsV/H4sNhfIxcXvypDTzn9Cj0Y9Fjj0h1a/Gaba9oZYK0a+kO13uJQ==
 
 import-fresh@^3.0.0, import-fresh@^3.2.1:
   version "3.3.0"
