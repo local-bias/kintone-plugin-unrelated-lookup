@@ -455,26 +455,10 @@
     ajv "^8.12.0"
     bytes "^3.1.2"
 
-"@kintone/plugin-packer@6.0.34":
+"@kintone/plugin-packer@6.0.34", "@kintone/plugin-packer@^6.0.34":
   version "6.0.34"
   resolved "https://registry.yarnpkg.com/@kintone/plugin-packer/-/plugin-packer-6.0.34.tgz#d6570eaf9728138225b89c7bd6f17e0abd78748d"
   integrity sha512-ehBPlOGFIVLB3qWBC2yKoKgjsn7FgdWBW4fO2s7l1tIwUpJYkZwwPNlZSUZynKOPMjHqEuWzSwoR57wj7TuKYA==
-  dependencies:
-    "@kintone/plugin-manifest-validator" "^8.0.1"
-    chokidar "^3.5.3"
-    debug "^4.3.4"
-    denodeify "^1.2.1"
-    meow "^9.0.0"
-    mkdirp "^2.1.6"
-    node-rsa "~1.1.1"
-    stream-buffers "^3.0.2"
-    yauzl "^2.10.0"
-    yazl "^2.5.1"
-
-"@kintone/plugin-packer@^6.0.33":
-  version "6.0.33"
-  resolved "https://registry.yarnpkg.com/@kintone/plugin-packer/-/plugin-packer-6.0.33.tgz#55db7fab730d5f79d17ee9263c1bbbd1e51507c1"
-  integrity sha512-erMXPSCN5TEq0uu+vTWQCARDZ9jwFf+0UrDWfB27MD2PWjRmWT+8PQIRT1u+fB2aEI3d7m2RhY1ctoSNKXWYUQ==
   dependencies:
     "@kintone/plugin-manifest-validator" "^8.0.1"
     chokidar "^3.5.3"
@@ -530,12 +514,12 @@
     mime "^3.0.0"
     qs "^6.10.5"
 
-"@kintone/webpack-plugin-kintone-plugin@6.0.33":
-  version "6.0.33"
-  resolved "https://registry.yarnpkg.com/@kintone/webpack-plugin-kintone-plugin/-/webpack-plugin-kintone-plugin-6.0.33.tgz#1c2b2577977424870a40a7e085ca2f7ab0a00dd6"
-  integrity sha512-dx27iLJGH7Ev4BQztAXybZ1u+DcJNPyxVOgw4zQSBbqmuARW5PISlkbpkbH9vXZNz3FpWiOAcWd5m+eE2DbDvw==
+"@kintone/webpack-plugin-kintone-plugin@6.0.34":
+  version "6.0.34"
+  resolved "https://registry.yarnpkg.com/@kintone/webpack-plugin-kintone-plugin/-/webpack-plugin-kintone-plugin-6.0.34.tgz#ac315dc6584bd0acd1728300a471106d97ce0aa1"
+  integrity sha512-7RTGNmZ5nw0LgNT8+JyNMt2uG645glBr1bUrCYy6RKZ9dNoOWsyVTaZRXZefE04Jd0cJ5zkaAK0FRWmbe/XJFQ==
   dependencies:
-    "@kintone/plugin-packer" "^6.0.33"
+    "@kintone/plugin-packer" "^6.0.34"
     mkdirp "^2.1.6"
 
 "@konomi-app/kintone-utilities@^2.0.0":
