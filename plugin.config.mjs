@@ -1,5 +1,5 @@
 /** @type {import('./src/types/plugin-config').PluginConfig} */
-module.exports = {
+export default {
   manifest: {
     base: {
       manifest_version: 1,
