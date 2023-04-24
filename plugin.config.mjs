@@ -1,3 +1,9 @@
+//@ts-check
+const HP = 'https://konomi.app/';
+const commonCDN = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest/dist/';
+const cdn = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-unrelated-lookup@latest/cdn/';
+const localhost = 'https://127.0.0.1:5500/dist/dev/';
+
 /** @type {import('./src/types/plugin-config').PluginConfig} */
 export default {
   manifest: {
@@ -16,46 +22,20 @@ export default {
         zh: '插件模板',
       },
       icon: 'icon.png',
-      homepage_url: {
-        ja: 'https://konomi.app/',
-        en: 'https://konomi.app/',
-      },
-      desktop: {
-        js: ['https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest/dist/desktop.js'],
-        css: [],
-      },
-      mobile: {
-        js: ['https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest/dist/desktop.js'],
-        css: [],
-      },
-      config: {
-        html: 'config.html',
-        js: ['https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest/dist/config.js'],
-        css: [],
-        required_params: [],
-      },
+      homepage_url: { ja: HP, en: HP },
+      desktop: { js: [`${commonCDN}desktop.js`], css: [] },
+      mobile: { js: [`${commonCDN}desktop.js`], css: [] },
+      config: { html: 'config.html', js: [`${commonCDN}config.js`], css: [], required_params: [] },
     },
     dev: {
-      desktop: { js: ['desktop.js'] },
-      mobile: { js: ['desktop.js'] },
-      config: { js: ['config.js'] },
+      desktop: { js: [`${localhost}desktop/index.js`] },
+      mobile: { js: [`${localhost}desktop/index.js`] },
+      config: { js: [`${localhost}config/index.js`] },
     },
     prod: {
-      desktop: {
-        js: [
-          'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-unrelated-lookup@latest/cdn/desktop.js',
-        ],
-      },
-      mobile: {
-        js: [
-          'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-unrelated-lookup@latest/cdn/desktop.js',
-        ],
-      },
-      config: {
-        js: [
-          'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-unrelated-lookup@latest/cdn/config.js',
-        ],
-      },
+      desktop: { js: [`${cdn}desktop.js`] },
+      mobile: { js: [`${cdn}desktop.js`] },
+      config: { js: [`${cdn}config.js`] },
     },
   },
 };
