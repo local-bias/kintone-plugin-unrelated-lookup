@@ -17,13 +17,6 @@ export type HandledRecord = { __quickSearch: string; record: KintoneRecord };
 export const srcAllRecordsState = atom<HandledRecord[]>({
   key: 'srcAllRecordsState',
   default: [],
-  effects: [
-    ({ onSet }) => {
-      onSet((newValue) => {
-        console.log('🐇 ルックアップ用に取得したレコードが変化しました', newValue);
-      });
-    },
-  ],
 });
 
 export const filteredRecordsState = selector<KintoneRecord[]>({

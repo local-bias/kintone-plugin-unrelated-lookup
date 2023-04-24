@@ -41,7 +41,9 @@ export default (listener: KintoneEventListener) => {
           guestSpaceId,
         });
 
-        console.log({ lookuped });
+        if (process?.env?.NODE_ENV === 'development') {
+          console.log({ lookuped });
+        }
 
         event.record = lookuped;
       } catch (error) {

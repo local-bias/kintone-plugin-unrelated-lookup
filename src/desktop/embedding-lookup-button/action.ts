@@ -102,7 +102,9 @@ export const lookup = async (params: {
     }
   }
 
-  console.log(`[${PLUGIN_NAME}] 検索クエリ`, query);
+  if (process?.env?.NODE_ENV === 'development') {
+    console.log(`[${PLUGIN_NAME}] 検索クエリ`, query);
+  }
 
   const fields = getLookupSrcFields(condition);
 
@@ -114,7 +116,9 @@ export const lookup = async (params: {
     guestSpaceId: guestSpaceId ?? undefined,
     debug: process?.env?.NODE_ENV === 'development',
     onTotalGet: ({ total }) => {
-      console.log({ total });
+      if (process?.env?.NODE_ENV === 'development') {
+        console.log({ total });
+      }
       if (total !== 1) {
         if (option) {
           option.setShown(true);
@@ -179,7 +183,9 @@ export const apply = (
   if (option) {
     option.setLookuped(true);
     lookupObserver[condition.dstField].lookuped = true;
-    console.log(lookupObserver);
+    if (process?.env?.NODE_ENV === 'development') {
+      console.log({ lookupObserver });
+    }
   }
   return record;
 };
