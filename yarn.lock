@@ -423,14 +423,14 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@kintone/dts-gen@6.1.27":
-  version "6.1.27"
-  resolved "https://registry.yarnpkg.com/@kintone/dts-gen/-/dts-gen-6.1.27.tgz#1168d08e7f12563d2a014b7119fb1c11786acb92"
-  integrity sha512-xCRTb4e2kgnRLbE3Bigtw9P5g4oBPZZIaAB2RvnNWb13INJpyDlXCQGUjW+KTV2Fj9GTnF8XUJhoV9ai9Q4HXA==
+"@kintone/dts-gen@6.1.28":
+  version "6.1.28"
+  resolved "https://registry.yarnpkg.com/@kintone/dts-gen/-/dts-gen-6.1.28.tgz#6747eb7c6bbc93f612b7a417a734b8d4c2ff7226"
+  integrity sha512-o9FYH4vGqsnUHVdCAjStSvDjZKiF0yle3kRDbyMcy7F3+uJ3NOLZvmHfU3sE/ls6BlT+zDg46AYGxzn376qk7Q==
   dependencies:
     "@cybozu/eslint-config" "^18.0.3"
     axios "^0.27.2"
-    commander "^10.0.0"
+    commander "^10.0.1"
     eslint "^8.37.0"
     form-data "^4.0.0"
     lodash "^4.17.21"
@@ -1660,9 +1660,10 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^10.0.0:
-  version "10.0.0"
-  resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.0.tgz#71797971162cd3cf65f0b9d24eb28f8d303acdf1"
+commander@^10.0.1:
+  version "10.0.1"
+  resolved "https://registry.yarnpkg.com/commander/-/commander-10.0.1.tgz#881ee46b4f77d1c1dccc5823433aa39b022cbe06"
+  integrity sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==
 
 commander@^2.20.0:
   version "2.20.3"
