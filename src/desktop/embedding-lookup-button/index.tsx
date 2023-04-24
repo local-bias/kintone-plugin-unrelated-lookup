@@ -6,9 +6,9 @@ import { cleanseStorage, restoreStorage } from '@/common/plugin';
 import { getFieldId } from '@/common/cybozu';
 
 import App from './app';
-import { KintoneEventListener } from '@konomi-app/kintone-utilities';
+import { KintoneEventListener, kintoneAPI } from '@konomi-app/kintone-utilities';
 
-const events: launcher.EventTypes = ['app.record.create.show', 'app.record.edit.show'];
+const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
 export default (listener: KintoneEventListener) => {
   listener.add(events, async (event, { pluginId, guestSpaceId }) => {

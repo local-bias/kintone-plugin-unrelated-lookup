@@ -1,9 +1,12 @@
 import { cleanseStorage, restoreStorage } from '@/common/plugin';
 import { lookup } from '../embedding-lookup-button/action';
 import { lookupObserver } from '../lookup-observer';
-import { KintoneEventListener } from '@konomi-app/kintone-utilities';
+import { KintoneEventListener, kintoneAPI } from '@konomi-app/kintone-utilities';
 
-const events: launcher.EventTypes = ['app.record.create.submit', 'app.record.edit.submit.success'];
+const events: kintoneAPI.js.EventType[] = [
+  'app.record.create.submit',
+  'app.record.edit.submit.success',
+];
 
 export default (listener: KintoneEventListener) => {
   listener.add(events, async (event, { pluginId, guestSpaceId }) => {
