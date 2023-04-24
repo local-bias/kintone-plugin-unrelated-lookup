@@ -1,4 +1,4 @@
-import { PLUGIN_NAME } from '@common/statics';
+import { PLUGIN_NAME } from '@/common/statics';
 import { pushPluginName } from './local-storage';
 
 class Launcher {

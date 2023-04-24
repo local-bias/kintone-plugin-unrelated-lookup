@@ -2,23 +2,27 @@ import { SnackbarProvider } from 'notistack';
 import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 
-import { ErrorBoundary } from '@common/components/error-boundary';
-import { restoreStorage } from '@common/plugin';
+import { ErrorBoundary } from '@/common/components/error-boundary';
+import { restoreStorage } from '@/common/plugin';
 
 import { PluginLayout, PluginBanner } from '@konomi-app/kintone-utility-component';
 import Form from './components/model/form';
 import Footer from './components/model/footer';
 import Sidebar from './components/model/sidebar';
 
-import { Loading } from '@common/components/loading';
-import { URL_PROMOTION } from '@common/statics';
-import { pluginIdState, storageState } from './states/plugin';
+import { Loading } from '@/common/components/loading';
+import { URL_PROMOTION } from '@/common/statics';
+import { guestSpaceIdState, pluginIdState, storageState } from './states/plugin';
 
-const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
+const Component: FC<{ pluginId: string; guestSpaceId: string | null }> = ({
+  pluginId,
+  guestSpaceId,
+}) => (
   <>
     <RecoilRoot
       initializeState={({ set }) => {
         set(pluginIdState, pluginId);
+        set(guestSpaceIdState, guestSpaceId);
         set(storageState, restoreStorage(pluginId));
       }}
     >

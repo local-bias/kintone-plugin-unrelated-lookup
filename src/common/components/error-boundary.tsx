@@ -2,7 +2,7 @@ import React, { FCwC, FCX } from 'react';
 import styled from '@emotion/styled';
 import { ErrorBoundary as ErrBoundary, FallbackProps } from 'react-error-boundary';
 import { Button } from '@mui/material';
-import { URL_HOMEPAGE } from '@common/statics';
+import { URL_HOMEPAGE } from '@/common/statics';
 
 const Component: FCX<FallbackProps> = ({ className, error, resetErrorBoundary }) => (
   <div {...{ className }}>

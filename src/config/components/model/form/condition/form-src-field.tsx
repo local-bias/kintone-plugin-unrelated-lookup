@@ -1,4 +1,4 @@
-import { AutocompleteKintoneField } from '@common/components/autocomplete-field-input';
+import { AutocompleteKintoneField } from '@/common/components/autocomplete-field-input';
 import { Skeleton } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';

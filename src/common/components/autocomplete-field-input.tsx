@@ -1,19 +1,18 @@
 import React, { FC, useCallback } from 'react';
 import { TextField, Autocomplete } from '@mui/material';
-
-import { kx } from '@type/kintone.api';
+import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
 
 type ContainerProps = {
-  fields: kx.FieldProperty[];
+  fields: kintoneAPI.FieldProperty[];
   fieldCode: string;
   onChange: (code: string) => void;
   label?: string;
 };
 
 type Props = {
-  value: kx.FieldProperty | null;
-  fields: kx.FieldProperty[];
-  onFieldChange: (_: any, field: kx.FieldProperty | null) => void;
+  value: kintoneAPI.FieldProperty | null;
+  fields: kintoneAPI.FieldProperty[];
+  onFieldChange: (_: any, field: kintoneAPI.FieldProperty | null) => void;
   label: string;
 };
 
@@ -35,7 +34,7 @@ const Container: FC<ContainerProps> = (props) => {
   const value = props.fields.find((field) => field.code === props.fieldCode) ?? null;
 
   const onFieldChange = useCallback(
-    (_: any, field: kx.FieldProperty | null) => {
+    (_: any, field: kintoneAPI.FieldProperty | null) => {
       props.onChange(field?.code ?? '');
     },
     [props.onChange]

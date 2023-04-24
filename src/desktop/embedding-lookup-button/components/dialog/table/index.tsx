@@ -10,7 +10,7 @@ import {
 import { apply } from '../../../action';
 import { useSnackbar } from 'notistack';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
-import { Loading } from '@common/components/loading';
+import { Loading } from '@/common/components/loading';
 
 import Layout from './layout';
 import Empty from './empty';

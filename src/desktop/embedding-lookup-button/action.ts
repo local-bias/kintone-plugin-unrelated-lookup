@@ -3,9 +3,9 @@ import { SetterOrUpdater } from 'recoil';
 
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
-import { someFieldValue } from '@common/kintone-api';
+import { someFieldValue } from '@/common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
-import { PLUGIN_NAME } from '@common/statics';
+import { PLUGIN_NAME } from '@/common/statics';
 import { getAllRecordsWithCursor } from '@konomi-app/kintone-utilities';
 
 type EnqueueSnackbar = (
@@ -13,9 +13,10 @@ type EnqueueSnackbar = (
   options?: OptionsObject | undefined
 ) => SnackbarKey;
 
-export const lookup = async (
-  condition: kintone.plugin.Condition,
-  record: KintoneRecord,
+export const lookup = async (params: {
+  condition: kintone.plugin.Condition;
+  record: KintoneRecord;
+  guestSpaceId: string | null;
   option?: {
     input: string;
     hasCached: boolean;
@@ -23,8 +24,10 @@ export const lookup = async (
     enqueueSnackbar: EnqueueSnackbar;
     setShown: SetterOrUpdater<boolean>;
     setLookuped: SetterOrUpdater<boolean>;
-  }
-): Promise<KintoneRecord> => {
+  };
+}): Promise<KintoneRecord> => {
+  const { condition, record, guestSpaceId, option } = params;
+
   // 全レコードのキャッシュが取得済みであれば、キャッシュから対象レコードを検索します
   // 対象レコードが１件だけであれば、ルックアップ対象を確定します
   if (option && option.hasCached) {
@@ -108,7 +111,9 @@ export const lookup = async (
     app,
     query,
     fields,
-    onTotalGet: (total) => {
+    guestSpaceId: guestSpaceId ?? undefined,
+    debug: process?.env?.NODE_ENV === 'development',
+    onTotalGet: ({ total }) => {
       console.log({ total });
       if (total !== 1) {
         if (option) {

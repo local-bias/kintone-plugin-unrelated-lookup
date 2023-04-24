@@ -1,14 +1,19 @@
 import { useEffect, FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { getAllRecords, getFieldValueAsString } from '@konomi-app/kintone-utilities';
-import { pluginConditionState, alreadyCacheState, cacheValidationState } from '../states';
+import {
+  pluginConditionState,
+  alreadyCacheState,
+  cacheValidationState,
+  guestSpaceIdState,
+} from '../states';
 import { getLookupSrcFields } from '../action';
-import { PLUGIN_NAME } from '@common/statics';
+import { PLUGIN_NAME } from '@/common/statics';
 import {
   convertHankakuKatakanaToZenkaku,
   convertKatakanaToHiragana,
   convertZenkakuEisujiToHankaku,
-} from '@common/utilities';
+} from '@/common/utilities';
 import { HandledRecord, srcAllRecordsState } from '../states/records';
 
 const Container: FC = () => {
@@ -16,6 +21,7 @@ const Container: FC = () => {
   const setAlreadyCache = useSetRecoilState(alreadyCacheState);
   const condition = useRecoilValue(pluginConditionState);
   const enablesCache = useRecoilValue(cacheValidationState);
+  const guestSpaceId = useRecoilValue(guestSpaceIdState);
 
   useEffect(() => {
     (async () => {
@@ -41,7 +47,9 @@ const Container: FC = () => {
           app,
           query,
           fields,
-          onStep: (records) => {
+          guestSpaceId: guestSpaceId || undefined,
+          debug: process?.env?.NODE_ENV === 'development',
+          onStep: ({ records }) => {
             const viewRecords = records.map<HandledRecord>((record) => {
               let __quickSearch = Object.values(record)
                 .map((field) => getFieldValueAsString(field))

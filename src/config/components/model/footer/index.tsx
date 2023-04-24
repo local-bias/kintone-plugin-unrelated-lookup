@@ -2,14 +2,14 @@ import React, { FC, useState, FCX, useCallback, ChangeEventHandler } from 'react
 import { useRecoilCallback } from 'recoil';
 import { useSnackbar } from 'notistack';
 import { Button } from '@mui/material';
-import { PluginFooter } from '@konomi-app/kintone-utility-component';
+import { PluginFooterBundle } from '@konomi-app/kintone-utility-component';
 
 import { storeStorage } from '@konomi-app/kintone-utilities';
 
 import { storageState } from '../../../states/plugin';
 
-import { PLUGIN_NAME } from '@common/statics';
-import { createConfig } from '@common/plugin';
+import { PLUGIN_NAME } from '@/common/statics';
+import { createConfig } from '@/common/plugin';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -103,7 +103,7 @@ const Container: FC = () => {
   );
 
   return (
-    <PluginFooter
+    <PluginFooterBundle
       {...{
         loading,
         onSaveButtonClick,

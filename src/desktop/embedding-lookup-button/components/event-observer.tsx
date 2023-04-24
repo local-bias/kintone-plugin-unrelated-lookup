@@ -1,4 +1,4 @@
-import { getFields } from '@common/cybozu';
+import { getFields } from '@/common/cybozu';
 import { useEffect, FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useLookup } from '../hooks/use-lookup';

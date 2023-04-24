@@ -4,7 +4,7 @@ import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { seesState } from '../../../../states/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import produce from 'immer';
+import { produce } from 'immer';
 
 import SelectSrcFields from './select-src-fields';
 import { useConditionIndex } from '../../../functional/condition-index-provider';

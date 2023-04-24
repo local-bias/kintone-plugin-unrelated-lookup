@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 import { atom, selector, selectorFamily } from 'recoil';
 
 const PREFIX = 'plugin';
@@ -37,6 +37,11 @@ const getConditionField = <T extends keyof kintone.plugin.Condition>(
 
 export const storageState = atom<kintone.plugin.Storage | null>({
   key: `${PREFIX}storageState`,
+  default: null,
+});
+
+export const guestSpaceIdState = atom<string | null>({
+  key: `${PREFIX}guestSpaceIdState`,
   default: null,
 });
 

@@ -1,17 +1,17 @@
 import React, { FC } from 'react';
 import {
-  PluginSidebarConditionAppendButton,
-  PluginSidebarConditionTab,
-  PluginSidebarConditionTabs,
-  PluginSidebarLayout,
+  PluginConditionAppendButton,
+  PluginConditionTabs,
+  PluginConditionTab,
+  PluginSidebar,
 } from '@konomi-app/kintone-utility-component';
 
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { conditionsState, storageState, tabIndexState } from '../../../states/plugin';
 
 import TabLabel from './tab-label';
-import produce from 'immer';
-import { getNewCondition } from '@common/plugin';
+import { produce } from 'immer';
+import { getNewCondition } from '@/common/plugin';
 
 const Component: FC = () => {
   const tabIndex = useRecoilValue(tabIndexState);
@@ -38,16 +38,16 @@ const Component: FC = () => {
   );
 
   return (
-    <PluginSidebarLayout>
-      <PluginSidebarConditionAppendButton onClick={appendCondition} />
-      <PluginSidebarConditionTabs value={tabIndex} onChange={onTabChange}>
+    <PluginSidebar>
+      <PluginConditionAppendButton onClick={appendCondition} />
+      <PluginConditionTabs value={tabIndex} onChange={onTabChange}>
         {conditions.map((_, i) => (
-          <PluginSidebarConditionTab key={i} index={i}>
+          <PluginConditionTab key={i} index={i}>
             <TabLabel index={i} />
-          </PluginSidebarConditionTab>
+          </PluginConditionTab>
         ))}
-      </PluginSidebarConditionTabs>
-    </PluginSidebarLayout>
+      </PluginConditionTabs>
+    </PluginSidebar>
   );
 };
 

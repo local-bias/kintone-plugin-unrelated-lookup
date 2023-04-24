@@ -1,4 +1,4 @@
-import produce from 'immer';
+import { produce } from 'immer';
 import { restoreStorage as restore } from '@konomi-app/kintone-utilities';
 
 /**

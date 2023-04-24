@@ -10,7 +10,10 @@ const main = (pluginId: string): void => {
     throw new Error('フォームの描画に失敗しました');
   }
 
-  createRoot(root).render(<App {...{ pluginId }} />);
+  const matchArray = location.pathname.match(/^\/k\/guest\/(\d+)/);
+  const guestSpaceId = matchArray ? matchArray[1] : null;
+
+  createRoot(root).render(<App {...{ pluginId, guestSpaceId }} />);
 };
 
 export default main;

@@ -2,7 +2,7 @@ import {
   convertHankakuKatakanaToZenkaku,
   convertKatakanaToHiragana,
   convertZenkakuEisujiToHankaku,
-} from '@common/utilities';
+} from '@/common/utilities';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { atom, selector } from 'recoil';
 import {
