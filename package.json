@@ -4,10 +4,11 @@
   "author": "ribbit",
   "license": "MIT",
   "scripts": {
-    "build": "node scripts/marge-json.js prod && webpack --config webpack.prod.js",
-    "dev": "node scripts/marge-json.js dev && concurrently \"yarn:dev:*\"",
-    "dev:js": "webpack --config webpack.dev.js -w",
-    "dev:upload": "node scripts/upload.js",
+    "init": "node scripts/marge-json.mjs dev && kintone-plugin-packer --out dist/plugin-dev.zip plugin && node scripts/rename-ppk.mjs",
+    "build": "node scripts/marge-json.mjs prod && kbuild prod plugin --prod-root cdn",
+    "dev": "node scripts/marge-json.mjs dev && kintone-plugin-packer --out dist/plugin-dev.zip --ppk dist/private.ppk plugin && concurrently \"yarn:dev:*\"",
+    "dev:build": "kbuild dev plugin",
+    "dev:upload": "node scripts/upload.mjs",
     "lint": "eslint ./src --cache --ext .js,.ts,.tsx"
   },
   "devDependencies": {
@@ -19,6 +20,7 @@
     "@kintone/plugin-uploader": "7.1.10",
     "@kintone/rest-api-client": "3.3.10",
     "@kintone/webpack-plugin-kintone-plugin": "6.0.34",
+    "@konomi-app/kbuild": "^1.5.1",
     "@konomi-app/kintone-utilities": "^2.0.0",
     "@konomi-app/kintone-utility-component": "^0.7.2",
     "@lb-ribbit/kintone-xapp": "0.4.0",
@@ -45,6 +47,7 @@
     "react-error-boundary": "4.0.3",
     "recoil": "0.7.7",
     "terser-webpack-plugin": "5.3.7",
+    "ts-loader": "^9.4.2",
     "ts-node": "10.9.1",
     "typescript": "5.0.4",
     "webpack": "5.79.0",
