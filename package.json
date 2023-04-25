@@ -1,6 +1,6 @@
 {
   "name": "kintone-plugin-unrelated-lookup",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "author": "ribbit",
   "license": "MIT",
   "scripts": {
@@ -47,13 +47,9 @@
     "react-dom": "18.2.0",
     "react-error-boundary": "4.0.4",
     "recoil": "0.7.7",
-    "terser-webpack-plugin": "5.3.7",
     "ts-loader": "^9.4.2",
     "ts-node": "10.9.1",
-    "typescript": "5.0.4",
-    "webpack": "5.80.0",
-    "webpack-cli": "5.0.2",
-    "webpack-merge": "5.8.0"
+    "typescript": "5.0.4"
   },
   "prettier": {
     "printWidth": 100,
