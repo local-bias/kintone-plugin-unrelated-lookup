@@ -13,9 +13,9 @@
     "lint": "eslint ./src --cache --ext .js,.ts,.tsx"
   },
   "devDependencies": {
-    "@emotion/css": "11.10.8",
-    "@emotion/react": "11.10.8",
-    "@emotion/styled": "11.10.8",
+    "@emotion/css": "11.11.0",
+    "@emotion/react": "11.11.0",
+    "@emotion/styled": "11.11.0",
     "@kintone/dts-gen": "6.1.29",
     "@kintone/plugin-packer": "6.0.35",
     "@kintone/plugin-uploader": "7.1.10",
