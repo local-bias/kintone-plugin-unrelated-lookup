@@ -49,9 +49,9 @@
     regenerator-runtime "^0.13.11"
 
 "@babel/types@^7.21.4":
-  version "7.22.3"
-  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.22.3.tgz#0cc6af178b91490acaeb4a2f70dcbf27cdf3d8f3"
-  integrity sha512-P3na3xIQHTKY4L0YOG7pM8M8uoUIB910WQaSiiMCZUC2Cy8XFEQONGABFnHWBa2gpGKODTAJcNhi5Zk0sLRrzg==
+  version "7.22.4"
+  resolved "https://registry.yarnpkg.com/@babel/types/-/types-7.22.4.tgz#56a2653ae7e7591365dabf20b76295410684c071"
+  integrity sha512-Tx9x3UBHTTsMSW85WB2kphxYQVvrZ/t1FxD88IpSgIjiUJlCm9z+xWIDwyo1vffTwSqteqyznB8ZE9vYYk16zA==
   dependencies:
     "@babel/helper-string-parser" "^7.21.5"
     "@babel/helper-validator-identifier" "^7.19.1"
@@ -503,7 +503,7 @@
     os-locale "^5.0.0"
     puppeteer "^19.7.5"
 
-"@kintone/rest-api-client@3.3.15":
+"@kintone/rest-api-client@3.3.15", "@kintone/rest-api-client@^3.3.10":
   version "3.3.15"
   resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.15.tgz#75091b30ec4e83b10bcca3ccbaaccb72a1578e24"
   integrity sha512-fhfRqifov5p+1tBeDOW+03W7fnDZ4hxsgyy3nUb0HNCyBeuHXZHxDWO0wKQ7PoGwdjyFyVzvZuWxQs4jjmHoAA==
@@ -518,18 +518,6 @@
 "@kintone/rest-api-client@^3.1.14":
   version "3.3.10"
   resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.10.tgz#febbfe46be9b42c4f3e88f2755c39493aa7236ba"
-  dependencies:
-    axios "^0.27.2"
-    core-js "^3.29.1"
-    form-data "^4.0.0"
-    js-base64 "^3.7.5"
-    mime "^3.0.0"
-    qs "^6.10.5"
-
-"@kintone/rest-api-client@^3.3.10":
-  version "3.3.14"
-  resolved "https://registry.yarnpkg.com/@kintone/rest-api-client/-/rest-api-client-3.3.14.tgz#91329bd89820e368ceb4303dbd22fff7d6e489f2"
-  integrity sha512-hYNI2a8UyPN7qJ8/F3Pl2orNA1TGKHC2A/9NZvJ+UUB5P+EKEBIyJ66HUX6UJwqQm+Oej7ogBQ69BPCdq5vuYA==
   dependencies:
     axios "^0.27.2"
     core-js "^3.29.1"
@@ -561,9 +549,9 @@
     webpack "^5.77.0"
 
 "@konomi-app/kintone-utilities@^2.5.2":
-  version "2.5.4"
-  resolved "https://registry.yarnpkg.com/@konomi-app/kintone-utilities/-/kintone-utilities-2.5.4.tgz#30103aa62af881e81d18cbc2aefacda0c53147b0"
-  integrity sha512-JNpmUH73v2+QhDBkCL9efDzDe24p8d84JHCnPRk4zlU5K1ieDV5P0LuqN4Juyu0cubTTBi/ICgFnLVPXskWUkA==
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@konomi-app/kintone-utilities/-/kintone-utilities-2.7.0.tgz#6e78a80ccb053d7eab0292e7ac23bbdbb3279588"
+  integrity sha512-UINMyyIStzzrf/vui3UXhPywtU5rcIrwcVLQHthTX5LxRo+ftZAioYO1160pC34FoCpVmWj0IwNssbFrUUQfLA==
   dependencies:
     "@emotion/css" "^11.10.6"
     "@kintone/rest-api-client" "^3.3.10"
@@ -2611,6 +2599,7 @@ has-property-descriptors@^1.0.0:
 has-proto@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/has-proto/-/has-proto-1.0.1.tgz#1885c1305538958aff469fef37937c22795408e0"
+  integrity sha512-7qE+iP+O+bgF9clE5+UoBFzE65mlBiVj3tKCrlNQ0Ogwm0BjpT/gK4SlLYDMybDh5I3TCTKnPPa0oMG7JDYrhg==
 
 has-symbols@^1.0.2, has-symbols@^1.0.3:
   version "1.0.3"
