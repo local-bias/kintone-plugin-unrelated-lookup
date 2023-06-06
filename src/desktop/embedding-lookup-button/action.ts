@@ -3,10 +3,10 @@ import { SetterOrUpdater } from 'recoil';
 
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
-import { someFieldValue } from '@/common/kintone-api';
+import { getFieldProperties, someFieldValue } from '@/common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/common/statics';
-import { getAllRecordsWithCursor } from '@konomi-app/kintone-utilities';
+import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -190,15 +190,59 @@ export const apply = (
   return record;
 };
 
-export const clearLookup = (condition: kintone.plugin.Condition) => {
+let cachedFieldProperties: kintoneAPI.FieldProperties | null = null;
+const getCachedFieldProperties = async (): Promise<kintoneAPI.FieldProperties> => {
+  if (!cachedFieldProperties) {
+    cachedFieldProperties = await getFieldProperties();
+  }
+  return cachedFieldProperties;
+};
+
+export const clearLookup = async (condition: kintone.plugin.Condition) => {
   const { record } = getCurrentRecord()!;
 
   record[condition.dstField].value = '';
   for (const { to } of condition.copies) {
-    if (Array.isArray(record[to])) {
-      record[to].value = [];
-    } else {
-      record[to].value = '';
+    const field = record[to];
+    switch (field.type) {
+      case 'SINGLE_LINE_TEXT':
+      case 'MULTI_LINE_TEXT':
+      case 'RICH_TEXT':
+      case 'DROP_DOWN':
+      case 'DATE':
+      case 'NUMBER':
+      case 'CREATED_TIME':
+      case 'UPDATED_TIME':
+      case 'TIME':
+      case 'DATETIME':
+      case 'LINK':
+        field.value = '';
+        break;
+      case 'CREATOR':
+      case 'MODIFIER':
+        field.value = { code: '', name: '' };
+        break;
+      case 'CATEGORY':
+      case 'CHECK_BOX':
+      case 'MULTI_SELECT':
+      case 'FILE':
+      case 'GROUP_SELECT':
+      case 'ORGANIZATION_SELECT':
+      case 'USER_SELECT':
+      case 'STATUS_ASSIGNEE':
+      case 'SUBTABLE':
+        field.value = [];
+        break;
+      case 'RADIO_BUTTON':
+      case 'STATUS':
+        // WIP: 未実装
+        break;
+      case 'CALC':
+      case 'RECORD_NUMBER':
+      case '__ID__':
+      case '__REVISION__':
+      default:
+        break;
     }
   }
 

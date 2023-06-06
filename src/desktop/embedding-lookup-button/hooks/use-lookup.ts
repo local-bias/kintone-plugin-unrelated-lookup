@@ -75,7 +75,7 @@ export const useLookup = () => {
   const clear = useRecoilCallback(({ snapshot }) => async () => {
     const condition = await snapshot.getPromise(pluginConditionState);
     setAlreadyLookup(false);
-    clearLookup(condition!);
+    await clearLookup(condition!);
     enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
   });
 
