@@ -663,9 +663,10 @@
     yauzl "^2.10.0"
     yazl "^2.5.1"
 
-"@kintone/plugin-uploader@7.1.10":
-  version "7.1.10"
-  resolved "https://registry.yarnpkg.com/@kintone/plugin-uploader/-/plugin-uploader-7.1.10.tgz#2cf3a55ab54057c3bb2211ff191d4e5456d2c88a"
+"@kintone/plugin-uploader@8.0.0":
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/@kintone/plugin-uploader/-/plugin-uploader-8.0.0.tgz#b9f0415b0c76c43083cc87f047586dcf8c9069be"
+  integrity sha512-TvBfD/MJBExI7g+4eHZ+8T06l/mr4LT38foEnsC8JUz1DfNhrp6ZPOSwNi4vl9cxi8sY58hphyLWSxYLWybm9A==
   dependencies:
     chalk "^4.1.2"
     inquirer "^8.2.5"
