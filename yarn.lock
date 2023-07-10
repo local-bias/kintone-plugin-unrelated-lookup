@@ -630,13 +630,6 @@
     lodash "^4.17.21"
     prettier "^2.8.7"
 
-"@kintone/plugin-manifest-validator@^8.0.2":
-  version "8.0.2"
-  resolved "https://registry.yarnpkg.com/@kintone/plugin-manifest-validator/-/plugin-manifest-validator-8.0.2.tgz#7ac5296153f48c2f1277e8160ec53fd954d880e9"
-  dependencies:
-    ajv "^8.12.0"
-    bytes "^3.1.2"
-
 "@kintone/plugin-manifest-validator@^9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@kintone/plugin-manifest-validator/-/plugin-manifest-validator-9.0.1.tgz#89ef26825141c69f7fc82e36e21da06861131a36"
@@ -645,27 +638,12 @@
     ajv "^8.12.0"
     bytes "^3.1.2"
 
-"@kintone/plugin-packer@7.0.4":
+"@kintone/plugin-packer@7.0.4", "@kintone/plugin-packer@^7.0.4":
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/@kintone/plugin-packer/-/plugin-packer-7.0.4.tgz#2cc97f43a824a4433b05a9242423a2aff7df14ab"
   integrity sha512-B5BPURW4RFKvg/5TRCXNBAkTw7OODvnSwvfb0nwS3M0omxkYEuJtz0WsBHQu6hMmo9d1fyUgMRWLDWegaFNPXg==
   dependencies:
     "@kintone/plugin-manifest-validator" "^9.0.1"
-    chokidar "^3.5.3"
-    debug "^4.3.4"
-    denodeify "^1.2.1"
-    meow "^9.0.0"
-    mkdirp "^2.1.6"
-    node-rsa "~1.1.1"
-    stream-buffers "^3.0.2"
-    yauzl "^2.10.0"
-    yazl "^2.5.1"
-
-"@kintone/plugin-packer@^6.0.39":
-  version "6.0.39"
-  resolved "https://registry.yarnpkg.com/@kintone/plugin-packer/-/plugin-packer-6.0.39.tgz#1da4ba67fd7989f066accae255a18b9f376139fb"
-  dependencies:
-    "@kintone/plugin-manifest-validator" "^8.0.2"
     chokidar "^3.5.3"
     debug "^4.3.4"
     denodeify "^1.2.1"
@@ -710,11 +688,12 @@
     mime "^3.0.0"
     qs "^6.10.5"
 
-"@kintone/webpack-plugin-kintone-plugin@6.0.39":
-  version "6.0.39"
-  resolved "https://registry.yarnpkg.com/@kintone/webpack-plugin-kintone-plugin/-/webpack-plugin-kintone-plugin-6.0.39.tgz#5481f0b7517c5916688dcba26b0967c3b64cc8aa"
+"@kintone/webpack-plugin-kintone-plugin@7.0.4":
+  version "7.0.4"
+  resolved "https://registry.yarnpkg.com/@kintone/webpack-plugin-kintone-plugin/-/webpack-plugin-kintone-plugin-7.0.4.tgz#5adacf0dd240fe816256a5b77484ec31fcc7116c"
+  integrity sha512-/9DPJAR2BgNWpln03OJqOPepv6Q6UknT07PF488RRD5YkxwUu3PFgx8f/okWXoAHoyGKpWCkaMhJFHkDP2caXQ==
   dependencies:
-    "@kintone/plugin-packer" "^6.0.39"
+    "@kintone/plugin-packer" "^7.0.4"
     mkdirp "^2.1.6"
 
 "@konomi-app/kbuild@^1.5.1":
