@@ -23,7 +23,7 @@
     "@kintone/webpack-plugin-kintone-plugin": "7.0.4",
     "@konomi-app/kbuild": "^1.5.1",
     "@konomi-app/kintone-utilities": "^2.7.0",
-    "@konomi-app/kintone-utility-component": "^0.9.0",
+    "@konomi-app/kintone-utility-component": "^1.0.0",
     "@lb-ribbit/kintone-xapp": "0.4.0",
     "@mui/icons-material": "5.13.7",
     "@mui/material": "5.13.7",
