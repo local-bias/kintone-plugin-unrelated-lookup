@@ -1,10 +1,11 @@
+import '@/common/global';
+import { pushPluginName } from '@/common/local-storage';
 import { PLUGIN_NAME } from '@/common/statics';
 import { KintoneEventListener } from '@konomi-app/kintone-utilities';
-import { pushPluginName } from '@/common/local-storage';
 import embedLookupButton from './embedding-lookup-button';
-import validation from './validation';
-import onSave from './on-save';
 import initializeObserver from './initialize-observer';
+import onSave from './on-save';
+import validation from './validation';
 
 ((pluginId) => {
   try {

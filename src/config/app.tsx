@@ -13,17 +13,15 @@ import Sidebar from './components/model/sidebar';
 import { Loading } from '@/common/components/loading';
 import { URL_PROMOTION } from '@/common/statics';
 import { guestSpaceIdState, pluginIdState, storageState } from './states/plugin';
+import { GUEST_SPACE_ID, PLUGIN_ID } from '@/common/global';
 
-const Component: FC<{ pluginId: string; guestSpaceId: string | null }> = ({
-  pluginId,
-  guestSpaceId,
-}) => (
+const Component: FC = () => (
   <>
     <RecoilRoot
       initializeState={({ set }) => {
-        set(pluginIdState, pluginId);
-        set(guestSpaceIdState, guestSpaceId);
-        set(storageState, restoreStorage(pluginId));
+        set(pluginIdState, PLUGIN_ID);
+        set(guestSpaceIdState, GUEST_SPACE_ID ?? null);
+        set(storageState, restoreStorage(PLUGIN_ID));
       }}
     >
       <ErrorBoundary>
