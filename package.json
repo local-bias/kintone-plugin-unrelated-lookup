@@ -22,7 +22,7 @@
     "@kintone/rest-api-client": "4.1.0",
     "@kintone/webpack-plugin-kintone-plugin": "7.0.4",
     "@konomi-app/kbuild": "^2.0.0",
-    "@konomi-app/kintone-utilities": "^2.15.1",
+    "@konomi-app/kintone-utilities": "^3.0.0",
     "@konomi-app/kintone-utility-component": "^1.2.0",
     "@lb-ribbit/kintone-xapp": "0.4.0",
     "@mui/icons-material": "5.14.7",
