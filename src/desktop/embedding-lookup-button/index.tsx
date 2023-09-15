@@ -6,59 +6,59 @@ import { cleanseStorage, restoreStorage } from '@/common/plugin';
 import { getFieldId } from '@/common/cybozu';
 
 import App from './app';
-import { KintoneEventListener, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { listener } from '@/common/listener';
+import { GUEST_SPACE_ID, PLUGIN_ID } from '@/common/global';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
-export default (listener: KintoneEventListener) => {
-  listener.add(events, async (event, { pluginId, guestSpaceId }) => {
-    const { conditions } = cleanseStorage(restoreStorage(pluginId!));
+listener.add(events, async (event) => {
+  const { conditions } = cleanseStorage(restoreStorage(PLUGIN_ID));
 
-    for (const condition of conditions) {
-      if (!condition.dstField || !condition.srcAppId || !condition.srcField) {
-        continue;
-      }
-
-      // コピーするフィールドは入力不可
-      for (const { to } of condition.copies) {
-        //@ts-ignore
-        if (event.record[to]?.disabled) {
-          //@ts-ignore
-          event.record[to].disabled = true;
-        }
-      }
-
-      // 対象フィールドは入力可
-      //@ts-ignore
-      event.record[condition.dstField].disabled = false;
-
-      // 対象文字列フィールドにルックアップっぽいボタンを設置
-      const fieldId = getFieldId(condition.dstField);
-
-      const wrapper =
-        document.querySelector<HTMLDivElement>(`.value-${fieldId} > div`) ||
-        document.querySelector<HTMLDivElement>(`.value-${fieldId}`);
-
-      if (!wrapper) {
-        return event;
-      }
-
-      wrapper.classList.remove('disabled-cybozu');
-
-      wrapper.classList.add(css`
-        display: flex;
-      `);
-
-      const div = document.createElement('div');
-      wrapper.append(div);
-      div.classList.add(css`
-        display: flex;
-        position: relative;
-      `);
-
-      createRoot(div).render(<App {...{ condition, guestSpaceId }} />);
+  for (const condition of conditions) {
+    if (!condition.dstField || !condition.srcAppId || !condition.srcField) {
+      continue;
     }
 
-    return event;
-  });
-};
+    // コピーするフィールドは入力不可
+    for (const { to } of condition.copies) {
+      //@ts-ignore
+      if (event.record[to]?.disabled) {
+        //@ts-ignore
+        event.record[to].disabled = true;
+      }
+    }
+
+    // 対象フィールドは入力可
+    //@ts-ignore
+    event.record[condition.dstField].disabled = false;
+
+    // 対象文字列フィールドにルックアップっぽいボタンを設置
+    const fieldId = getFieldId(condition.dstField);
+
+    const wrapper =
+      document.querySelector<HTMLDivElement>(`.value-${fieldId} > div`) ||
+      document.querySelector<HTMLDivElement>(`.value-${fieldId}`);
+
+    if (!wrapper) {
+      return event;
+    }
+
+    wrapper.classList.remove('disabled-cybozu');
+
+    wrapper.classList.add(css`
+      display: flex;
+    `);
+
+    const div = document.createElement('div');
+    wrapper.append(div);
+    div.classList.add(css`
+      display: flex;
+      position: relative;
+    `);
+
+    createRoot(div).render(<App {...{ condition, guestSpaceId: GUEST_SPACE_ID ?? null }} />);
+  }
+
+  return event;
+});

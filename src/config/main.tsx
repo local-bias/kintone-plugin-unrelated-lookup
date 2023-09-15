@@ -1,16 +1,11 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-
 import App from './app';
 
-const main = (): void => {
-  const root = document.getElementById('settings');
+const root = document.getElementById('settings');
 
-  if (!root) {
-    throw new Error('フォームの描画に失敗しました');
-  }
+if (!root) {
+  throw new Error('フォームの描画に失敗しました');
+}
 
-  createRoot(root).render(<App />);
-};
-
-export default main;
+createRoot(root).render(<App />);
