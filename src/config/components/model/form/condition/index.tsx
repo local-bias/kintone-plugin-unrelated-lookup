@@ -70,27 +70,39 @@ const Component: FCX = ({ className }) => (
 
     <PluginFormSection>
       <PluginFormTitle>コピー元のレコードの選択時に表示するフィールド</PluginFormTitle>
-      <PluginFormDescription last></PluginFormDescription>
+      <PluginFormDescription>
+        ルックアップ実行時に、対象レコードを選択するダイアログ上に表示するフィールドを選択してください。
+      </PluginFormDescription>
+      <PluginFormDescription last>
+        「取得するフィールド」に指定し他フィールドは、必ず行の先頭に表示されます。
+      </PluginFormDescription>
       <DisplayFieldsForm />
     </PluginFormSection>
 
     <PluginFormSection>
       <PluginFormTitle>コピー元レコードの取得条件</PluginFormTitle>
-      <PluginFormDescription last></PluginFormDescription>
+      <PluginFormDescription>
+        ルックアップ実行時に、対象レコードを絞り込む条件を設定します。
+      </PluginFormDescription>
+      <PluginFormDescription last>
+        ここで指定した条件に合致するレコードのみが、ルックアップの対象となります。
+      </PluginFormDescription>
       <QueryForm />
     </PluginFormSection>
 
     <PluginFormSection>
       <PluginFormTitle>その他のオプション</PluginFormTitle>
       <PluginFormDescription last></PluginFormDescription>
-      <EnablesCacheForm />
-      <AutoLookupForm />
-      <EnablesValidationForm />
-      <SaveAndLookupState />
-      <LetterCaseForm />
-      <KatakanaForm />
-      <HankakuKatakanaForm />
-      <ZenkakuEisujiForm />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <EnablesCacheForm />
+        <AutoLookupForm />
+        <EnablesValidationForm />
+        <SaveAndLookupState />
+        <LetterCaseForm />
+        <KatakanaForm />
+        <HankakuKatakanaForm />
+        <ZenkakuEisujiForm />
+      </div>
     </PluginFormSection>
   </div>
 );
