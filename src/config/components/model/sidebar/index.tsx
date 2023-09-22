@@ -40,7 +40,7 @@ const Component: FC = () => {
   return (
     <PluginSidebar>
       <PluginConditionAppendButton onClick={appendCondition} />
-      <PluginConditionTabs value={tabIndex} onChange={onTabChange}>
+      <PluginConditionTabs tabIndex={tabIndex} onChange={onTabChange}>
         {conditions.map((_, i) => (
           <PluginConditionTab key={i} index={i}>
             <TabLabel index={i} />
