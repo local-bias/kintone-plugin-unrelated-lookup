@@ -106,7 +106,7 @@ const Container: FC = () => {
   return (
     <Suspense
       fallback={
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 380px)', gap: '8px' }}>
+        <div className='grid grid-cols-2 gap-2'>
           <Skeleton height={80} />
           <Skeleton height={80} />
           <Skeleton height={80} />

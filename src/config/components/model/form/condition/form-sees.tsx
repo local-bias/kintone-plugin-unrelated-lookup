@@ -61,13 +61,13 @@ const Component: FCX = () => {
           />
           <Tooltip title='表示フィールドを追加する'>
             <IconButton size='small' onClick={() => addField(i)}>
-              <AddIcon fontSize='small' />
+              <AddIcon fontSize='small' fill='#0006' />
             </IconButton>
           </Tooltip>
           {sees.length > 1 && (
             <Tooltip title='この表示フィールドを削除する'>
               <IconButton size='small' onClick={() => removeField(i)}>
-                <DeleteIcon fontSize='small' />
+                <DeleteIcon fontSize='small' fill='#0006' />
               </IconButton>
             </Tooltip>
           )}
@@ -81,13 +81,13 @@ const Container: FC = () => {
   return (
     <Suspense
       fallback={
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 380px)', gap: '8px' }}>
-          <Skeleton height={56} />
-          <Skeleton height={56} />
-          <Skeleton height={56} />
-          <Skeleton height={56} />
-          <Skeleton height={56} />
-          <Skeleton height={56} />
+        <div className='flex flex-col gap-2'>
+          {new Array(3).fill('').map((_, i) => (
+            <div key={i} className='flex gap-2 items-center'>
+              <Skeleton width={350} height={56} />
+              <AddIcon fontSize='small' fill='#0006' />
+            </div>
+          ))}
         </div>
       }
     >

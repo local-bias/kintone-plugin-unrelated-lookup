@@ -93,7 +93,7 @@ const Component: FCX = ({ className }) => (
     <PluginFormSection>
       <PluginFormTitle>その他のオプション</PluginFormTitle>
       <PluginFormDescription last></PluginFormDescription>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div className='flex flex-col gap-1'>
         <EnablesCacheForm />
         <AutoLookupForm />
         <EnablesValidationForm />
@@ -112,12 +112,6 @@ const StyledComponent = styled(Component)`
   display: flex;
   flex-direction: column;
   gap: 16px;
-
-  > div {
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-  }
 
   .input {
     min-width: 250px;

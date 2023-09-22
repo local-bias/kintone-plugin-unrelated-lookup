@@ -1,7 +1,7 @@
 //@ts-check
 const HP = 'https://konomi.app/';
 const commonCDN = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest/dist/';
-const localhost = 'https://127.0.0.1:32682/dist/dev/';
+const localhost = 'https://127.0.0.1:32682';
 
 /** @type {import('@konomi-app/kintone-utilities').PluginConfig} */
 export default {
@@ -27,9 +27,18 @@ export default {
       config: { html: 'config.html', js: [`${commonCDN}config.js`], css: [], required_params: [] },
     },
     dev: {
-      desktop: { js: [`${localhost}desktop/index.js`] },
-      mobile: { js: [`${localhost}desktop/index.js`] },
-      config: { js: [`${localhost}config/index.js`] },
+      desktop: {
+        js: [`${localhost}/dist/dev/desktop/index.js`],
+        css: [`${localhost}/dist/dev/desktop.css`],
+      },
+      mobile: {
+        js: [`${localhost}/dist/dev/desktop/index.js`],
+        css: [`${localhost}/dist/dev/desktop.css`],
+      },
+      config: {
+        js: [`${localhost}/dist/dev/config/index.js`],
+        css: [`${localhost}/dist/dev/config.css`],
+      },
     },
     prod: {
       desktop: { js: ['desktop.js'], css: ['desktop.css'] },

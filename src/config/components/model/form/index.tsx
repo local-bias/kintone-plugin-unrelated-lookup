@@ -1,6 +1,5 @@
-import React, { FC, FCX } from 'react';
+import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
-import styled from '@emotion/styled';
 
 import { storageState } from '../../../states/plugin';
 import Condition from './condition';
@@ -10,8 +9,8 @@ type Props = Readonly<{
   conditionLength: number;
 }>;
 
-const Component: FCX<Props> = ({ className, conditionLength }) => (
-  <div {...{ className }}>
+const Component: FC<Props> = ({ conditionLength }) => (
+  <div className='w-full py-4'>
     {new Array(conditionLength).fill('').map((_, index) => (
       <ConditionIndexProvider key={index} conditionIndex={index}>
         <Condition key={index} />
@@ -20,20 +19,12 @@ const Component: FCX<Props> = ({ className, conditionLength }) => (
   </div>
 );
 
-const StyledComponent = styled(Component)`
-  width: 100%;
-
-  & > div {
-    padding: 1em;
-  }
-`;
-
 const Container: FC = () => {
   const storage = useRecoilValue(storageState);
 
   const conditionLength = storage?.conditions?.length ?? 1;
 
-  return <StyledComponent conditionLength={conditionLength} />;
+  return <Component conditionLength={conditionLength} />;
 };
 
 export default Container;
