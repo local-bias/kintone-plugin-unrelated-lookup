@@ -2,29 +2,18 @@ import { SnackbarProvider } from 'notistack';
 import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 
-import { ErrorBoundary } from '@/common/components/error-boundary';
-import { restoreStorage } from '@/common/plugin';
-
+import { PluginErrorBoundary } from '@/common/components/error-boundary';
 import { PluginLayout, PluginBanner } from '@konomi-app/kintone-utility-component';
 import Form from './components/model/form';
 import Footer from './components/model/footer';
 import Sidebar from './components/model/sidebar';
-
 import { Loading } from '@/common/components/loading';
 import { URL_PROMOTION } from '@/common/statics';
-import { guestSpaceIdState, pluginIdState, storageState } from './states/plugin';
-import { GUEST_SPACE_ID, PLUGIN_ID } from '@/common/global';
 
 const Component: FC = () => (
   <>
-    <RecoilRoot
-      initializeState={({ set }) => {
-        set(pluginIdState, PLUGIN_ID);
-        set(guestSpaceIdState, GUEST_SPACE_ID ?? null);
-        set(storageState, restoreStorage(PLUGIN_ID));
-      }}
-    >
-      <ErrorBoundary>
+    <RecoilRoot>
+      <PluginErrorBoundary>
         <SnackbarProvider maxSnack={1}>
           <PluginLayout>
             <Suspense fallback={<Loading label='設定情報を取得しています' />}>
@@ -35,7 +24,7 @@ const Component: FC = () => (
             </Suspense>
           </PluginLayout>
         </SnackbarProvider>
-      </ErrorBoundary>
+      </PluginErrorBoundary>
     </RecoilRoot>
     <iframe
       title='promotion'

@@ -1,41 +1,39 @@
 import { selector, selectorFamily } from 'recoil';
-import { Properties } from '@kintone/rest-api-client/lib/client/types';
 import {
   DEFAULT_DEFINED_FIELDS,
   getFieldProperties,
   omitFieldProperties,
 } from '@/common/kintone-api';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
-import { guestSpaceIdState, srcAppIdState } from './plugin';
+import { srcAppIdState } from './plugin';
 import { getAllApps, getFormFields } from '@konomi-app/kintone-utilities';
 import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
+import { GUEST_SPACE_ID } from '@/common/global';
 
 const PREFIX = 'kintone';
 
 export const kintoneAppsState = selector({
   key: `${PREFIX}kintoneAppsState`,
   get: async ({ get }) => {
-    const guestSpaceId = get(guestSpaceIdState);
     const apps = await getAllApps({
-      guestSpaceId: guestSpaceId ?? undefined,
+      guestSpaceId: GUEST_SPACE_ID,
       debug: process?.env?.NODE_ENV === 'development',
     });
     return apps;
   },
 });
 
-export const appFieldsState = selector<Properties>({
+export const appFieldsState = selector<kintoneAPI.FieldProperties>({
   key: `${PREFIX}AppFields`,
   get: async ({ get }) => {
     const app = getAppId();
     if (!app) {
       throw new Error('アプリのフィールド情報が取得できませんでした');
     }
-    const guestSpaceId = get(guestSpaceIdState);
     const { properties } = await getFormFields({
       app,
       preview: true,
-      guestSpaceId: guestSpaceId ?? undefined,
+      guestSpaceId: GUEST_SPACE_ID,
       debug: process?.env?.NODE_ENV === 'development',
     });
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
@@ -52,11 +50,10 @@ export const dstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       throw new Error('アプリのフィールド情報が取得できませんでした');
     }
 
-    const guestSpaceId = get(guestSpaceIdState);
     const { properties } = await getFormFields({
       app,
       preview: true,
-      guestSpaceId: guestSpaceId ?? undefined,
+      guestSpaceId: GUEST_SPACE_ID,
       debug: process?.env?.NODE_ENV === 'development',
     });
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
@@ -75,11 +72,10 @@ export const srcAppPropertiesState = selectorFamily<kintoneAPI.FieldProperty[], 
         return [];
       }
 
-      const guestSpaceId = get(guestSpaceIdState);
       const props = await getFieldProperties({
         targetApp: srcAppId,
         preview: true,
-        guestSpaceId: guestSpaceId ?? undefined,
+        guestSpaceId: GUEST_SPACE_ID,
       });
       const filtered = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
 
