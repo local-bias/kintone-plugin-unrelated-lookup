@@ -1,5 +1,8 @@
 import React, { FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { LoaderWithLabel } from '@konomi-app/ui-react';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 
 import {
   dialogVisibleState,
@@ -9,14 +12,11 @@ import {
 } from '../../../states';
 import { apply } from '../../../action';
 import { useSnackbar } from 'notistack';
-import { Loading } from '@/common/components/loading';
 
 import Layout from './layout';
 import Empty from './empty';
 import Cell from './cell';
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { displayingRecordsState } from '../../../states/records';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 type Props = {
   records: kintoneAPI.RecordData[];
@@ -27,7 +27,7 @@ type Props = {
 
 const Component: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
   <Layout>
-    {!records.length && !hasCached && <Loading label='レコードを取得しています' />}
+    {!records.length && !hasCached && <LoaderWithLabel label='レコードを取得しています' />}
     {!records.length && hasCached && <Empty />}
     {!!records.length && (
       <table>
