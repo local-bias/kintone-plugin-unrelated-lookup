@@ -32,14 +32,14 @@ export default {
       config: { js: [`${localhost}config/index.js`] },
     },
     prod: {
-      desktop: { js: ['desktop.js'] },
-      mobile: { js: ['desktop.js'] },
-      config: { js: ['config.js'] },
+      desktop: { js: ['desktop.js'], css: ['desktop.css'] },
+      mobile: { js: ['desktop.js'], css: ['desktop.css'] },
+      config: { js: ['config.js'], css: ['config.css'] },
     },
     standalone: {
-      desktop: { js: ['desktop.js'] },
-      mobile: { js: ['desktop.js'] },
-      config: { js: ['config.js'] },
+      desktop: { js: ['desktop.js'], css: ['desktop.css'] },
+      mobile: { js: ['desktop.js'], css: ['desktop.css'] },
+      config: { js: ['config.js'], css: ['config.css'] },
     },
   },
 };
