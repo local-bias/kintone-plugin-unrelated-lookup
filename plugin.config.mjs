@@ -8,7 +8,7 @@ export default {
   manifest: {
     base: {
       manifest_version: 1,
-      version: '1.9.2',
+      version: '1.10.0',
       type: 'APP',
       name: {
         en: 'unrelated lookup plugin',
