@@ -3,7 +3,6 @@ import {
   convertKatakanaToHiragana,
   convertZenkakuEisujiToHankaku,
 } from '@/common/utilities';
-import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { atom, selector } from 'recoil';
 import {
   dialogPageChunkState,
@@ -11,15 +10,16 @@ import {
   pluginConditionState,
   searchInputState,
 } from '.';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
-export type HandledRecord = { __quickSearch: string; record: KintoneRecord };
+export type HandledRecord = { __quickSearch: string; record: kintoneAPI.RecordData };
 
 export const srcAllRecordsState = atom<HandledRecord[]>({
   key: 'srcAllRecordsState',
   default: [],
 });
 
-export const filteredRecordsState = selector<KintoneRecord[]>({
+export const filteredRecordsState = selector<kintoneAPI.RecordData[]>({
   key: 'filteredRecordsState',
   get: ({ get }) => {
     const condition = get(pluginConditionState);
@@ -60,7 +60,7 @@ export const filteredRecordsState = selector<KintoneRecord[]>({
   },
 });
 
-export const displayingRecordsState = selector<KintoneRecord[]>({
+export const displayingRecordsState = selector<kintoneAPI.RecordData[]>({
   key: 'displayingRecordsState',
   get: ({ get }) => {
     const records = get(filteredRecordsState);

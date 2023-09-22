@@ -9,7 +9,6 @@ import {
 } from '../../../states';
 import { apply } from '../../../action';
 import { useSnackbar } from 'notistack';
-import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { Loading } from '@/common/components/loading';
 
 import Layout from './layout';
@@ -17,9 +16,10 @@ import Empty from './empty';
 import Cell from './cell';
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { displayingRecordsState } from '../../../states/records';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 type Props = {
-  records: KintoneRecord[];
+  records: kintoneAPI.RecordData[];
   onRowClick: (record: any) => void;
   condition: kintone.plugin.Condition | null;
   hasCached: boolean;
@@ -65,7 +65,7 @@ const Container: FC = () => {
   const hasCached = useRecoilValue(alreadyCacheState);
   const { enqueueSnackbar } = useSnackbar();
 
-  const onRowClick = (selectedRecord: KintoneRecord) => {
+  const onRowClick = (selectedRecord: kintoneAPI.RecordData) => {
     const { record } = getCurrentRecord();
     const applied = apply(condition!, record, selectedRecord, {
       enqueueSnackbar,

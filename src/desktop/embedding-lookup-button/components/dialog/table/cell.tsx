@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { OneOf as KintoneField } from '@kintone/rest-api-client/lib/KintoneFields/types/field';
 import { sanitize } from 'dompurify';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
-type ContainerProps = Readonly<{ field: KintoneField }>;
+type ContainerProps = Readonly<{ field: kintoneAPI.Field }>;
 
 const Container: FC<ContainerProps> = ({ field }) => {
   if (!field) {

@@ -2,7 +2,6 @@ import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
-import { Record as KintoneRecord } from '@kintone/rest-api-client/lib/client/types';
 import { getFieldProperties, someFieldValue } from '@/common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/common/statics';
@@ -15,17 +14,17 @@ type EnqueueSnackbar = (
 
 export const lookup = async (params: {
   condition: kintone.plugin.Condition;
-  record: KintoneRecord;
+  record: kintoneAPI.RecordData;
   guestSpaceId: string | null;
   option?: {
     input: string;
     hasCached: boolean;
-    cachedRecords: KintoneRecord[];
+    cachedRecords: kintoneAPI.RecordData[];
     enqueueSnackbar: EnqueueSnackbar;
     setShown: SetterOrUpdater<boolean>;
     setLookuped: SetterOrUpdater<boolean>;
   };
-}): Promise<KintoneRecord> => {
+}): Promise<kintoneAPI.RecordData> => {
   const { condition, record, guestSpaceId, option } = params;
 
   // 全レコードのキャッシュが取得済みであれば、キャッシュから対象レコードを検索します
@@ -49,7 +48,7 @@ export const lookup = async (params: {
 
   let query = '';
   if (value) {
-    const requireEscaping: KintoneRecord[string]['type'][] = [
+    const requireEscaping: kintoneAPI.RecordData[string]['type'][] = [
       'SINGLE_LINE_TEXT',
       'MULTI_LINE_TEXT',
       'RICH_TEXT',
@@ -62,7 +61,7 @@ export const lookup = async (params: {
 
     const valueQuery = requireEscaping.includes(dstType) ? `"${value}"` : value;
 
-    const likeSearchFields: KintoneRecord[string]['type'][] = [
+    const likeSearchFields: kintoneAPI.RecordData[string]['type'][] = [
       'SINGLE_LINE_TEXT',
       'LINK',
       'MULTI_LINE_TEXT',
@@ -70,7 +69,7 @@ export const lookup = async (params: {
       'FILE',
     ];
 
-    const inSearchFields: KintoneRecord[string]['type'][] = [
+    const inSearchFields: kintoneAPI.RecordData[string]['type'][] = [
       'CREATOR',
       'MODIFIER',
       'CHECK_BOX',
@@ -153,8 +152,8 @@ export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
 
 export const apply = (
   condition: kintone.plugin.Condition,
-  srcRecord: KintoneRecord,
-  dstRecord: KintoneRecord,
+  srcRecord: kintoneAPI.RecordData,
+  dstRecord: kintoneAPI.RecordData,
   option?: {
     enqueueSnackbar: EnqueueSnackbar;
     setLookuped: SetterOrUpdater<boolean>;
