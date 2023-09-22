@@ -18,44 +18,71 @@ import HankakuKatakanaForm from './form-hankaku-katakana';
 import { useConditionIndex } from '../../../functional/condition-index-provider';
 import { useRecoilValue } from 'recoil';
 import { tabIndexState } from '../../../../states/plugin';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+} from '@konomi-app/kintone-utility-component';
 
 const Component: FCX = ({ className }) => (
   <div className={className}>
-    <div>
-      <h3>対象フィールド(ルックアップボタンを設置するフィールド)</h3>
-      <DstFieldForm />
-      <div>
-        <small>
-          ルックアップフィールドは使用しません。ここでは文字列1行フィールドを選択してください。
-        </small>
-      </div>
-      <small>
+    <PluginFormSection>
+      <PluginFormTitle>対象フィールド(ルックアップボタンを設置するフィールド)</PluginFormTitle>
+      <PluginFormDescription>
+        <span style={{ color: 'red' }}>
+          ルックアップフィールドは使用しません。文字列1行フィールドを選択してください。
+        </span>
+      </PluginFormDescription>
+      <PluginFormDescription last>
         また、対象フィールドにボタンを設置するため、アプリ設定からフィールドの幅に余裕を持たせてください。
-      </small>
-    </div>
-    <div>
-      <h3>関連付けないアプリ(参照先アプリ)</h3>
-      <SrcAppForm />
-    </div>
-    <div>
-      <h3>取得するフィールド(ボタンを設置したフィールドに反映するフィールド)</h3>
-      <SrcFieldForm />
-    </div>
+      </PluginFormDescription>
+      <DstFieldForm />
+    </PluginFormSection>
 
-    <div>
-      <h3>他のフィールドのコピー</h3>
+    <PluginFormSection>
+      <PluginFormTitle>関連付けないアプリ(参照先アプリ)</PluginFormTitle>
+      <PluginFormDescription last>
+        標準機能の「関連付けるアプリ」にあたる、ルックアップの取得先アプリを選択してください。
+      </PluginFormDescription>
+      <SrcAppForm />
+    </PluginFormSection>
+
+    <PluginFormSection>
+      <PluginFormTitle>
+        取得するフィールド(ボタンを設置したフィールドに反映するフィールド)
+      </PluginFormTitle>
+      <PluginFormDescription last>
+        標準機能の「コピー元のフィールド」にあたる、ルックアップを実行した際に取得先からコピーするフィールドを選択してください。
+      </PluginFormDescription>
+      <SrcFieldForm />
+    </PluginFormSection>
+
+    <PluginFormSection>
+      <PluginFormTitle>他のフィールドのコピー</PluginFormTitle>
+      <PluginFormDescription>
+        ルックアップ実行時に、併せてコピーするフィールドの設定を行います。
+      </PluginFormDescription>
+      <PluginFormDescription last>
+        このアプリに存在するコピー元となるフィールドと、取得先アプリに存在するコピー先となるフィールドを選択してください。
+      </PluginFormDescription>
       <CopiesForm />
-    </div>
-    <div>
-      <h3>コピー元のレコードの選択時に表示するフィールド</h3>
+    </PluginFormSection>
+
+    <PluginFormSection>
+      <PluginFormTitle>コピー元のレコードの選択時に表示するフィールド</PluginFormTitle>
+      <PluginFormDescription last></PluginFormDescription>
       <DisplayFieldsForm />
-    </div>
-    <div>
-      <h3>コピー元レコードの取得条件</h3>
+    </PluginFormSection>
+
+    <PluginFormSection>
+      <PluginFormTitle>コピー元レコードの取得条件</PluginFormTitle>
+      <PluginFormDescription last></PluginFormDescription>
       <QueryForm />
-    </div>
-    <div>
-      <h3>その他のオプション</h3>
+    </PluginFormSection>
+
+    <PluginFormSection>
+      <PluginFormTitle>その他のオプション</PluginFormTitle>
+      <PluginFormDescription last></PluginFormDescription>
       <EnablesCacheForm />
       <AutoLookupForm />
       <EnablesValidationForm />
@@ -64,7 +91,7 @@ const Component: FCX = ({ className }) => (
       <KatakanaForm />
       <HankakuKatakanaForm />
       <ZenkakuEisujiForm />
-    </div>
+    </PluginFormSection>
   </div>
 );
 
