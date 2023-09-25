@@ -243,6 +243,11 @@ export const clearLookup = async (condition: kintone.plugin.Condition) => {
       default:
         break;
     }
+
+    if (condition.autoLookup) {
+      //@ts-ignore
+      record[to].lookup = 'CLEAR';
+    }
   }
 
   lookupObserver[condition.dstField].lookuped = false;
