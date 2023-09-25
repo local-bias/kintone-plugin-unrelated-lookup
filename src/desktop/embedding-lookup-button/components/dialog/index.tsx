@@ -36,6 +36,11 @@ const StyledComponent = styled(Component)`
     & > div {
       height: 90vh;
 
+      @media (max-width: 600px) {
+        margin: 0;
+        width: 100vw;
+      }
+
       .MuiDialogContent-root {
         position: relative;
         padding: 0;
