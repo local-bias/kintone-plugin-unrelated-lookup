@@ -118,7 +118,7 @@ const Container: FC = () => {
 
 export default Container;
 
-const onFileLoad = (file: File | Blob, encoding = 'Shift_JIS') => {
+const onFileLoad = (file: File | Blob, encoding = 'UTF-8') => {
   return new Promise<ProgressEvent<FileReader>>((resolve, reject) => {
     try {
       const reader = new FileReader();
