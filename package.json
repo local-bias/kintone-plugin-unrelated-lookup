@@ -21,7 +21,7 @@
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@kintone/dts-gen": "8.0.1",
-    "@kintone/plugin-packer": "8.0.0",
+    "@kintone/plugin-packer": "8.0.1",
     "@kintone/plugin-uploader": "9.0.0",
     "@kintone/rest-api-client": "5.0.1",
     "@kintone/webpack-plugin-kintone-plugin": "8.0.0",
