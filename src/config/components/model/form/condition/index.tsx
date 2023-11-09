@@ -22,7 +22,7 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-} from '@konomi-app/kintone-utility-component';
+} from '@konomi-app/kintone-utilities-react';
 
 const Component: FCX = ({ className }) => (
   <div className={className}>

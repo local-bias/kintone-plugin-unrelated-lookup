@@ -4,7 +4,7 @@ import { RecoilRoot } from 'recoil';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 
 import { PluginErrorBoundary } from '@/common/components/error-boundary';
-import { PluginLayout, PluginBanner } from '@konomi-app/kintone-utility-component';
+import { PluginLayout, PluginBanner } from '@konomi-app/kintone-utilities-react';
 import Form from './components/model/form';
 import Footer from './components/model/footer';
 import Sidebar from './components/model/sidebar';

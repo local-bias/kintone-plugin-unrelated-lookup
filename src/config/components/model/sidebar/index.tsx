@@ -4,7 +4,7 @@ import {
   PluginConditionTabs,
   PluginConditionTab,
   PluginSidebar,
-} from '@konomi-app/kintone-utility-component';
+} from '@konomi-app/kintone-utilities-react';
 
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { conditionsState, storageState, tabIndexState } from '../../../states/plugin';
