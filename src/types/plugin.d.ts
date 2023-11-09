@@ -11,7 +11,6 @@ declare namespace Plugin {
   type ConfigV2 = {
     version: 2;
     conditions: {
-      srcAppId: string;
       srcField: string;
       dstField: string;
       copies: { from: string; to: string }[];
@@ -31,20 +30,13 @@ declare namespace Plugin {
   type ConfigV1 = {
     version: 1;
     conditions: {
-      srcAppId: string;
-      srcField: string;
-      dstField: string;
+      related: string;
+      target: string;
       copies: { from: string; to: string }[];
       sees: string[];
       enablesCache: boolean;
       enablesValidation: boolean;
       autoLookup: boolean;
-      saveAndLookup: boolean;
-      query: string;
-      ignoresLetterCase?: boolean;
-      ignoresKatakana?: boolean;
-      ignoresZenkakuEisuji?: boolean;
-      ignoresHankakuKatakana?: boolean;
     }[];
   };
 }

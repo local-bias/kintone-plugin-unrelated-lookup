@@ -9,7 +9,7 @@ listener.add(events, async (event) => {
   const { conditions } = cleanse(restorePluginConfig());
 
   const targetConditions = conditions.filter(
-    (condition) => condition.srcField && condition.srcAppId && condition.enablesValidation
+    (condition) => condition.srcField && condition.enablesValidation
   );
 
   if (!targetConditions.length) {

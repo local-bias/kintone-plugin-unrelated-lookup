@@ -8,9 +8,7 @@ const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record
 listener.add(events, async (event) => {
   const { conditions } = cleanse(restorePluginConfig());
 
-  const targetConditions = conditions.filter(
-    (condition) => condition.srcField && condition.srcAppId
-  );
+  const targetConditions = conditions.filter((condition) => condition.srcField);
 
   if (!targetConditions.length) {
     return event;

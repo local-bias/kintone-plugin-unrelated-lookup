@@ -1,7 +1,7 @@
 import { AutocompleteKintoneField } from '@/common/components/autocomplete-field-input';
 import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
-import { srcAppPropertiesState } from '../../../states/kintone';
+import { dstAppPropertiesState } from '../../../states/kintone';
 
 type Props = {
   fieldCode: string;
@@ -10,7 +10,7 @@ type Props = {
 };
 
 const Component: FC<Props> = (props) => {
-  const srcFields = useRecoilValue(srcAppPropertiesState);
+  const srcFields = useRecoilValue(dstAppPropertiesState);
 
   return <AutocompleteKintoneField fields={srcFields} {...props} />;
 };

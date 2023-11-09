@@ -8,7 +8,6 @@ import { getFieldId } from '@/common/cybozu';
 import App from './app';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/common/listener';
-import { GUEST_SPACE_ID } from '@/common/global';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
@@ -16,7 +15,7 @@ listener.add(events, async (event) => {
   const { conditions } = cleanse(restorePluginConfig());
 
   for (const condition of conditions) {
-    if (!condition.dstField || !condition.srcAppId || !condition.srcField) {
+    if (!condition.dstField || !condition.srcField) {
       continue;
     }
 

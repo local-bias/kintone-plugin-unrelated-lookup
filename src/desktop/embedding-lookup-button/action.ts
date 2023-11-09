@@ -1,7 +1,7 @@
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
+import { getAppId, getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { getFieldProperties, someFieldValue } from '@/common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/common/statics';
@@ -43,7 +43,7 @@ export const lookup = async (params: {
   const value = record[condition.dstField].value as string;
   const dstType = record[condition.dstField].type;
 
-  const app = condition.srcAppId;
+  const app = getAppId();
   const additionalQuery = condition.query || '';
 
   let query = '';

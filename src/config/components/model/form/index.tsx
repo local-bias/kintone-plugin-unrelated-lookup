@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import DstFieldForm from './form-dst-field';
-import SrcAppForm from './form-src-app';
 import SrcFieldForm from './form-src-field';
 import CopiesForm from './form-copies';
 import DisplayFieldsForm from './form-sees';
@@ -38,14 +37,6 @@ const Component: FC = () => (
         また、対象フィールドにボタンを設置するため、アプリ設定からフィールドの幅に余裕を持たせてください。
       </PluginFormDescription>
       <DstFieldForm />
-    </PluginFormSection>
-
-    <PluginFormSection>
-      <PluginFormTitle>関連付けないアプリ(参照先アプリ)</PluginFormTitle>
-      <PluginFormDescription last>
-        標準機能の「関連付けるアプリ」にあたる、ルックアップの取得先アプリを選択してください。
-      </PluginFormDescription>
-      <SrcAppForm />
     </PluginFormSection>
 
     <PluginFormSection>

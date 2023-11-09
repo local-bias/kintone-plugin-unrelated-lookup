@@ -55,9 +55,6 @@ const conditionPropertyState = selectorFamily<
 export const dstFieldState = conditionPropertyState('dstField') as RecoilState<
   Plugin.Condition['dstField']
 >;
-export const srcAppIdState = conditionPropertyState('srcAppId') as RecoilState<
-  Plugin.Condition['srcAppId']
->;
 export const srcFieldState = conditionPropertyState('srcField') as RecoilState<
   Plugin.Condition['srcField']
 >;

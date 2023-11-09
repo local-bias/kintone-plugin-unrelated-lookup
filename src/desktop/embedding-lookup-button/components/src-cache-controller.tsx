@@ -6,6 +6,7 @@ import { getLookupSrcFields } from '../action';
 import { PLUGIN_NAME } from '@/common/statics';
 import { HandledRecord, srcAllRecordsState } from '../states/records';
 import { GUEST_SPACE_ID } from '@/common/global';
+import { getAppId } from '@lb-ribbit/kintone-xapp';
 
 const Container: FC = () => {
   const setAllRecords = useSetRecoilState(srcAllRecordsState);
@@ -19,7 +20,7 @@ const Container: FC = () => {
         return;
       }
       try {
-        const app = condition.srcAppId;
+        const app = getAppId();
         if (!app) {
           throw new Error('アプリ情報が取得できませんでした');
         }

@@ -2,6 +2,7 @@ import { getApp } from '@konomi-app/kintone-utilities';
 import { selector } from 'recoil';
 import { pluginConditionState } from '..';
 import { GUEST_SPACE_ID } from '@/common/global';
+import { getAppId } from '@lb-ribbit/kintone-xapp';
 
 const state = selector<string>({
   key: 'dialogTitleState',
@@ -13,7 +14,7 @@ const state = selector<string>({
     }
 
     const appProps = await getApp({
-      id: condition.srcAppId,
+      id: getAppId()!,
       guestSpaceId: GUEST_SPACE_ID,
       debug: process?.env?.NODE_ENV === 'development',
     });

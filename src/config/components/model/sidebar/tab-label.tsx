@@ -7,9 +7,9 @@ type Props = { index: number };
 
 const Component: FC<Props> = ({ index }) => {
   const conditions = useRecoilValue(conditionsState);
-  const { srcAppId, srcField, dstField } = conditions[index];
+  const { srcField, dstField } = conditions[index];
 
-  if (!srcAppId || !srcField || !dstField) {
+  if (!srcField || !dstField) {
     return null;
   }
   return (

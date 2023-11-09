@@ -3,7 +3,6 @@ import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { PLUGIN_ID } from './global';
 
 export const getNewCondition = (): Plugin.Condition => ({
-  srcAppId: '',
   srcField: '',
   dstField: '',
   copies: [{ from: '', to: '' }],
@@ -42,10 +41,14 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         version: 2,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
-          isCaseSensitive: !(condition.ignoresLetterCase ?? true),
-          isKatakanaSensitive: !(condition.ignoresKatakana ?? true),
-          isZenkakuEisujiSensitive: !(condition.ignoresZenkakuEisuji ?? true),
-          isHankakuKatakanaSensitive: !(condition.ignoresHankakuKatakana ?? true),
+          srcField: condition.related,
+          dstField: condition.target,
+          query: '',
+          saveAndLookup: false,
+          isCaseSensitive: false,
+          isKatakanaSensitive: false,
+          isZenkakuEisujiSensitive: false,
+          isHankakuKatakanaSensitive: false,
         })),
       };
     default:

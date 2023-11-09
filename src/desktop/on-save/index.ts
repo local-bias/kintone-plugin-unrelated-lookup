@@ -14,7 +14,7 @@ listener.add(events, async (event) => {
   const { conditions } = cleanse(restorePluginConfig());
 
   const targetConditions = conditions.filter(
-    (condition) => condition.srcField && condition.srcAppId && condition.saveAndLookup
+    (condition) => condition.srcField && condition.saveAndLookup
   );
 
   if (!targetConditions.length) {
