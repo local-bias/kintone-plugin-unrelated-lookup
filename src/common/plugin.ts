@@ -13,17 +13,17 @@ export const getNewCondition = (): Plugin.Condition => ({
   autoLookup: true,
   saveAndLookup: false,
   query: '',
-  ignoresLetterCase: true,
-  ignoresKatakana: true,
-  ignoresZenkakuEisuji: true,
-  ignoresHankakuKatakana: true,
+  isCaseSensitive: false,
+  isKatakanaSensitive: false,
+  isZenkakuEisujiSensitive: false,
+  isHankakuKatakanaSensitive: false,
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 1,
+  version: 2,
   conditions: [getNewCondition()],
 });
 
@@ -37,7 +37,17 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
   switch (version) {
     case undefined:
     case 1:
-      return anyConfig;
+      return {
+        ...anyConfig,
+        version: 2,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          isCaseSensitive: !(condition.ignoresLetterCase ?? true),
+          isKatakanaSensitive: !(condition.ignoresKatakana ?? true),
+          isZenkakuEisujiSensitive: !(condition.ignoresZenkakuEisuji ?? true),
+          isHankakuKatakanaSensitive: !(condition.ignoresHankakuKatakana ?? true),
+        })),
+      };
     default:
       return anyConfig;
   }

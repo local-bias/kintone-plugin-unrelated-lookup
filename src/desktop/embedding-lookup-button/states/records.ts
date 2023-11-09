@@ -1,8 +1,3 @@
-import {
-  convertHankakuKatakanaToZenkaku,
-  convertKatakanaToHiragana,
-  convertZenkakuEisujiToHankaku,
-} from '@/common/utilities';
 import { atom, selector } from 'recoil';
 import {
   dialogPageChunkState,
@@ -10,7 +5,7 @@ import {
   pluginConditionState,
   searchInputState,
 } from '.';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { kintoneAPI, getYuruChara } from '@konomi-app/kintone-utilities';
 
 export type HandledRecord = { __quickSearch: string; record: kintoneAPI.RecordData };
 
@@ -27,29 +22,18 @@ export const filteredRecordsState = selector<kintoneAPI.RecordData[]>({
     const text = get(searchInputState);
 
     const {
-      ignoresLetterCase = true,
-      ignoresKatakana = true,
-      ignoresHankakuKatakana = true,
-      ignoresZenkakuEisuji = true,
+      isCaseSensitive,
+      isKatakanaSensitive,
+      isZenkakuEisujiSensitive,
+      isHankakuKatakanaSensitive,
     } = condition || {};
 
-    let input = text;
-
-    if (ignoresZenkakuEisuji) {
-      input = convertZenkakuEisujiToHankaku(input);
-    }
-
-    if (ignoresLetterCase) {
-      input = input.toLowerCase();
-    }
-
-    if (ignoresHankakuKatakana) {
-      input = convertHankakuKatakanaToZenkaku(input);
-    }
-
-    if (ignoresKatakana) {
-      input = convertKatakanaToHiragana(input);
-    }
+    let input = getYuruChara(text, {
+      isCaseSensitive,
+      isKatakanaSensitive,
+      isZenkakuEisujiSensitive,
+      isHankakuKatakanaSensitive,
+    });
 
     const words = input.split(/\s+/g);
     const filtered = cachedRecords.filter(({ __quickSearch }) =>

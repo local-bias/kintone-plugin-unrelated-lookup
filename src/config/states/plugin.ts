@@ -78,15 +78,15 @@ export const enablesValidationState = conditionPropertyState('enablesValidation'
 export const saveAndLookupState = conditionPropertyState('saveAndLookup') as RecoilState<
   Plugin.Condition['saveAndLookup']
 >;
-export const ignoresLetterCaseState = conditionPropertyState('ignoresLetterCase') as RecoilState<
-  Plugin.Condition['ignoresLetterCase']
+export const isCaseSensitiveState = conditionPropertyState('isCaseSensitive') as RecoilState<
+  Plugin.Condition['isCaseSensitive']
 >;
-export const ignoresKatakanaState = conditionPropertyState('ignoresKatakana') as RecoilState<
-  Plugin.Condition['ignoresKatakana']
->;
-export const ignoresZenkakuEisujiState = conditionPropertyState(
-  'ignoresZenkakuEisuji'
-) as RecoilState<Plugin.Condition['ignoresZenkakuEisuji']>;
-export const ignoresHankakuKatakanaState = conditionPropertyState(
-  'ignoresHankakuKatakana'
-) as RecoilState<Plugin.Condition['ignoresHankakuKatakana']>;
+export const isKatakanaSensitiveState = conditionPropertyState(
+  'isKatakanaSensitive'
+) as RecoilState<Plugin.Condition['isKatakanaSensitive']>;
+export const isHankakuKatakanaSensitiveState = conditionPropertyState(
+  'isHankakuKatakanaSensitive'
+) as RecoilState<Plugin.Condition['isHankakuKatakanaSensitive']>;
+export const isZenkakuEisujiSensitiveState = conditionPropertyState(
+  'isZenkakuEisujiSensitive'
+) as RecoilState<Plugin.Condition['isZenkakuEisujiSensitive']>;

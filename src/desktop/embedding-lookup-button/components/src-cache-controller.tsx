@@ -1,6 +1,6 @@
 import { useEffect, FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { getAllRecords, getFieldValueAsString } from '@konomi-app/kintone-utilities';
+import { getAllRecords, getFieldValueAsString, getYuruChara } from '@konomi-app/kintone-utilities';
 import {
   pluginConditionState,
   alreadyCacheState,
@@ -9,11 +9,6 @@ import {
 } from '../states';
 import { getLookupSrcFields } from '../action';
 import { PLUGIN_NAME } from '@/common/statics';
-import {
-  convertHankakuKatakanaToZenkaku,
-  convertKatakanaToHiragana,
-  convertZenkakuEisujiToHankaku,
-} from '@/common/utilities';
 import { HandledRecord, srcAllRecordsState } from '../states/records';
 
 const Container: FC = () => {
@@ -36,10 +31,10 @@ const Container: FC = () => {
 
         const {
           query = '',
-          ignoresLetterCase = true,
-          ignoresKatakana = true,
-          ignoresHankakuKatakana = true,
-          ignoresZenkakuEisuji = true,
+          isCaseSensitive,
+          isKatakanaSensitive,
+          isZenkakuEisujiSensitive,
+          isHankakuKatakanaSensitive,
         } = condition;
 
         const fields = getLookupSrcFields(condition);
@@ -55,21 +50,12 @@ const Container: FC = () => {
                 .map((field) => getFieldValueAsString(field))
                 .join('__');
 
-              if (ignoresZenkakuEisuji) {
-                __quickSearch = convertZenkakuEisujiToHankaku(__quickSearch);
-              }
-
-              if (ignoresLetterCase) {
-                __quickSearch = __quickSearch.toLowerCase();
-              }
-
-              if (ignoresHankakuKatakana) {
-                __quickSearch = convertHankakuKatakanaToZenkaku(__quickSearch);
-              }
-
-              if (ignoresKatakana) {
-                __quickSearch = convertKatakanaToHiragana(__quickSearch);
-              }
+              __quickSearch = getYuruChara(__quickSearch, {
+                isCaseSensitive,
+                isKatakanaSensitive,
+                isZenkakuEisujiSensitive,
+                isHankakuKatakanaSensitive,
+              });
 
               return { record, __quickSearch };
             });

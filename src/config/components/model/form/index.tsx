@@ -8,10 +8,10 @@ import {
   autoLookupState,
   enablesCacheState,
   enablesValidationState,
-  ignoresHankakuKatakanaState,
-  ignoresKatakanaState,
-  ignoresLetterCaseState,
-  ignoresZenkakuEisujiState,
+  isCaseSensitiveState,
+  isHankakuKatakanaSensitiveState,
+  isKatakanaSensitiveState,
+  isZenkakuEisujiSensitiveState,
   queryState,
   saveAndLookupState,
 } from '../../../states/plugin';
@@ -22,6 +22,8 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { FormSwitch } from '@/common/components/form-switch';
 import FormText from '@/common/components/form-text';
+import DeleteButton from './condition-delete-button';
+import { PluginErrorBoundary } from '@/common/components/error-boundary';
 
 const Component: FC = () => (
   <div className='p-4'>
@@ -112,24 +114,33 @@ const Component: FC = () => (
         />
         <FormSwitch label='レコード保存時に、ルックアップを実行する' state={saveAndLookupState} />
         <FormSwitch
-          label='絞り込みの際、アルファベットの大文字と小文字を区別しない'
-          state={ignoresLetterCaseState}
+          label='絞り込みの際、アルファベットの大文字と小文字を区別する'
+          state={isCaseSensitiveState}
         />
         <FormSwitch
-          label='絞り込みの際、カタカナとひらがなを区別しない'
-          state={ignoresKatakanaState}
+          label='絞り込みの際、カタカナとひらがなを区別する'
+          state={isKatakanaSensitiveState}
         />
         <FormSwitch
-          label='絞り込みの際、半角カナと全角カナを区別しない'
-          state={ignoresHankakuKatakanaState}
+          label='絞り込みの際、半角カナと全角カナを区別する'
+          state={isHankakuKatakanaSensitiveState}
         />
         <FormSwitch
-          label='絞り込みの際、全角英数字と半角英数字を区別しない'
-          state={ignoresZenkakuEisujiState}
+          label='絞り込みの際、全角英数字と半角英数字を区別する'
+          state={isZenkakuEisujiSensitiveState}
         />
       </div>
     </PluginFormSection>
+    <DeleteButton />
   </div>
 );
 
-export default Component;
+const Container: FC = () => {
+  return (
+    <PluginErrorBoundary>
+      <Component />
+    </PluginErrorBoundary>
+  );
+};
+
+export default Container;
