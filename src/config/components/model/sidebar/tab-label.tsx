@@ -20,8 +20,14 @@ const Component: FC<Props> = ({ index }) => {
   );
 };
 
+const PlaceHolder: FC = () => (
+  <>
+    (<Skeleton variant='text' width={100} /> → <Skeleton variant='text' width={100} />)
+  </>
+);
+
 const Container: FC<Props> = (props) => (
-  <Suspense fallback={<Skeleton variant='text' width={100} />}>
+  <Suspense fallback={<PlaceHolder />}>
     <Component {...props} />
   </Suspense>
 );
