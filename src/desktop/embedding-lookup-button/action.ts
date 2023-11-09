@@ -6,6 +6,7 @@ import { getFieldProperties, someFieldValue } from '@/common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/common/statics';
 import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { GUEST_SPACE_ID } from '@/common/global';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -15,7 +16,6 @@ type EnqueueSnackbar = (
 export const lookup = async (params: {
   condition: Plugin.Condition;
   record: kintoneAPI.RecordData;
-  guestSpaceId: string | null;
   option?: {
     input: string;
     hasCached: boolean;
@@ -25,7 +25,7 @@ export const lookup = async (params: {
     setLookuped: SetterOrUpdater<boolean>;
   };
 }): Promise<kintoneAPI.RecordData> => {
-  const { condition, record, guestSpaceId, option } = params;
+  const { condition, record, option } = params;
 
   // 全レコードのキャッシュが取得済みであれば、キャッシュから対象レコードを検索します
   // 対象レコードが１件だけであれば、ルックアップ対象を確定します
@@ -112,7 +112,7 @@ export const lookup = async (params: {
     app,
     query,
     fields,
-    guestSpaceId: guestSpaceId ?? undefined,
+    guestSpaceId: GUEST_SPACE_ID,
     debug: process?.env?.NODE_ENV === 'development',
     onTotalGet: ({ total }) => {
       if (process?.env?.NODE_ENV === 'development') {

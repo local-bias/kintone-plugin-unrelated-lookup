@@ -36,11 +36,7 @@ listener.add(events, async (event) => {
       }
 
       /** 取得した関連レコード */
-      const lookuped = await lookup({
-        condition,
-        record: event.record,
-        guestSpaceId: GUEST_SPACE_ID ?? null,
-      });
+      const lookuped = await lookup({ condition, record: event.record });
 
       if (process?.env?.NODE_ENV === 'development') {
         console.log({ lookuped });

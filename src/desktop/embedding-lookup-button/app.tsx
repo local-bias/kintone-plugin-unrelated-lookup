@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
 import { SnackbarProvider } from 'notistack';
 
-import { pluginConditionState, guestSpaceIdState } from './states';
+import { pluginConditionState } from './states';
 
 import EventObserver from './components/event-observer';
 import SrcCacheController from './components/src-cache-controller';
@@ -10,13 +10,12 @@ import LookupStatusBadge from './components/lookup-status-badge';
 import LookupButton from './components/lookup-button';
 import SearchDialog from './components/dialog';
 
-type Props = { condition: Plugin.Condition; guestSpaceId: string | null };
+type Props = { condition: Plugin.Condition };
 
-const Component: FC<Props> = ({ condition, guestSpaceId }) => (
+const Component: FC<Props> = ({ condition }) => (
   <RecoilRoot
     initializeState={({ set }) => {
       set(pluginConditionState, condition);
-      set(guestSpaceIdState, guestSpaceId);
     }}
   >
     <SrcCacheController />

@@ -1,7 +1,7 @@
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { useSnackbar } from 'notistack';
 import { useState } from 'react';
-import { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilCallback, useSetRecoilState } from 'recoil';
 import { clearLookup, lookup } from '../action';
 import {
   alreadyCacheState,
@@ -9,7 +9,6 @@ import {
   cacheValidationState,
   dialogPageIndexState,
   dialogVisibleState,
-  guestSpaceIdState,
   pluginConditionState,
   searchInputState,
 } from '../states';
@@ -23,7 +22,6 @@ export const useLookup = () => {
   const setCacheValidation = useSetRecoilState(cacheValidationState);
   const setAlreadyLookup = useSetRecoilState(alreadyLookupState);
   const [loading, setLoading] = useState(false);
-  const guestSpaceId = useRecoilValue(guestSpaceIdState);
 
   const start = useRecoilCallback(({ snapshot }) => async () => {
     setLoading(true);
@@ -52,7 +50,6 @@ export const useLookup = () => {
       const lookuped = await lookup({
         condition,
         record,
-        guestSpaceId,
         option: {
           input,
           hasCached,

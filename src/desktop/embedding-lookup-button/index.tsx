@@ -57,7 +57,7 @@ listener.add(events, async (event) => {
       position: relative;
     `);
 
-    createRoot(div).render(<App {...{ condition, guestSpaceId: GUEST_SPACE_ID ?? null }} />);
+    createRoot(div).render(<App {...{ condition }} />);
   }
 
   return event;

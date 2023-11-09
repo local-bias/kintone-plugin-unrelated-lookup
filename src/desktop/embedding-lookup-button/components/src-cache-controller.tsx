@@ -1,22 +1,17 @@
 import { useEffect, FC } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { getAllRecords, getFieldValueAsString, getYuruChara } from '@konomi-app/kintone-utilities';
-import {
-  pluginConditionState,
-  alreadyCacheState,
-  cacheValidationState,
-  guestSpaceIdState,
-} from '../states';
+import { pluginConditionState, alreadyCacheState, cacheValidationState } from '../states';
 import { getLookupSrcFields } from '../action';
 import { PLUGIN_NAME } from '@/common/statics';
 import { HandledRecord, srcAllRecordsState } from '../states/records';
+import { GUEST_SPACE_ID } from '@/common/global';
 
 const Container: FC = () => {
   const setAllRecords = useSetRecoilState(srcAllRecordsState);
   const setAlreadyCache = useSetRecoilState(alreadyCacheState);
   const condition = useRecoilValue(pluginConditionState);
   const enablesCache = useRecoilValue(cacheValidationState);
-  const guestSpaceId = useRecoilValue(guestSpaceIdState);
 
   useEffect(() => {
     (async () => {
@@ -42,7 +37,7 @@ const Container: FC = () => {
           app,
           query,
           fields,
-          guestSpaceId: guestSpaceId || undefined,
+          guestSpaceId: GUEST_SPACE_ID,
           debug: process?.env?.NODE_ENV === 'development',
           onStep: ({ records }) => {
             const viewRecords = records.map<HandledRecord>((record) => {
