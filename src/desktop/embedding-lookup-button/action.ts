@@ -13,7 +13,7 @@ type EnqueueSnackbar = (
 ) => SnackbarKey;
 
 export const lookup = async (params: {
-  condition: kintone.plugin.Condition;
+  condition: Plugin.Condition;
   record: kintoneAPI.RecordData;
   guestSpaceId: string | null;
   option?: {
@@ -141,7 +141,7 @@ export const lookup = async (params: {
   return apply(condition, record, lookupRecords[0]);
 };
 
-export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
+export const getLookupSrcFields = (condition: Plugin.Condition) => {
   const fields = [
     ...new Set(
       [condition.copies.map(({ from }) => from), condition.sees, condition.srcField].flat()
@@ -151,7 +151,7 @@ export const getLookupSrcFields = (condition: kintone.plugin.Condition) => {
 };
 
 export const apply = (
-  condition: kintone.plugin.Condition,
+  condition: Plugin.Condition,
   srcRecord: kintoneAPI.RecordData,
   dstRecord: kintoneAPI.RecordData,
   option?: {
@@ -197,7 +197,7 @@ const getCachedFieldProperties = async (): Promise<kintoneAPI.FieldProperties> =
   return cachedFieldProperties;
 };
 
-export const clearLookup = async (condition: kintone.plugin.Condition) => {
+export const clearLookup = async (condition: Plugin.Condition) => {
   const { record } = getCurrentRecord()!;
 
   record[condition.dstField].value = '';

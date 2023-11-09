@@ -21,7 +21,7 @@ import { displayingRecordsState } from '../../../states/records';
 type Props = {
   records: kintoneAPI.RecordData[];
   onRowClick: (record: any) => void;
-  condition: kintone.plugin.Condition | null;
+  condition: Plugin.Condition | null;
   hasCached: boolean;
 };
 

@@ -1,13 +1,12 @@
-import { cleanseStorage, restoreStorage } from '@/common/plugin';
+import { restorePluginConfig } from '@/common/plugin';
 import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/common/listener';
-import { PLUGIN_ID } from '@/common/global';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
 listener.add(events, async (event) => {
-  const { conditions } = cleanseStorage(restoreStorage(PLUGIN_ID));
+  const { conditions } = restorePluginConfig();
 
   const targetConditions = conditions.filter(
     (condition) => condition.srcField && condition.srcAppId

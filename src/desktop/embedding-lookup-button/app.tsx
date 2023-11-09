@@ -10,7 +10,7 @@ import LookupStatusBadge from './components/lookup-status-badge';
 import LookupButton from './components/lookup-button';
 import SearchDialog from './components/dialog';
 
-type Props = { condition: kintone.plugin.Condition; guestSpaceId: string | null };
+type Props = { condition: Plugin.Condition; guestSpaceId: string | null };
 
 const Component: FC<Props> = ({ condition, guestSpaceId }) => (
   <RecoilRoot

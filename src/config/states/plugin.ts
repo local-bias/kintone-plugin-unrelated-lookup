@@ -1,16 +1,16 @@
 import { PLUGIN_ID } from '@/common/global';
-import { restoreStorage } from '@/common/plugin';
+import { restorePluginConfig } from '@/common/plugin';
 import { produce } from 'immer';
 import { atom, selector, selectorFamily } from 'recoil';
 
 const PREFIX = 'plugin';
 
-const updated = <T extends keyof kintone.plugin.Condition>(
-  storage: kintone.plugin.Storage,
+const updated = <T extends keyof Plugin.Condition>(
+  storage: Plugin.Config,
   props: {
     conditionIndex: number;
     key: T;
-    value: kintone.plugin.Condition[T];
+    value: Plugin.Condition[T];
   }
 ) => {
   const { conditionIndex, key, value } = props;
@@ -19,14 +19,14 @@ const updated = <T extends keyof kintone.plugin.Condition>(
   });
 };
 
-const getConditionField = <T extends keyof kintone.plugin.Condition>(
-  storage: kintone.plugin.Storage,
+const getConditionField = <T extends keyof Plugin.Condition>(
+  storage: Plugin.Config,
   props: {
     conditionIndex: number;
     key: T;
-    defaultValue: NonNullable<kintone.plugin.Condition[T]>;
+    defaultValue: NonNullable<Plugin.Condition[T]>;
   }
-): NonNullable<kintone.plugin.Condition[T]> => {
+): NonNullable<Plugin.Condition[T]> => {
   const { conditionIndex, key, defaultValue } = props;
   if (!storage.conditions[conditionIndex]) {
     return defaultValue;
@@ -34,9 +34,9 @@ const getConditionField = <T extends keyof kintone.plugin.Condition>(
   return storage.conditions[conditionIndex][key] ?? defaultValue;
 };
 
-export const storageState = atom<kintone.plugin.Storage>({
+export const storageState = atom<Plugin.Config>({
   key: `${PREFIX}storageState`,
-  default: restoreStorage(PLUGIN_ID),
+  default: restorePluginConfig(),
 });
 
 export const loadingState = atom<boolean>({
@@ -49,7 +49,7 @@ export const tabIndexState = atom<number>({
   default: 0,
 });
 
-export const conditionsState = selector<kintone.plugin.Condition[]>({
+export const conditionsState = selector<Plugin.Condition[]>({
   key: `${PREFIX}conditionsState`,
   get: ({ get }) => {
     const storage = get(storageState);
@@ -57,7 +57,7 @@ export const conditionsState = selector<kintone.plugin.Condition[]>({
   },
 });
 
-export const conditionState = selectorFamily<kintone.plugin.Condition | null, number>({
+export const conditionState = selectorFamily<Plugin.Condition | null, number>({
   key: `${PREFIX}conditionState`,
   get:
     (conditionIndex) =>
@@ -73,7 +73,7 @@ export const conditionState = selectorFamily<kintone.plugin.Condition | null, nu
           if (!draft) {
             return;
           }
-          draft.conditions[conditionIndex] = newValue as kintone.plugin.Condition;
+          draft.conditions[conditionIndex] = newValue as Plugin.Condition;
         })
       );
     },
