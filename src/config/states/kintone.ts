@@ -62,23 +62,21 @@ export const dstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   },
 });
 
-export const srcAppPropertiesState = selectorFamily<kintoneAPI.FieldProperty[], number>({
+export const srcAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   key: `${PREFIX}srcAppPropertiesState`,
-  get:
-    (conditionIndex) =>
-    async ({ get }) => {
-      const srcAppId = get(srcAppIdState(conditionIndex));
-      if (!srcAppId) {
-        return [];
-      }
+  get: async ({ get }) => {
+    const srcAppId = get(srcAppIdState);
+    if (!srcAppId) {
+      return [];
+    }
 
-      const props = await getFieldProperties({
-        targetApp: srcAppId,
-        preview: true,
-        guestSpaceId: GUEST_SPACE_ID,
-      });
-      const filtered = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
+    const props = await getFieldProperties({
+      targetApp: srcAppId,
+      preview: true,
+      guestSpaceId: GUEST_SPACE_ID,
+    });
+    const filtered = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
 
-      return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-    },
+    return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+  },
 });

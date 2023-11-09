@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { css } from '@emotion/css';
 
-import { restorePluginConfig } from '@/common/plugin';
+import { cleanse, restorePluginConfig } from '@/common/plugin';
 import { getFieldId } from '@/common/cybozu';
 
 import App from './app';
@@ -13,7 +13,7 @@ import { GUEST_SPACE_ID } from '@/common/global';
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
 listener.add(events, async (event) => {
-  const { conditions } = restorePluginConfig();
+  const { conditions } = cleanse(restorePluginConfig());
 
   for (const condition of conditions) {
     if (!condition.dstField || !condition.srcAppId || !condition.srcField) {

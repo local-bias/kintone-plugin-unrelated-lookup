@@ -2,81 +2,76 @@ import { AutocompleteKintoneField } from '@/common/components/autocomplete-field
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { dstAppPropertiesState } from '../../../../states/kintone';
-import { copiesState } from '../../../../states/plugin';
+import { dstAppPropertiesState } from '../../../states/kintone';
+import { copiesState } from '../../../states/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { produce } from 'immer';
 
 import SelectSrcFields from './select-src-fields';
-import { useConditionIndex } from '../../../functional/condition-index-provider';
 
 const Component: FCX = () => {
-  const conditionIndex = useConditionIndex();
   const dstFields = useRecoilValue(dstAppPropertiesState);
 
-  const copies = useRecoilValue(copiesState(conditionIndex));
+  const copies = useRecoilValue(copiesState);
 
   const onCopyFromChange = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number, value: string) => {
-        set(copiesState(conditionIndex), (current) =>
+        set(copiesState, (current) =>
           produce(current, (draft) => {
             draft[rowIndex].from = value;
           })
         );
       },
-    [conditionIndex]
+    []
   );
   const onCopyToChange = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number, value: string) => {
-        set(copiesState(conditionIndex), (current) =>
+        set(copiesState, (current) =>
           produce(current, (draft) => {
             draft[rowIndex].to = value;
           })
         );
       },
-    [conditionIndex]
+    []
   );
 
   const addCopy = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number) => {
-        set(copiesState(conditionIndex), (current) =>
+        set(copiesState, (current) =>
           produce(current, (draft) => {
             draft.splice(rowIndex + 1, 0, { from: '', to: '' });
           })
         );
       },
-    [conditionIndex]
+    []
   );
 
   const removeCopy = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number) => {
-        set(copiesState(conditionIndex), (current) =>
+        set(copiesState, (current) =>
           produce(current, (draft) => {
             draft.splice(rowIndex, 1);
           })
         );
       },
-    [conditionIndex]
+    []
   );
 
   return (
-    <div className='rows'>
+    <div className='flex flex-col gap-4'>
       {copies.map(({ from, to }, i) => (
-        <div key={i}>
-          <Suspense fallback={<Skeleton width={370} height={70} />}>
-            <SelectSrcFields
-              conditionIndex={conditionIndex}
-              label='コピー元'
-              fieldCode={from}
-              onChange={(code) => onCopyFromChange(i, code)}
-            />
-          </Suspense>
+        <div key={i} className='flex items-center gap-2'>
+          <SelectSrcFields
+            label='コピー元'
+            fieldCode={from}
+            onChange={(code) => onCopyFromChange(i, code)}
+          />
           <ArrowForwardIcon />
           <AutocompleteKintoneField
             label='コピー先'
@@ -106,13 +101,19 @@ const Container: FC = () => {
   return (
     <Suspense
       fallback={
-        <div className='grid grid-cols-2 gap-2'>
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
-          <Skeleton height={80} />
+        <div className='flex flex-col gap-2'>
+          <div className='flex items-center gap-2'>
+            <Skeleton variant='rounded' width={350} height={56} />
+            <ArrowForwardIcon />
+            <Skeleton variant='rounded' width={350} height={56} />
+            <AddIcon fontSize='small' />
+          </div>
+          <div className='flex items-center gap-2'>
+            <Skeleton variant='rounded' width={350} height={56} />
+            <ArrowForwardIcon />
+            <Skeleton variant='rounded' width={350} height={56} />
+            <AddIcon fontSize='small' />
+          </div>
         </div>
       }
     >

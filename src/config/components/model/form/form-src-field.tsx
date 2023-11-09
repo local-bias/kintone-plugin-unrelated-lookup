@@ -2,21 +2,19 @@ import { AutocompleteKintoneField } from '@/common/components/autocomplete-field
 import { Skeleton } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { srcAppPropertiesState } from '../../../../states/kintone';
-import { srcFieldState } from '../../../../states/plugin';
-import { useConditionIndex } from '../../../functional/condition-index-provider';
+import { srcAppPropertiesState } from '../../../states/kintone';
+import { srcFieldState } from '../../../states/plugin';
 
 const Component: FCX = () => {
-  const conditionIndex = useConditionIndex();
-  const fields = useRecoilValue(srcAppPropertiesState(conditionIndex));
-  const fieldCode = useRecoilValue(srcFieldState(conditionIndex));
+  const fields = useRecoilValue(srcAppPropertiesState);
+  const fieldCode = useRecoilValue(srcFieldState);
 
   const onFieldChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
-        set(srcFieldState(conditionIndex), value);
+        set(srcFieldState, value);
       },
-    [conditionIndex]
+    []
   );
 
   return (
@@ -26,7 +24,7 @@ const Component: FCX = () => {
 
 const Container: FC = () => {
   return (
-    <Suspense fallback={<Skeleton width={350} height={56} />}>
+    <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
       <Component />
     </Suspense>
   );

@@ -1,14 +1,13 @@
 import { Skeleton } from '@mui/material';
 import React, { FC, Suspense } from 'react';
 import { useRecoilValue } from 'recoil';
-import { dstFieldState, srcAppIdState, srcFieldState } from '../../../states/plugin';
+import { conditionsState } from '../../../states/plugin';
 
 type Props = { index: number };
 
 const Component: FC<Props> = ({ index }) => {
-  const srcAppId = useRecoilValue(srcAppIdState(index));
-  const srcField = useRecoilValue(srcFieldState(index));
-  const dstField = useRecoilValue(dstFieldState(index));
+  const conditions = useRecoilValue(conditionsState);
+  const { srcAppId, srcField, dstField } = conditions[index];
 
   if (!srcAppId || !srcField || !dstField) {
     return null;

@@ -1,21 +1,19 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { kintoneAppsState } from '../../../../states/kintone';
-import { srcAppIdState } from '../../../../states/plugin';
-import { useConditionIndex } from '../../../functional/condition-index-provider';
+import { kintoneAppsState } from '../../../states/kintone';
+import { srcAppIdState } from '../../../states/plugin';
 
 const Component: FCX = () => {
-  const conditionIndex = useConditionIndex();
   const allApps = useRecoilValue(kintoneAppsState);
-  const srcAppId = useRecoilValue(srcAppIdState(conditionIndex));
+  const srcAppId = useRecoilValue(srcAppIdState);
 
   const onAppChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
-        set(srcAppIdState(conditionIndex), value);
+        set(srcAppIdState, value);
       },
-    [conditionIndex]
+    []
   );
 
   return (
@@ -27,7 +25,7 @@ const Component: FCX = () => {
       getOptionLabel={(app) => `${app.name}(id: ${app.appId})`}
       onChange={(_, app) => onAppChange(app?.appId ?? '')}
       renderInput={(params) => (
-        <TextField {...params} label='対象グループ' variant='outlined' color='primary' />
+        <TextField {...params} label='対象アプリ' variant='outlined' color='primary' />
       )}
     />
   );
@@ -35,7 +33,7 @@ const Component: FCX = () => {
 
 const Container: FC = () => {
   return (
-    <Suspense fallback={<Skeleton width={350} height={56} />}>
+    <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
       <Component />
     </Suspense>
   );

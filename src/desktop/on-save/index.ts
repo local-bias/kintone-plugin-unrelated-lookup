@@ -1,4 +1,4 @@
-import { restorePluginConfig } from '@/common/plugin';
+import { cleanse, restorePluginConfig } from '@/common/plugin';
 import { lookup } from '../embedding-lookup-button/action';
 import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
@@ -11,7 +11,7 @@ const events: kintoneAPI.js.EventType[] = [
 ];
 
 listener.add(events, async (event) => {
-  const { conditions } = restorePluginConfig();
+  const { conditions } = cleanse(restorePluginConfig());
 
   const targetConditions = conditions.filter(
     (condition) => condition.srcField && condition.srcAppId && condition.saveAndLookup

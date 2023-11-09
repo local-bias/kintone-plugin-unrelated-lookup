@@ -48,7 +48,7 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
  * @param target プラグインの設定情報
  * @returns 整理したプラグインの設定情報
  */
-const cleanse = (target: Plugin.Config): Plugin.Config => {
+export const cleanse = (target: Plugin.Config): Plugin.Config => {
   const cleansed = produce(target, (draft) => {
     for (const condition of draft.conditions) {
       condition.copies = condition.copies.filter(({ from, to }) => from && to);
@@ -63,5 +63,34 @@ const cleanse = (target: Plugin.Config): Plugin.Config => {
  */
 export const restorePluginConfig = (): Plugin.Config => {
   const config = restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig();
-  return cleanse(migrateConfig(config));
+  return migrateConfig(config);
+};
+
+export const getUpdatedStorage = <T extends keyof Plugin.Condition>(
+  storage: Plugin.Config,
+  props: {
+    conditionIndex: number;
+    key: T;
+    value: Plugin.Condition[T];
+  }
+) => {
+  const { conditionIndex, key, value } = props;
+  return produce(storage, (draft) => {
+    draft.conditions[conditionIndex][key] = value;
+  });
+};
+
+export const getConditionField = <T extends keyof Plugin.Condition>(
+  storage: Plugin.Config,
+  props: {
+    conditionIndex: number;
+    key: T;
+    defaultValue: NonNullable<Plugin.Condition[T]>;
+  }
+): NonNullable<Plugin.Condition[T]> => {
+  const { conditionIndex, key, defaultValue } = props;
+  if (!storage.conditions[conditionIndex]) {
+    return defaultValue;
+  }
+  return storage.conditions[conditionIndex][key] ?? defaultValue;
 };
