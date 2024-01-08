@@ -26,7 +26,7 @@
     "@konomi-app/ui-react": "^1.1.1",
     "@mui/icons-material": "5.14.16",
     "@mui/material": "5.14.17",
-    "dompurify": "3.0.6",
+    "dompurify": "3.0.8",
     "immer": "10.0.3",
     "luxon": "3.4.3",
     "notistack": "3.0.1",
