@@ -1,14 +1,10 @@
+import { listener } from '@/common/listener';
+import { cleanse, restorePluginConfig } from '@/common/plugin';
+import { css } from '@emotion/css';
+import { getMetaFieldId_UNSTABLE, kintoneAPI } from '@konomi-app/kintone-utilities';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { css } from '@emotion/css';
-
-import { cleanse, restorePluginConfig } from '@/common/plugin';
-import { getFieldId } from '@/common/cybozu';
-
 import App from './app';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { listener } from '@/common/listener';
-import { GUEST_SPACE_ID } from '@/common/global';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
@@ -34,7 +30,7 @@ listener.add(events, async (event) => {
     event.record[condition.dstField].disabled = false;
 
     // 対象文字列フィールドにルックアップっぽいボタンを設置
-    const fieldId = getFieldId(condition.dstField);
+    const fieldId = getMetaFieldId_UNSTABLE(condition.dstField);
 
     const wrapper =
       document.querySelector<HTMLDivElement>(`.value-${fieldId} > div`) ||

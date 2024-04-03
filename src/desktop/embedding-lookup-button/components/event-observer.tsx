@@ -1,8 +1,8 @@
-import { getFields } from '@/common/cybozu';
 import { useEffect, FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useLookup } from '../hooks/use-lookup';
 import { pluginConditionState } from '../states';
+import { getMetaFields_UNSTABLE } from '@konomi-app/kintone-utilities';
 
 const Container: FC = () => {
   const condition = useRecoilValue(pluginConditionState);
@@ -12,7 +12,7 @@ const Container: FC = () => {
     if (!condition) {
       return;
     }
-    const fields = getFields();
+    const fields = getMetaFields_UNSTABLE() ?? [];
     const targetField = fields.find((field) => field.var === condition.dstField);
     if (!targetField) {
       return;

@@ -3,7 +3,6 @@ import { lookup } from '../embedding-lookup-button/action';
 import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/common/listener';
-import { GUEST_SPACE_ID } from '@/common/global';
 
 const events: kintoneAPI.js.EventType[] = [
   'app.record.create.submit',
