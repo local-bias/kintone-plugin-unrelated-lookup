@@ -19,9 +19,9 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
+  RecoilSwitch,
+  RecoilText,
 } from '@konomi-app/kintone-utilities-react';
-import { FormSwitch } from '@/common/components/form-switch';
-import FormText from '@/common/components/form-text';
 import DeleteButton from './condition-delete-button';
 import { PluginErrorBoundary } from '@/common/components/error-boundary';
 
@@ -88,7 +88,7 @@ const Component: FC = () => (
       <PluginFormDescription last>
         ここで指定した条件に合致するレコードのみが、ルックアップの対象となります。
       </PluginFormDescription>
-      <FormText
+      <RecoilText
         label='クエリー'
         placeholder='例: 契約ステータス not in ("解約")'
         width={400}
@@ -100,32 +100,32 @@ const Component: FC = () => (
       <PluginFormTitle>その他のオプション</PluginFormTitle>
       <PluginFormDescription last></PluginFormDescription>
       <div className='flex flex-col gap-1'>
-        <FormSwitch
+        <RecoilSwitch
           label='事前に参照アプリのレコードを取得し、検索を高速化する'
           state={enablesCacheState}
         />
-        <FormSwitch
+        <RecoilSwitch
           label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する'
           state={autoLookupState}
         />
-        <FormSwitch
+        <RecoilSwitch
           label='レコード保存時に、ルックアップが実行されていない場合はエラーを表示する'
           state={enablesValidationState}
         />
-        <FormSwitch label='レコード保存時に、ルックアップを実行する' state={saveAndLookupState} />
-        <FormSwitch
+        <RecoilSwitch label='レコード保存時に、ルックアップを実行する' state={saveAndLookupState} />
+        <RecoilSwitch
           label='絞り込みの際、アルファベットの大文字と小文字を区別する'
           state={isCaseSensitiveState}
         />
-        <FormSwitch
+        <RecoilSwitch
           label='絞り込みの際、カタカナとひらがなを区別する'
           state={isKatakanaSensitiveState}
         />
-        <FormSwitch
+        <RecoilSwitch
           label='絞り込みの際、半角カナと全角カナを区別する'
           state={isHankakuKatakanaSensitiveState}
         />
-        <FormSwitch
+        <RecoilSwitch
           label='絞り込みの際、全角英数字と半角英数字を区別する'
           state={isZenkakuEisujiSensitiveState}
         />
