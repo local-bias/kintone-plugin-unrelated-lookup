@@ -1,9 +1,5 @@
-import { selector, selectorFamily } from 'recoil';
-import {
-  DEFAULT_DEFINED_FIELDS,
-  getFieldProperties,
-  omitFieldProperties,
-} from '@/common/kintone-api';
+import { selector } from 'recoil';
+import { DEFAULT_DEFINED_FIELDS, omitFieldProperties } from '@/common/kintone-api';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { srcAppIdState } from './plugin';
 import { getAllApps, getFormFields } from '@konomi-app/kintone-utilities';
@@ -70,12 +66,13 @@ export const srcAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       return [];
     }
 
-    const props = await getFieldProperties({
-      targetApp: srcAppId,
+    const { properties } = await getFormFields({
+      app: srcAppId,
       preview: true,
       guestSpaceId: GUEST_SPACE_ID,
+      debug: process?.env?.NODE_ENV === 'development',
     });
-    const filtered = omitFieldProperties(props, ['GROUP', 'SUBTABLE']);
+    const filtered = omitFieldProperties(properties, ['GROUP', 'SUBTABLE']);
 
     return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
   },

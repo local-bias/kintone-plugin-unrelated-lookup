@@ -2,7 +2,7 @@ import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
-import { getFieldProperties, someFieldValue } from '@/common/kintone-api';
+import { someFieldValue } from '@/common/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/common/statics';
 import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
@@ -187,14 +187,6 @@ export const apply = (
     }
   }
   return record;
-};
-
-let cachedFieldProperties: kintoneAPI.FieldProperties | null = null;
-const getCachedFieldProperties = async (): Promise<kintoneAPI.FieldProperties> => {
-  if (!cachedFieldProperties) {
-    cachedFieldProperties = await getFieldProperties();
-  }
-  return cachedFieldProperties;
 };
 
 export const clearLookup = async (condition: Plugin.Condition) => {
