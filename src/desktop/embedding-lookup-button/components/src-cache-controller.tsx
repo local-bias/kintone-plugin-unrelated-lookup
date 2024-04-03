@@ -3,9 +3,9 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { getAllRecords, getFieldValueAsString, getYuruChara } from '@konomi-app/kintone-utilities';
 import { pluginConditionState, alreadyCacheState, cacheValidationState } from '../states';
 import { getLookupSrcFields } from '../action';
-import { PLUGIN_NAME } from '@/common/statics';
+import { PLUGIN_NAME } from '@/lib/statics';
 import { HandledRecord, srcAllRecordsState } from '../states/records';
-import { GUEST_SPACE_ID } from '@/common/global';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 const Container: FC = () => {
   const setAllRecords = useSetRecoilState(srcAllRecordsState);

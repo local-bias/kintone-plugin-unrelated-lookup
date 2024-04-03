@@ -1,7 +1,7 @@
 import { getApp } from '@konomi-app/kintone-utilities';
 import { selector } from 'recoil';
 import { pluginConditionState } from '..';
-import { GUEST_SPACE_ID } from '@/common/global';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 const state = selector<string>({
   key: 'dialogTitleState',

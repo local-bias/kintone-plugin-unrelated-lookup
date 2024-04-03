@@ -1,4 +1,4 @@
-import '@/common/global';
+import '@/lib/global';
 import './initialize-observer';
 import './embedding-lookup-button';
 import './validation';

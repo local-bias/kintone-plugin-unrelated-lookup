@@ -23,7 +23,7 @@ import {
   RecoilText,
 } from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './condition-delete-button';
-import { PluginErrorBoundary } from '@/common/components/error-boundary';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 
 const Component: FC = () => (
   <div className='p-4'>

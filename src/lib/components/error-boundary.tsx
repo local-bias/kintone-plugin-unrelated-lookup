@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Alert, AlertTitle, Button } from '@mui/material';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { URL_INQUIRY } from '@/common/statics';
+import { URL_INQUIRY } from '@/lib/statics';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 
 const Component: FC<FallbackProps> = ({ error, resetErrorBoundary }) => {

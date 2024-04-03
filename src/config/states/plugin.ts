@@ -1,4 +1,4 @@
-import { getUpdatedStorage, restorePluginConfig } from '@/common/plugin';
+import { getUpdatedStorage, restorePluginConfig } from '@/lib/plugin';
 import { RecoilState, atom, selector, selectorFamily } from 'recoil';
 
 const PREFIX = 'plugin';

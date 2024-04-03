@@ -8,8 +8,8 @@ import { storeStorage } from '@konomi-app/kintone-utilities';
 
 import { storageState } from '../../../states/plugin';
 
-import { PLUGIN_NAME } from '@/common/statics';
-import { createConfig } from '@/common/plugin';
+import { PLUGIN_NAME } from '@/lib/statics';
+import { createConfig } from '@/lib/plugin';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();

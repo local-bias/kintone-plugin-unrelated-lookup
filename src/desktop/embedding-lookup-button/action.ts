@@ -2,11 +2,11 @@ import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
-import { someFieldValue } from '@/common/kintone-api';
+import { someFieldValue } from '@/lib/kintone-api';
 import { lookupObserver } from '../lookup-observer';
-import { PLUGIN_NAME } from '@/common/statics';
+import { PLUGIN_NAME } from '@/lib/statics';
 import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { GUEST_SPACE_ID } from '@/common/global';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,

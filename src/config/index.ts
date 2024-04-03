@@ -1,2 +1,2 @@
-import '@/common/global';
+import '@/lib/global';
 import './main';

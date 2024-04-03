@@ -1,4 +1,4 @@
-import { AutocompleteKintoneField } from '@/common/components/autocomplete-field-input';
+import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import React, { FC } from 'react';
 import { useRecoilValue } from 'recoil';
 import { srcAppPropertiesState } from '../../../states/kintone';

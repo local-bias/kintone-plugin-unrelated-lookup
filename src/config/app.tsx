@@ -3,12 +3,12 @@ import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 
-import { PluginErrorBoundary } from '@/common/components/error-boundary';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 import { PluginLayout, PluginBanner } from '@konomi-app/kintone-utilities-react';
 import Form from './components/model/form';
 import Footer from './components/model/footer';
 import Sidebar from './components/model/sidebar';
-import { URL_PROMOTION } from '@/common/statics';
+import { URL_PROMOTION } from '@/lib/statics';
 
 const Component: FC = () => (
   <>

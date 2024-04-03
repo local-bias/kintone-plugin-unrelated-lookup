@@ -3,7 +3,7 @@ import { useRecoilCallback } from 'recoil';
 import { produce } from 'immer';
 
 import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
-import { getNewCondition } from '@/common/plugin';
+import { getNewCondition } from '@/lib/plugin';
 import { storageState } from '../../../states/plugin';
 
 const Container: FC = () => {

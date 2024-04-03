@@ -1,7 +1,7 @@
-import { cleanse, restorePluginConfig } from '@/common/plugin';
+import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { listener } from '@/common/listener';
+import { listener } from '@/lib/listener';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 

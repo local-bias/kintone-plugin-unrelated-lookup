@@ -1,10 +1,10 @@
 import { selector } from 'recoil';
-import { DEFAULT_DEFINED_FIELDS, omitFieldProperties } from '@/common/kintone-api';
+import { DEFAULT_DEFINED_FIELDS, omitFieldProperties } from '@/lib/kintone-api';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { srcAppIdState } from './plugin';
 import { getAllApps, getFormFields } from '@konomi-app/kintone-utilities';
 import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
-import { GUEST_SPACE_ID } from '@/common/global';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 const PREFIX = 'kintone';
 
