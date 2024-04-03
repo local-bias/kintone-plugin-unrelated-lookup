@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
+  const storage = useRecoilValue(storageState);
   const index = useRecoilValue(tabIndexState);
 
   const onClick = useRecoilCallback(
@@ -22,6 +23,10 @@ const Container: FC = () => {
       },
     [index]
   );
+
+  if ((storage?.conditions.length ?? 0) < 2) {
+    return null;
+  }
 
   return <PluginConditionDeleteButton {...{ onClick }} />;
 };
