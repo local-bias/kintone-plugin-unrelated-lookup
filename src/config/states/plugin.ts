@@ -58,6 +58,12 @@ export const dstFieldState = conditionPropertyState('dstField') as RecoilState<
 export const srcAppIdState = conditionPropertyState('srcAppId') as RecoilState<
   Plugin.Condition['srcAppId']
 >;
+export const srcSpaceIdState = conditionPropertyState('srcSpaceId') as RecoilState<
+  Plugin.Condition['srcSpaceId']
+>;
+export const isSrcAppGuestSpaceState = conditionPropertyState('isSrcAppGuestSpace') as RecoilState<
+  Plugin.Condition['isSrcAppGuestSpace']
+>;
 export const srcFieldState = conditionPropertyState('srcField') as RecoilState<
   Plugin.Condition['srcField']
 >;

@@ -2,7 +2,12 @@ import { selector } from 'recoil';
 import { DEFAULT_DEFINED_FIELDS, omitFieldProperties } from '@/lib/kintone-api';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { srcAppIdState } from './plugin';
-import { getAllApps, getFormFields } from '@konomi-app/kintone-utilities';
+import {
+  getAllApps,
+  getFormFields,
+  getSpace,
+  withSpaceIdFallback,
+} from '@konomi-app/kintone-utilities';
 import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
 import { GUEST_SPACE_ID } from '@/lib/global';
 
@@ -16,6 +21,28 @@ export const kintoneAppsState = selector({
       debug: process?.env?.NODE_ENV === 'development',
     });
     return apps;
+  },
+});
+
+export const kintoneSpacesState = selector<kintoneAPI.rest.space.GetSpaceResponse[]>({
+  key: `${PREFIX}kintoneSpacesState`,
+  get: async ({ get }) => {
+    const apps = get(kintoneAppsState);
+    const spaceIds = [
+      ...new Set(apps.filter((app) => app.spaceId).map<string>((app) => app.spaceId as string)),
+    ];
+
+    let spaces: kintoneAPI.rest.space.GetSpaceResponse[] = [];
+    for (const id of spaceIds) {
+      const space = await withSpaceIdFallback({
+        spaceId: id,
+        func: getSpace,
+        funcParams: { id, debug: true },
+      });
+      spaces.push(space);
+    }
+
+    return spaces;
   },
 });
 
@@ -66,10 +93,25 @@ export const srcAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       return [];
     }
 
+    const allApps = get(kintoneAppsState);
+    const srcApp = allApps.find((app) => app.appId === srcAppId);
+    if (!srcApp) {
+      return [];
+    }
+
+    let guestSpaceId;
+    if (srcApp.spaceId) {
+      const spaces = get(kintoneSpacesState);
+      const space = spaces.find((s) => s.id === srcApp.spaceId);
+      if (space?.isGuest) {
+        guestSpaceId = space.id;
+      }
+    }
+
     const { properties } = await getFormFields({
       app: srcAppId,
       preview: true,
-      guestSpaceId: GUEST_SPACE_ID,
+      guestSpaceId,
       debug: process?.env?.NODE_ENV === 'development',
     });
     const filtered = omitFieldProperties(properties, ['GROUP', 'SUBTABLE']);

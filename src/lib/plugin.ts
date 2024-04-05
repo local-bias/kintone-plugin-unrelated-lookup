@@ -4,6 +4,8 @@ import { PLUGIN_ID } from './global';
 
 export const getNewCondition = (): Plugin.Condition => ({
   srcAppId: '',
+  srcSpaceId: null,
+  isSrcAppGuestSpace: false,
   srcField: '',
   dstField: '',
   copies: [{ from: '', to: '' }],
@@ -23,7 +25,7 @@ export const getNewCondition = (): Plugin.Condition => ({
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 2,
+  version: 3,
   conditions: [getNewCondition()],
 });
 
@@ -35,9 +37,19 @@ export const createConfig = (): Plugin.Config => ({
 export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
   const { version } = anyConfig;
   switch (version) {
+    case 2:
+      return {
+        ...anyConfig,
+        version: 3,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          srcSpaceId: null,
+          isSrcAppGuestSpace: false,
+        })),
+      };
     case undefined:
     case 1:
-      return {
+      return migrateConfig({
         ...anyConfig,
         version: 2,
         conditions: anyConfig.conditions.map((condition) => ({
@@ -47,7 +59,7 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
           isZenkakuEisujiSensitive: !(condition.ignoresZenkakuEisuji ?? true),
           isHankakuKatakanaSensitive: !(condition.ignoresHankakuKatakana ?? true),
         })),
-      };
+      });
     default:
       return anyConfig;
   }

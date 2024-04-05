@@ -37,7 +37,9 @@ const Container: FC = () => {
           app,
           query,
           fields,
-          guestSpaceId: GUEST_SPACE_ID,
+          guestSpaceId: condition.isSrcAppGuestSpace
+            ? condition.srcSpaceId ?? undefined
+            : undefined,
           debug: process?.env?.NODE_ENV === 'development',
           onStep: ({ records }) => {
             const viewRecords = records.map<HandledRecord>((record) => {

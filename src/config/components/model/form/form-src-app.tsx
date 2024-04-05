@@ -1,17 +1,31 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { kintoneAppsState } from '../../../states/kintone';
-import { srcAppIdState } from '../../../states/plugin';
+import { kintoneAppsState, kintoneSpacesState } from '../../../states/kintone';
+import { isSrcAppGuestSpaceState, srcAppIdState, srcSpaceIdState } from '../../../states/plugin';
 
 const Component: FCX = () => {
   const allApps = useRecoilValue(kintoneAppsState);
   const srcAppId = useRecoilValue(srcAppIdState);
 
   const onAppChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
+    ({ snapshot, set }) =>
+      async (value: string) => {
         set(srcAppIdState, value);
+
+        const allApps = await snapshot.getPromise(kintoneAppsState);
+        const srcApp = allApps.find((app) => app.appId === value);
+        if (!srcApp) {
+          return;
+        }
+
+        const spaces = await snapshot.getPromise(kintoneSpacesState);
+        const srcSpace = spaces.find((space) => space.id === srcApp.spaceId);
+        if (!srcSpace) {
+          return;
+        }
+        set(srcSpaceIdState, srcSpace.id ?? null);
+        set(isSrcAppGuestSpaceState, srcSpace.isGuest);
       },
     []
   );

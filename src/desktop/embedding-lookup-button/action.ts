@@ -6,7 +6,6 @@ import { someFieldValue } from '@/lib/kintone-api';
 import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/lib/statics';
 import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { GUEST_SPACE_ID } from '@/lib/global';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -112,7 +111,7 @@ export const lookup = async (params: {
     app,
     query,
     fields,
-    guestSpaceId: GUEST_SPACE_ID,
+    guestSpaceId: condition.isSrcAppGuestSpace ? condition.srcSpaceId ?? undefined : undefined,
     debug: process?.env?.NODE_ENV === 'development',
     onTotalGet: ({ total }) => {
       if (process?.env?.NODE_ENV === 'development') {
