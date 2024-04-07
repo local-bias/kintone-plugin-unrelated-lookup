@@ -1,11 +1,11 @@
 import { produce } from 'immer';
-import { restoreStorage } from '@konomi-app/kintone-utilities';
-import { PLUGIN_ID } from './global';
+import { getAppId, restoreStorage } from '@konomi-app/kintone-utilities';
+import { GUEST_SPACE_ID, PLUGIN_ID } from './global';
 
 export const getNewCondition = (): Plugin.Condition => ({
-  srcAppId: '',
-  srcSpaceId: null,
-  isSrcAppGuestSpace: false,
+  srcAppId: String(getAppId()!),
+  srcSpaceId: GUEST_SPACE_ID ?? null,
+  isSrcAppGuestSpace: !!GUEST_SPACE_ID,
   srcField: '',
   dstField: '',
   copies: [{ from: '', to: '' }],
@@ -43,8 +43,9 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         version: 3,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
-          srcSpaceId: null,
-          isSrcAppGuestSpace: false,
+          srcAppId: String(getAppId()!),
+          srcSpaceId: GUEST_SPACE_ID ?? null,
+          isSrcAppGuestSpace: !!GUEST_SPACE_ID,
         })),
       };
     case undefined:
@@ -61,7 +62,13 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         })),
       });
     default:
-      return anyConfig;
+      return {
+        ...anyConfig,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          srcAppId: String(getAppId()!),
+        })),
+      };
   }
 };
 

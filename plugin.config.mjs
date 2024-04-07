@@ -1,8 +1,8 @@
 // @ts-check
 const hp = 'https://konomi.app';
 const cdn = 'https://kintone-plugin.konomi.app';
-const key = 'unrelated-lookup';
-const localhost = 'https://127.0.0.1:32682';
+const key = 'lookup-myself';
+const localhost = 'https://127.0.0.1:49777';
 
 /** @satisfies { import('@konomi-app/kintone-utilities').PluginConfig } */
 export default /** @type { const } */ ({
@@ -11,17 +11,17 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '1.12.0',
+      version: '3.2.0',
       type: 'APP',
       name: {
-        en: 'unrelated lookup plugin',
-        ja: '関連付けないルックアッププラグイン',
-        zh: '插件模板',
+        en: 'Plugin that looks up itself',
+        ja: '自アプリルックアッププラグイン ',
+        zh: '查找自己的插件',
       },
       description: {
-        en: 'implements lookup that removes only lookup-associated functions, which can cause collective renewal or collective collection.Use a single line field.',
-        ja: '一括更新や一括取込の障害となってしまうことのある、ルックアップの関連付け機能のみを取り除いたルックアップを実装するプラグインです。文字列１行フィールドを使用します。',
-        zh: '插件模板',
+        en: 'This plugin allows you to use a string field in your app as a lookup field, so you can reference information from other records in the same app.',
+        ja: 'アプリの文字列フィールドをルックアップフィールドに見立て、同一アプリの別レコードから情報を参照できるようにします。',
+        zh: '此插件允许您将应用中的字符串字段用作查找字段，以便您可以引用同一应用程序中其他记录的信息。',
       },
       icon: 'icon.png',
       homepage_url: { ja: hp, en: hp },

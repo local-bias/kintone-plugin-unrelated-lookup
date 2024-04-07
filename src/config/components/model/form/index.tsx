@@ -41,14 +41,6 @@ const Component: FC = () => (
     </PluginFormSection>
 
     <PluginFormSection>
-      <PluginFormTitle>関連付けないアプリ(参照先アプリ)</PluginFormTitle>
-      <PluginFormDescription last>
-        標準機能の「関連付けるアプリ」にあたる、ルックアップの取得先アプリを選択してください。
-      </PluginFormDescription>
-      <SrcAppForm />
-    </PluginFormSection>
-
-    <PluginFormSection>
       <PluginFormTitle>
         取得するフィールド(ボタンを設置したフィールドに反映するフィールド)
       </PluginFormTitle>
