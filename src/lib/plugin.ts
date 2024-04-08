@@ -43,6 +43,8 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         version: 3,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
+          srcField: condition.srcField || condition.related || '',
+          dstField: condition.dstField || condition.target || '',
           srcAppId: String(getAppId()!),
           srcSpaceId: GUEST_SPACE_ID ?? null,
           isSrcAppGuestSpace: !!GUEST_SPACE_ID,
@@ -55,6 +57,8 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         version: 2,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
+          srcField: condition.srcField || condition.related || '',
+          dstField: condition.dstField || condition.target || '',
           isCaseSensitive: !(condition.ignoresLetterCase ?? true),
           isKatakanaSensitive: !(condition.ignoresKatakana ?? true),
           isZenkakuEisujiSensitive: !(condition.ignoresZenkakuEisuji ?? true),
@@ -66,6 +70,8 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         ...anyConfig,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
+          srcField: condition.srcField || condition.related || '',
+          dstField: condition.dstField || condition.target || '',
           srcAppId: String(getAppId()!),
         })),
       };

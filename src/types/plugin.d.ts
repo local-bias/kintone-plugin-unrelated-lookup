@@ -18,7 +18,7 @@ declare namespace Plugin {
 
   type ConfigV2 = {
     version: 2;
-    conditions: {
+    conditions: (Partial<OldConditionProps> & {
       srcAppId: string;
       srcField: string;
       dstField: string;
@@ -33,12 +33,12 @@ declare namespace Plugin {
       isKatakanaSensitive: boolean;
       isZenkakuEisujiSensitive: boolean;
       isHankakuKatakanaSensitive: boolean;
-    }[];
+    })[];
   };
 
   type ConfigV1 = {
     version: 1;
-    conditions: {
+    conditions: (Partial<OldConditionProps> & {
       srcAppId: string;
       srcField: string;
       dstField: string;
@@ -53,6 +53,11 @@ declare namespace Plugin {
       ignoresKatakana?: boolean;
       ignoresZenkakuEisuji?: boolean;
       ignoresHankakuKatakana?: boolean;
-    }[];
+    })[];
+  };
+
+  type OldConditionProps = {
+    related: string;
+    target: string;
   };
 }
