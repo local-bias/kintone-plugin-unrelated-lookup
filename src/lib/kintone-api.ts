@@ -22,7 +22,7 @@ export const filterFieldProperties = (
   properties: kintoneAPI.FieldProperties,
   callback: (field: kintoneAPI.FieldProperty) => boolean
 ): kintoneAPI.FieldProperties => {
-  const filtered = Object.entries(properties).filter(([_, value]) => callback(value));
+  const filtered = Object.entries(properties).filter(([, value]) => callback(value));
 
   const reduced = filtered.reduce<kintoneAPI.FieldProperties>(
     (acc, [key, value]) => ({ ...acc, [key]: value }),

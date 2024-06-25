@@ -31,7 +31,7 @@ listener.add(events, async (event) => {
       lookupObserver[condition.dstField].atStart !== event.record[condition.dstField].value &&
       !lookupObserver[condition.dstField].lookuped
     ) {
-      //@ts-ignore
+      //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
       event.record[condition.dstField].error = '[取得]を押し、参照先からデータを取得してください。';
       event.error = 'ルックアップが完了していないフィールドが存在します';
       continue;

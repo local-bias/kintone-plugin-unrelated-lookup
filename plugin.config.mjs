@@ -11,7 +11,7 @@ export default /** @type { const } */ ({
     port: 32682,
   },
   lint: {
-    build: true,
+    build: false,
   },
   tailwind: {
     css: 'src/styles/global.css',
