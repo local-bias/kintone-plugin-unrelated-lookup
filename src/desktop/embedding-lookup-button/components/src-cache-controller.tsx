@@ -60,7 +60,8 @@ const Container: FC = () => {
             setAllRecords(viewRecords);
           },
         });
-        console.info(`[${PLUGIN_NAME}] レコード情報のキャッシュが完了しました`);
+        process?.env?.NODE_ENV === 'development' &&
+          console.info(`[${PLUGIN_NAME}] レコード情報のキャッシュが完了しました`);
       } finally {
         setAlreadyCache(true);
       }
