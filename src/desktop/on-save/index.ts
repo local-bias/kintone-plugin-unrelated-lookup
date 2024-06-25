@@ -4,10 +4,7 @@ import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/lib/listener';
 
-const events: kintoneAPI.js.EventType[] = [
-  'app.record.create.submit',
-  'app.record.edit.submit.success',
-];
+const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 
 listener.add(events, async (event) => {
   const { conditions } = cleanse(restorePluginConfig());
@@ -17,6 +14,7 @@ listener.add(events, async (event) => {
   );
 
   if (!targetConditions.length) {
+    process?.env?.NODE_ENV === 'development' && console.log('targetConditions is empty');
     return event;
   }
 
@@ -39,25 +37,25 @@ listener.add(events, async (event) => {
 
       if (process?.env?.NODE_ENV === 'development') {
         console.log({ lookuped });
+        await new Promise((resolve) => setTimeout(resolve, 1000 * 20));
       }
 
       event.record = lookuped;
-    } catch (error) {
+    } catch (error: any) {
       console.error({ error });
       if (typeof error === 'string') {
-        //@ts-ignore
+        //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
         event.record[condition.dstField].error = error;
         event.error = `${condition.dstField}のルックアップを実行しましたが、${error}`;
       } else if (
         error instanceof Error ||
         (typeof error === 'object' && !!error && error.hasOwnProperty('message'))
       ) {
-        //@ts-ignore
+        //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
         event.record[condition.dstField].error = error.message;
-        //@ts-ignore
         event.error = `${condition.dstField}のルックアップを実行しましたが、${error.message}`;
       } else {
-        //@ts-ignore
+        //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
         event.record[condition.dstField].error = '入力値に誤りがあります';
         event.error = `${condition.dstField}のルックアップを実行しましたが、正しく取得することができませんでした。入力値に誤りがないか確認してください。`;
       }
