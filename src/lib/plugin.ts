@@ -83,9 +83,11 @@ export const cleanse = (target: Plugin.Config): Plugin.Config => {
 /**
  * プラグインの設定情報を復元します
  */
-export const restorePluginConfig = (): Plugin.Config => {
+export const restorePluginConfig = (params?: { cleansed?: boolean }): Plugin.Config => {
+  const { cleansed = false } = params ?? {};
   const config = restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig();
-  return migrateConfig(config);
+  const migrated = migrateConfig(config);
+  return cleansed ? cleanse(migrated) : migrated;
 };
 
 export const getUpdatedStorage = <T extends keyof Plugin.Condition>(
