@@ -14,10 +14,10 @@ import { RecoilRoot } from 'recoil';
 import config from '../../plugin.config.mjs';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import Sidebar from './components/model/sidebar';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { jaJP, enUS, zhCN, esES } from '@mui/material/locale';
 import { LANGUAGE } from '@/lib/global';
+import Sidebar from './components/sidebar';
 
 const Component: FC = () => {
   return (

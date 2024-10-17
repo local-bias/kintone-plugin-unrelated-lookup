@@ -1,5 +1,6 @@
-import { getUpdatedStorage, restorePluginConfig } from '@/lib/plugin';
-import { RecoilState, atom, selector, selectorFamily } from 'recoil';
+import { restorePluginConfig } from '@/lib/plugin';
+import { produce } from 'immer';
+import { DefaultValue, RecoilState, atom, selector, selectorFamily } from 'recoil';
 
 const PREFIX = 'plugin';
 
@@ -24,6 +25,43 @@ export const conditionsState = selector<Plugin.Condition[]>({
     const storage = get(storageState);
     return storage.conditions ?? [];
   },
+  set: ({ set }, newValue) => {
+    if (newValue instanceof DefaultValue) {
+      return;
+    }
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.conditions = newValue;
+      })
+    );
+  },
+});
+
+export const selectedConditionIdState = atom<string | null>({
+  key: `${PREFIX}selectedConditionIdState`,
+  default: selector<string | null>({
+    key: `${PREFIX}selectedConditionIdStateDefault`,
+    get: ({ get }) => {
+      return get(conditionsState)[0]?.id ?? null;
+    },
+  }),
+});
+
+export const selectedConditionState = selector<Plugin.Condition>({
+  key: `${PREFIX}selectedConditionState`,
+  get: ({ get }) => {
+    const conditions = get(conditionsState);
+    const selectedId = get(selectedConditionIdState);
+    return conditions.find((condition) => condition.id === selectedId) ?? conditions[0];
+  },
+  set: ({ get, set }, newValue) => {
+    if (newValue instanceof DefaultValue) {
+      return;
+    }
+    const conditions = get(conditionsState);
+    const index = conditions.findIndex((condition) => condition.id === newValue.id);
+    set(conditionsState, conditions.toSpliced(index, 1, newValue));
+  },
 });
 
 const conditionPropertyState = selectorFamily<
@@ -34,19 +72,19 @@ const conditionPropertyState = selectorFamily<
   get:
     (key) =>
     ({ get }) => {
-      const conditionIndex = get(tabIndexState);
-      const storage = get(storageState);
-      return storage.conditions[conditionIndex][key];
+      const selectedCondition = get(selectedConditionState);
+      return selectedCondition[key];
     },
   set:
     (key) =>
     ({ get, set }, newValue) => {
-      const conditionIndex = get(tabIndexState);
-      set(storageState, (current) =>
-        getUpdatedStorage(current, {
-          conditionIndex,
-          key,
-          value: newValue as Plugin.Condition[keyof Plugin.Condition],
+      if (newValue instanceof DefaultValue) {
+        return;
+      }
+      set(selectedConditionState, (current) =>
+        produce(current, (draft) => {
+          // @ts-ignore
+          draft[key] = newValue;
         })
       );
     },
