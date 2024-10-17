@@ -1,8 +1,10 @@
 import { produce } from 'immer';
 import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { PLUGIN_ID } from './global';
+import { nanoid } from 'nanoid';
 
 export const getNewCondition = (): Plugin.Condition => ({
+  id: nanoid(),
   srcAppId: '',
   srcSpaceId: null,
   isSrcAppGuestSpace: false,
@@ -25,28 +27,21 @@ export const getNewCondition = (): Plugin.Condition => ({
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 3,
+  version: 4,
+  common: {},
   conditions: [getNewCondition()],
 });
 
 /**
  * 古いバージョンの設定情報を新しいバージョンに変換します
- * @param anyConfig 過去全てのバージョンを含む、プラグインがアプリ単位で保存する設定情報
+ * 各バージョンは次のバージョンへの変換処理を持ち、再帰的なアクセスによって最新のバージョンに変換されます
+ *
+ * @param anyConfig 保存されている設定情報
  * @returns 新しいバージョンの設定情報
  */
 export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
   const { version } = anyConfig;
   switch (version) {
-    case 2:
-      return {
-        ...anyConfig,
-        version: 3,
-        conditions: anyConfig.conditions.map((condition) => ({
-          ...condition,
-          srcSpaceId: null,
-          isSrcAppGuestSpace: false,
-        })),
-      };
     case undefined:
     case 1:
       return migrateConfig({
@@ -60,6 +55,27 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
           isHankakuKatakanaSensitive: !(condition.ignoresHankakuKatakana ?? true),
         })),
       });
+    case 2:
+      return migrateConfig({
+        ...anyConfig,
+        version: 3,
+        conditions: anyConfig.conditions.map((condition) => ({
+          srcSpaceId: null,
+          isSrcAppGuestSpace: false,
+          ...condition,
+        })),
+      });
+    case 3:
+      return migrateConfig({
+        common: {},
+        ...anyConfig,
+        version: 4,
+        conditions: anyConfig.conditions.map((condition) => ({
+          id: nanoid(),
+          ...condition,
+        })),
+      });
+    case 4:
     default:
       return anyConfig;
   }
@@ -86,20 +102,6 @@ export const cleanse = (target: Plugin.Config): Plugin.Config => {
 export const restorePluginConfig = (): Plugin.Config => {
   const config = restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
-};
-
-export const getUpdatedStorage = <T extends keyof Plugin.Condition>(
-  storage: Plugin.Config,
-  props: {
-    conditionIndex: number;
-    key: T;
-    value: Plugin.Condition[T];
-  }
-) => {
-  const { conditionIndex, key, value } = props;
-  return produce(storage, (draft) => {
-    draft.conditions[conditionIndex][key] = value;
-  });
 };
 
 export const getConditionField = <T extends keyof Plugin.Condition>(
