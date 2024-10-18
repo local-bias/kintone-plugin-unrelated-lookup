@@ -25,6 +25,7 @@ listener.add(
     const wrapperElement = document.body;
     wrapperElement.classList.add(css`
       transform: scale(0.8) translateX(-12.5%) translateY(-12.5%);
+      height: 125dvh;
     `);
     wrapperElement.prepend(rootElement);
     const root = createRoot(rootElement);

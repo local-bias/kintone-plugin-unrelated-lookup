@@ -68,7 +68,7 @@ const Component: FC = () => {
         `
       )}
     >
-      <div className='fixed left-full top-0 z-10 w-[25dvw] box-border p-4 bg-gray-900 text-white h-dvh overflow-auto'>
+      <div className='fixed left-full top-0 z-10 w-[25dvw] box-border p-4 bg-gray-900 text-white h-[125dvh] overflow-auto'>
         <div className='flex gap-2'>
           <div className='text-3xl'>🐛</div>
           <div className='mb-4 text-sm text-green-300 font-bold'>
