@@ -111,7 +111,7 @@ export const lookup = async (params: {
     app,
     query,
     fields,
-    guestSpaceId: condition.isSrcAppGuestSpace ? condition.srcSpaceId ?? undefined : undefined,
+    guestSpaceId: condition.isSrcAppGuestSpace ? (condition.srcSpaceId ?? undefined) : undefined,
     debug: process?.env?.NODE_ENV === 'development',
     onTotalGet: ({ total }) => {
       if (process?.env?.NODE_ENV === 'development') {
@@ -180,7 +180,7 @@ export const apply = (
 
   if (option) {
     option.setLookuped(true);
-    lookupObserver[condition.dstField].lookuped = true;
+    lookupObserver[condition.id].lookuped = true;
     if (process?.env?.NODE_ENV === 'development') {
       console.log({ lookupObserver });
     }
@@ -241,6 +241,6 @@ export const clearLookup = async (condition: Plugin.Condition) => {
     }
   }
 
-  lookupObserver[condition.dstField].lookuped = false;
+  lookupObserver[condition.id].lookuped = false;
   setCurrentRecord({ record });
 };

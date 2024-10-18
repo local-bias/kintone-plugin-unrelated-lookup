@@ -20,16 +20,13 @@ listener.add(events, async (event) => {
   }
 
   for (const condition of targetConditions) {
+    const { id, dstField } = condition;
     try {
       // 次の場合は処理の対象外
       // 1. プラグインに設定されているフィールド情報が不正
       // 2. 対象フィールドに値が設定されていない
       // 3. ユーザーの操作によってルックアップが実行されている場合
-      if (
-        !event.record[condition.dstField] ||
-        !event.record[condition.dstField].value ||
-        lookupObserver[condition.dstField].lookuped
-      ) {
+      if (!event.record[dstField]?.value || lookupObserver[id].lookuped) {
         continue;
       }
 

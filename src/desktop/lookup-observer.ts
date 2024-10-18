@@ -1,5 +1,10 @@
 type Field = {
-  atStart: string;
+  fieldCode: string;
+  valueAtStart: string;
   lookuped: boolean;
 };
-export const lookupObserver: Record<string, Field> = {};
+
+/**
+ * レコード編集開始時とレコード保存時で、フィールドの値が変更されているか監視するためのオブザーバー
+ */
+export const lookupObserver: { [conditionId: string]: Field } = {};

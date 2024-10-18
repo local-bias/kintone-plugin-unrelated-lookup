@@ -19,22 +19,18 @@ listener.add(events, async (event) => {
   }
 
   for (const condition of targetConditions) {
-    if (
-      !event.record[condition.dstField] ||
-      !event.record[condition.dstField].value ||
-      !lookupObserver[condition.dstField] ||
-      condition.saveAndLookup
-    ) {
+    const { id, dstField, saveAndLookup } = condition;
+    if (!event.record[dstField]?.value || !lookupObserver[id] || saveAndLookup) {
       continue;
     }
 
+    const { valueAtStart, lookuped } = lookupObserver[id];
+    const currentValue = event.record[dstField].value;
+
     // レコード編集開始時から値が変更されており、かつルックアップが実行されていない場合はエラー
-    if (
-      lookupObserver[condition.dstField].atStart !== event.record[condition.dstField].value &&
-      !lookupObserver[condition.dstField].lookuped
-    ) {
+    if (valueAtStart !== currentValue && !lookuped) {
       //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
-      event.record[condition.dstField].error = '[取得]を押し、参照先からデータを取得してください。';
+      event.record[dstField].error = '[取得]を押し、参照先からデータを取得してください。';
       event.error = 'ルックアップが完了していないフィールドが存在します';
       continue;
     }
