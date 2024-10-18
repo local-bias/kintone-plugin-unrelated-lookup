@@ -11,6 +11,40 @@ export const DEFAULT_DEFINED_FIELDS: kintoneAPI.FieldPropertyType[] = [
   'STATUS',
 ];
 
+/** フィールドの値をクリアすることができるフィールド */
+export const FIELD_TYPES_FOR_REQUIRE_ESCAPING: kintoneAPI.Field['type'][] = [
+  'SINGLE_LINE_TEXT',
+  'MULTI_LINE_TEXT',
+  'RICH_TEXT',
+  'CHECK_BOX',
+  'RADIO_BUTTON',
+  'DROP_DOWN',
+  'MULTI_SELECT',
+  'STATUS',
+];
+
+/** LIKE検索を使用することができるフィールド */
+export const FIELD_TYPES_FOR_LIKE_SEARCH: kintoneAPI.Field['type'][] = [
+  'SINGLE_LINE_TEXT',
+  'LINK',
+  'MULTI_LINE_TEXT',
+  'RICH_TEXT',
+  'FILE',
+];
+
+/** IN検索を使用することができるフィールド */
+export const FIELD_TYPES_FOR_IN_SEARCH: kintoneAPI.Field['type'][] = [
+  'CREATOR',
+  'MODIFIER',
+  'CHECK_BOX',
+  'RADIO_BUTTON',
+  'DROP_DOWN',
+  'MULTI_SELECT',
+  'USER_SELECT',
+  'ORGANIZATION_SELECT',
+  'GROUP_SELECT',
+];
+
 /**
  * APIから取得したフィールド情報から、指定した関数の条件に当てはまるフィールドのみを返却します
  *

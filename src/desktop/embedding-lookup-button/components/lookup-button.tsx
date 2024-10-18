@@ -3,26 +3,32 @@ import styled from '@emotion/styled';
 import { Button, CircularProgress } from '@mui/material';
 
 import { useLookup } from '../hooks/use-lookup';
+import { useConditionId } from './condition-id-context';
+import { useAtomValue } from 'jotai';
+import { loadingAtom } from '../states';
 
 type Props = {
   onLookupButtonClick: () => void;
   onClearButtonClick: () => void;
-  loading: boolean;
 };
 
-const Component: FCX<Props> = ({ className, onLookupButtonClick, onClearButtonClick, loading }) => (
-  <div {...{ className }}>
-    <div>
-      <Button color='primary' onClick={onLookupButtonClick} disabled={loading}>
-        取得
+const Component: FCX<Props> = ({ className, onLookupButtonClick, onClearButtonClick }) => {
+  const conditionId = useConditionId();
+  const loading = useAtomValue(loadingAtom(conditionId));
+  return (
+    <div {...{ className }}>
+      <div>
+        <Button color='primary' onClick={onLookupButtonClick} disabled={loading}>
+          取得
+        </Button>
+        {loading && <CircularProgress className='circle' size={24} />}
+      </div>
+      <Button color='primary' onClick={onClearButtonClick} disabled={loading}>
+        クリア
       </Button>
-      {loading && <CircularProgress className='circle' size={24} />}
     </div>
-    <Button color='primary' onClick={onClearButtonClick} disabled={loading}>
-      クリア
-    </Button>
-  </div>
-);
+  );
+};
 
 const StyledComponent = styled(Component)`
   display: flex;
@@ -39,12 +45,13 @@ const StyledComponent = styled(Component)`
 `;
 
 const Container: FC = () => {
-  const { loading, start, clear } = useLookup();
+  const conditionId = useConditionId();
+  const { start, clear } = useLookup(conditionId);
 
   const onClearButtonClick = clear;
   const onLookupButtonClick = start;
 
-  return <StyledComponent {...{ onLookupButtonClick, onClearButtonClick, loading }} />;
+  return <StyledComponent {...{ onLookupButtonClick, onClearButtonClick }} />;
 };
 
 export default Container;

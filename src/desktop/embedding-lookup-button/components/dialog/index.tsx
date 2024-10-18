@@ -1,13 +1,12 @@
-import React, { Suspense, FC, FCX } from 'react';
-import { useRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-
-import { dialogVisibleState } from '../../states';
-
+import { useAtom } from 'jotai';
+import React, { FC, FCX, Suspense } from 'react';
+import { isDialogShownAtom } from '../../states/dialog';
+import { useConditionId } from '../condition-id-context';
 import Header from './header';
-import Title from './title';
 import Table from './table';
+import Title from './title';
 
 type Props = Readonly<{
   open: boolean;
@@ -50,7 +49,8 @@ const StyledComponent = styled(Component)`
 `;
 
 const Container: FC = () => {
-  const [open, setOpen] = useRecoilState(dialogVisibleState);
+  const conditionId = useConditionId();
+  const [open, setOpen] = useAtom(isDialogShownAtom(conditionId));
 
   const onClose = () => setOpen(false);
 

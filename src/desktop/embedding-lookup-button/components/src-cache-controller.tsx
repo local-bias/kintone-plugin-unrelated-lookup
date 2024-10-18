@@ -1,72 +1,81 @@
-import { useEffect, FC } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { getAllRecords, getFieldValueAsString, getYuruChara } from '@konomi-app/kintone-utilities';
-import { pluginConditionState, alreadyCacheState, cacheValidationState } from '../states';
+import { useAtomCallback } from 'jotai/utils';
+import { FC, useCallback, useEffect } from 'react';
 import { getLookupSrcFields } from '../action';
-import { PLUGIN_NAME } from '@/lib/statics';
-import { HandledRecord, srcAllRecordsState } from '../states/records';
-import { GUEST_SPACE_ID } from '@/lib/global';
+import { alreadyCacheAtom, isRecordCacheEnabledAtom, pluginConditionAtom } from '../states';
+import { HandledRecord, srcAllRecordsAtom } from '../states/records';
+import { useConditionId } from './condition-id-context';
+import { ENV } from '@/lib/global';
+import { useAtomValue } from 'jotai';
 
 const Container: FC = () => {
-  const setAllRecords = useSetRecoilState(srcAllRecordsState);
-  const setAlreadyCache = useSetRecoilState(alreadyCacheState);
-  const condition = useRecoilValue(pluginConditionState);
-  const enablesCache = useRecoilValue(cacheValidationState);
+  const conditionId = useConditionId();
+  const isRecordCacheEnabled = useAtomValue(isRecordCacheEnabledAtom(conditionId));
 
-  useEffect(() => {
-    (async () => {
-      if (!condition || !enablesCache) {
-        return;
-      }
-      try {
-        const app = condition.srcAppId;
-        if (!app) {
-          throw new Error('アプリ情報が取得できませんでした');
+  const createCache = useAtomCallback(
+    useCallback(
+      async (get, set, params: { conditionId: string; isRecordCacheEnabled: boolean }) => {
+        const { conditionId, isRecordCacheEnabled } = params;
+        if (!isRecordCacheEnabled) {
+          ENV === 'development' &&
+            console.warn(`キャッシュが有効になっていないため、処理を中断しました`);
+          return;
         }
 
-        const {
-          query = '',
-          isCaseSensitive,
-          isKatakanaSensitive,
-          isZenkakuEisujiSensitive,
-          isHankakuKatakanaSensitive,
-        } = condition;
+        const condition = get(pluginConditionAtom(conditionId));
+        try {
+          const app = condition.srcAppId;
+          if (!app) {
+            throw new Error('アプリ情報が取得できませんでした');
+          }
 
-        const fields = getLookupSrcFields(condition);
-        await getAllRecords({
-          app,
-          query,
-          fields,
-          guestSpaceId: condition.isSrcAppGuestSpace
-            ? condition.srcSpaceId ?? undefined
-            : undefined,
-          debug: process?.env?.NODE_ENV === 'development',
-          onStep: ({ records }) => {
-            const viewRecords = records.map<HandledRecord>((record) => {
-              let __quickSearch = Object.values(record)
-                .map((field) => getFieldValueAsString(field))
-                .join('__');
+          const {
+            query = '',
+            isCaseSensitive,
+            isKatakanaSensitive,
+            isZenkakuEisujiSensitive,
+            isHankakuKatakanaSensitive,
+          } = condition;
 
-              __quickSearch = getYuruChara(__quickSearch, {
-                isCaseSensitive,
-                isKatakanaSensitive,
-                isZenkakuEisujiSensitive,
-                isHankakuKatakanaSensitive,
+          const fields = getLookupSrcFields(condition);
+          await getAllRecords({
+            app,
+            query,
+            fields,
+            guestSpaceId: condition.isSrcAppGuestSpace
+              ? (condition.srcSpaceId ?? undefined)
+              : undefined,
+            debug: process?.env?.NODE_ENV === 'development',
+            onStep: ({ records }) => {
+              const viewRecords = records.map<HandledRecord>((record) => {
+                let __quickSearch = Object.values(record)
+                  .map((field) => getFieldValueAsString(field))
+                  .join('__');
+
+                __quickSearch = getYuruChara(__quickSearch, {
+                  isCaseSensitive,
+                  isKatakanaSensitive,
+                  isZenkakuEisujiSensitive,
+                  isHankakuKatakanaSensitive,
+                });
+
+                return { record, __quickSearch };
               });
 
-              return { record, __quickSearch };
-            });
+              set(srcAllRecordsAtom(conditionId), viewRecords);
+            },
+          });
+        } finally {
+          set(alreadyCacheAtom(conditionId), true);
+        }
+      },
+      []
+    )
+  );
 
-            setAllRecords(viewRecords);
-          },
-        });
-        process?.env?.NODE_ENV === 'development' &&
-          console.info(`[${PLUGIN_NAME}] レコード情報のキャッシュが完了しました`);
-      } finally {
-        setAlreadyCache(true);
-      }
-    })();
-  }, [condition, enablesCache]);
+  useEffect(() => {
+    createCache({ conditionId, isRecordCacheEnabled });
+  }, [conditionId, isRecordCacheEnabled]);
 
   return null;
 };

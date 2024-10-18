@@ -1,25 +1,18 @@
-import { atom, selector } from 'recoil';
-import {
-  dialogPageChunkState,
-  dialogPageIndexState,
-  pluginConditionState,
-  searchInputState,
-} from '.';
+import { atom } from 'jotai';
+import { pluginConditionAtom, searchInputAtom } from '.';
 import { kintoneAPI, getYuruChara } from '@konomi-app/kintone-utilities';
+import { atomFamily } from 'jotai/utils';
+import { dialogPageChunkAtom, dialogPageIndexAtom } from './dialog';
 
 export type HandledRecord = { __quickSearch: string; record: kintoneAPI.RecordData };
 
-export const srcAllRecordsState = atom<HandledRecord[]>({
-  key: 'srcAllRecordsState',
-  default: [],
-});
+export const srcAllRecordsAtom = atomFamily((conditionId: string) => atom<HandledRecord[]>([]));
 
-export const filteredRecordsState = selector<kintoneAPI.RecordData[]>({
-  key: 'filteredRecordsState',
-  get: ({ get }) => {
-    const condition = get(pluginConditionState);
-    const cachedRecords = get(srcAllRecordsState);
-    const text = get(searchInputState);
+export const filteredRecordsAtom = atomFamily((conditionId: string) =>
+  atom<kintoneAPI.RecordData[]>((get) => {
+    const condition = get(pluginConditionAtom(conditionId));
+    const cachedRecords = get(srcAllRecordsAtom(conditionId));
+    const text = get(searchInputAtom(conditionId));
 
     const {
       isCaseSensitive,
@@ -28,7 +21,7 @@ export const filteredRecordsState = selector<kintoneAPI.RecordData[]>({
       isHankakuKatakanaSensitive,
     } = condition || {};
 
-    let input = getYuruChara(text, {
+    const input = getYuruChara(text, {
       isCaseSensitive,
       isKatakanaSensitive,
       isZenkakuEisujiSensitive,
@@ -41,16 +34,14 @@ export const filteredRecordsState = selector<kintoneAPI.RecordData[]>({
     );
 
     return filtered.map(({ record }) => record);
-  },
-});
+  })
+);
 
-export const displayingRecordsState = selector<kintoneAPI.RecordData[]>({
-  key: 'displayingRecordsState',
-  get: ({ get }) => {
-    const records = get(filteredRecordsState);
-    const index = get(dialogPageIndexState);
-    const chunk = get(dialogPageChunkState);
-
+export const displayingRecordsAtom = atomFamily((conditionId: string) =>
+  atom<kintoneAPI.RecordData[]>((get) => {
+    const records = get(filteredRecordsAtom(conditionId));
+    const index = get(dialogPageIndexAtom(conditionId));
+    const chunk = get(dialogPageChunkAtom(conditionId));
     return records.slice((index - 1) * chunk, index * chunk);
-  },
-});
+  })
+);

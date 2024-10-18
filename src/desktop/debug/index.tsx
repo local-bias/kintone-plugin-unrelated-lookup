@@ -22,10 +22,9 @@ listener.add(
 
     const rootElement = document.getElementById(ROOT_ID) ?? document.createElement('div');
     rootElement.id = ROOT_ID;
-    const wrapperElement = document.querySelector('#record-gaia') ?? document.body;
+    const wrapperElement = document.body;
     wrapperElement.classList.add(css`
-      display: grid;
-      grid-template-columns: 320px 1fr;
+      transform: scale(0.8) translateX(-12.5%) translateY(-12.5%);
     `);
     wrapperElement.prepend(rootElement);
     const root = createRoot(rootElement);

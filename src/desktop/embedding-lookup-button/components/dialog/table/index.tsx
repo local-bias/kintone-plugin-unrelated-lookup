@@ -1,22 +1,18 @@
-import React, { FC } from 'react';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
-
-import {
-  dialogVisibleState,
-  pluginConditionState,
-  alreadyCacheState,
-  alreadyLookupState,
-} from '../../../states';
-import { apply } from '../../../action';
 import { useSnackbar } from 'notistack';
+import React, { FC, useDeferredValue } from 'react';
+import { apply } from '../../../action';
+import { alreadyCacheAtom, alreadyLookupAtom, pluginConditionAtom } from '../../../states';
 
-import Layout from './layout';
-import Empty from './empty';
+import { isDialogShownAtom } from '@/desktop/embedding-lookup-button/states/dialog';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { displayingRecordsAtom } from '../../../states/records';
+import { useConditionId } from '../../condition-id-context';
 import Cell from './cell';
-import { displayingRecordsState } from '../../../states/records';
+import Empty from './empty';
+import Layout from './layout';
 
 type Props = {
   records: kintoneAPI.RecordData[];
@@ -58,11 +54,13 @@ const Component: FC<Props> = ({ records, onRowClick, condition, hasCached }) => 
 );
 
 const Container: FC = () => {
-  const condition = useRecoilValue(pluginConditionState);
-  const records = useRecoilValue(displayingRecordsState);
-  const setDialogShown = useSetRecoilState(dialogVisibleState);
-  const setLookuped = useSetRecoilState(alreadyLookupState);
-  const hasCached = useRecoilValue(alreadyCacheState);
+  const conditionId = useConditionId();
+  const condition = useAtomValue(pluginConditionAtom(conditionId));
+  const rawRecords = useAtomValue(displayingRecordsAtom(conditionId));
+  const records = useDeferredValue(rawRecords);
+  const setDialogShown = useSetAtom(isDialogShownAtom(conditionId));
+  const setLookuped = useSetAtom(alreadyLookupAtom(conditionId));
+  const hasCached = useAtomValue(alreadyCacheAtom(conditionId));
   const { enqueueSnackbar } = useSnackbar();
 
   const onRowClick = (selectedRecord: kintoneAPI.RecordData) => {

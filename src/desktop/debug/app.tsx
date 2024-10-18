@@ -5,13 +5,27 @@ import { cacheAtom } from '../states';
 import JsonView from '@uiw/react-json-view';
 import { cn } from '@/lib/utils';
 import { css } from '@emotion/css';
+import { alreadyCacheAtom, isRecordCacheEnabledAtom } from '../embedding-lookup-button/states';
+import { srcAllRecordsAtom } from '../embedding-lookup-button/states/records';
 
 const Condition: FC<{ condition: Plugin.Condition }> = ({ condition }) => {
-  const cache = useAtomValue(cacheAtom(condition.id));
+  const id = condition.id;
+  const cache = useAtomValue(cacheAtom(id));
+  const isRecordCacheComplete = useAtomValue(alreadyCacheAtom(id));
+  const allSrcRecords = useAtomValue(srcAllRecordsAtom(id));
+  const isRecordCacheEnabled = useAtomValue(isRecordCacheEnabledAtom(id));
 
   return (
     <div>
-      <JsonView value={{ id: condition.id, cache }} />
+      <JsonView
+        value={{
+          id: condition.id,
+          cache,
+          isRecordCacheComplete,
+          isRecordCacheEnabled,
+          srcRecordsLength: allSrcRecords.length,
+        }}
+      />
     </div>
   );
 };
@@ -54,8 +68,14 @@ const Component: FC = () => {
         `
       )}
     >
-      <div className='z-10 bg-gray-900 text-white h-dvh overflow-auto sticky top-12'>
-        <div className='mb-4 text-sm'>🐛 Debug Menu (Not displayed in production)</div>
+      <div className='fixed left-full top-0 z-10 w-[25dvw] box-border p-4 bg-gray-900 text-white h-dvh overflow-auto'>
+        <div className='flex gap-2'>
+          <div className='text-3xl'>🐛</div>
+          <div className='mb-4 text-sm text-green-300 font-bold'>
+            Plugin Debug Menu
+            <div className='text-xs'>(Not displayed in production)</div>
+          </div>
+        </div>
         {pluginConfig.conditions.map((condition) => (
           <Condition key={condition.id} condition={condition} />
         ))}

@@ -1,4 +1,9 @@
-import { someFieldValue } from '@/lib/kintone-api';
+import {
+  FIELD_TYPES_FOR_IN_SEARCH,
+  FIELD_TYPES_FOR_LIKE_SEARCH,
+  FIELD_TYPES_FOR_REQUIRE_ESCAPING,
+  someFieldValue,
+} from '@/lib/kintone-api';
 import { PLUGIN_NAME } from '@/lib/statics';
 import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
@@ -6,6 +11,7 @@ import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 import { cacheAtom } from '../states';
 import { store } from '../store';
+import { ENV } from '@/lib/global';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -47,42 +53,11 @@ export const lookup = async (params: {
 
   let query = '';
   if (value) {
-    const requireEscaping: kintoneAPI.RecordData[string]['type'][] = [
-      'SINGLE_LINE_TEXT',
-      'MULTI_LINE_TEXT',
-      'RICH_TEXT',
-      'CHECK_BOX',
-      'RADIO_BUTTON',
-      'DROP_DOWN',
-      'MULTI_SELECT',
-      'STATUS',
-    ];
+    const valueQuery = FIELD_TYPES_FOR_REQUIRE_ESCAPING.includes(dstType) ? `"${value}"` : value;
 
-    const valueQuery = requireEscaping.includes(dstType) ? `"${value}"` : value;
-
-    const likeSearchFields: kintoneAPI.RecordData[string]['type'][] = [
-      'SINGLE_LINE_TEXT',
-      'LINK',
-      'MULTI_LINE_TEXT',
-      'RICH_TEXT',
-      'FILE',
-    ];
-
-    const inSearchFields: kintoneAPI.RecordData[string]['type'][] = [
-      'CREATOR',
-      'MODIFIER',
-      'CHECK_BOX',
-      'RADIO_BUTTON',
-      'DROP_DOWN',
-      'MULTI_SELECT',
-      'USER_SELECT',
-      'ORGANIZATION_SELECT',
-      'GROUP_SELECT',
-    ];
-
-    if (likeSearchFields.includes(dstType)) {
+    if (FIELD_TYPES_FOR_LIKE_SEARCH.includes(dstType)) {
       query = `${condition.srcField} like ${valueQuery}`;
-    } else if (inSearchFields.includes(dstType)) {
+    } else if (FIELD_TYPES_FOR_IN_SEARCH.includes(dstType)) {
       query = `${condition.srcField} in (${valueQuery})`;
     } else {
       console.warn(
@@ -100,9 +75,7 @@ export const lookup = async (params: {
     }
   }
 
-  if (process?.env?.NODE_ENV === 'development') {
-    console.log(`[${PLUGIN_NAME}] 検索クエリ`, query);
-  }
+  ENV === 'development' && console.log(`[${PLUGIN_NAME}] 検索クエリ`, query);
 
   const fields = getLookupSrcFields(condition);
 
@@ -234,7 +207,7 @@ export const clearLookup = async (condition: Plugin.Condition) => {
     }
 
     if (condition.autoLookup) {
-      //@ts-ignore
+      //@ts-expect-error 未定義のプロパティ
       record[to].lookup = 'CLEAR';
     }
   }

@@ -1,8 +1,9 @@
-import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
 import CheckIcon from '@mui/icons-material/Check';
-import { useRecoilValue } from 'recoil';
-import { alreadyLookupState } from '../states';
+import { useAtomValue } from 'jotai';
+import React, { FC, FCX } from 'react';
+import { alreadyLookupAtom } from '../states';
+import { useConditionId } from './condition-id-context';
 
 type Props = Readonly<{ visible: boolean }>;
 
@@ -36,7 +37,8 @@ const StyledComponent = styled(Component)`
 `;
 
 const Container: FC = () => {
-  const visible = useRecoilValue(alreadyLookupState);
+  const conditionId = useConditionId();
+  const visible = useAtomValue(alreadyLookupAtom(conditionId));
   return <StyledComponent {...{ visible }} />;
 };
 

@@ -1,23 +1,16 @@
-import React, { FC } from 'react';
-import { RecoilRoot } from 'recoil';
 import { SnackbarProvider } from 'notistack';
-
-import { pluginConditionState } from './states';
-
-import EventObserver from './components/event-observer';
-import SrcCacheController from './components/src-cache-controller';
-import LookupStatusBadge from './components/lookup-status-badge';
-import LookupButton from './components/lookup-button';
+import React, { FC } from 'react';
+import { ConditionIdProvider } from './components/condition-id-context';
 import SearchDialog from './components/dialog';
+import EventObserver from './components/event-observer';
+import LookupButton from './components/lookup-button';
+import LookupStatusBadge from './components/lookup-status-badge';
+import SrcCacheController from './components/src-cache-controller';
 
-type Props = { condition: Plugin.Condition };
+type Props = { conditionId: string };
 
-const Component: FC<Props> = ({ condition }) => (
-  <RecoilRoot
-    initializeState={({ set }) => {
-      set(pluginConditionState, condition);
-    }}
-  >
+const Component: FC<Props> = ({ conditionId }) => (
+  <ConditionIdProvider conditionId={conditionId}>
     <SrcCacheController />
     <LookupStatusBadge />
     <SnackbarProvider maxSnack={1}>
@@ -25,7 +18,7 @@ const Component: FC<Props> = ({ condition }) => (
       <LookupButton />
       <SearchDialog />
     </SnackbarProvider>
-  </RecoilRoot>
+  </ConditionIdProvider>
 );
 
 export default Component;

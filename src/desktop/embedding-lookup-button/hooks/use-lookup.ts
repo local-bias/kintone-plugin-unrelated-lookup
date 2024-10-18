@@ -1,81 +1,87 @@
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { useSnackbar } from 'notistack';
-import { useState } from 'react';
-import { useRecoilCallback, useSetRecoilState } from 'recoil';
+import { useCallback } from 'react';
 import { clearLookup, lookup } from '../action';
 import {
-  alreadyCacheState,
-  alreadyLookupState,
-  cacheValidationState,
-  dialogPageIndexState,
-  dialogVisibleState,
-  pluginConditionState,
-  searchInputState,
+  alreadyCacheAtom,
+  alreadyLookupAtom,
+  isRecordCacheEnabledAtom,
+  loadingCountAtom,
+  pluginConditionAtom,
+  searchInputAtom,
 } from '../states';
-import { srcAllRecordsState } from '../states/records';
+import { srcAllRecordsAtom } from '../states/records';
+import { dialogPageIndexAtom, isDialogShownAtom } from '../states/dialog';
+import { useSetAtom } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 
-export const useLookup = () => {
+export const useLookup = (conditionId: string) => {
   const { enqueueSnackbar } = useSnackbar();
-  const setShown = useSetRecoilState(dialogVisibleState);
-  const setInput = useSetRecoilState(searchInputState);
-  const setPageIndex = useSetRecoilState(dialogPageIndexState);
-  const setCacheValidation = useSetRecoilState(cacheValidationState);
-  const setAlreadyLookup = useSetRecoilState(alreadyLookupState);
-  const [loading, setLoading] = useState(false);
+  const setShown = useSetAtom(isDialogShownAtom(conditionId));
+  const setAlreadyLookup = useSetAtom(alreadyLookupAtom(conditionId));
 
-  const start = useRecoilCallback(({ snapshot }) => async () => {
-    setLoading(true);
+  const start = useAtomCallback(
+    useCallback(
+      async (get, set) => {
+        try {
+          set(loadingCountAtom(conditionId), (c) => c + 1);
+          set(alreadyLookupAtom(conditionId), false);
+          set(dialogPageIndexAtom(conditionId), 1);
+          set(isRecordCacheEnabledAtom(conditionId), true);
 
-    try {
-      setAlreadyLookup(false);
-      setPageIndex(1);
-      setCacheValidation(true);
+          const condition = get(pluginConditionAtom(conditionId));
 
-      const condition = (await snapshot.getPromise(pluginConditionState))!;
+          const { record } = getCurrentRecord();
+          const input = (record[condition.dstField].value as string) || '';
+          set(searchInputAtom(conditionId), input);
 
-      const { record } = getCurrentRecord();
-      const input = (record[condition.dstField].value as string) || '';
-      setInput(input);
+          if (!input) {
+            set(isDialogShownAtom(conditionId), true);
+            return;
+          }
 
-      if (!input) {
-        setShown(true);
-        return;
-      }
+          const hasCached = get(alreadyCacheAtom(conditionId));
+          const handledRecords = get(srcAllRecordsAtom(conditionId));
 
-      const hasCached = await snapshot.getPromise(alreadyCacheState);
-      const handledRecords = await snapshot.getPromise(srcAllRecordsState);
+          const cachedRecords = handledRecords.map(({ record }) => record);
 
-      const cachedRecords = handledRecords.map(({ record }) => record);
+          const lookuped = await lookup({
+            condition,
+            record,
+            option: {
+              input,
+              hasCached,
+              cachedRecords,
+              enqueueSnackbar,
+              setShown,
+              setLookuped: setAlreadyLookup,
+            },
+          });
 
-      const lookuped = await lookup({
-        condition,
-        record,
-        option: {
-          input,
-          hasCached,
-          cachedRecords,
-          enqueueSnackbar,
-          setShown,
-          setLookuped: setAlreadyLookup,
-        },
-      });
+          setCurrentRecord({ record: lookuped });
+        } catch (error) {
+          console.error(error);
+          enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
+          throw error;
+        } finally {
+          set(loadingCountAtom(conditionId), (c) => c - 1);
+        }
+      },
+      [conditionId]
+    )
+  );
 
-      setCurrentRecord({ record: lookuped });
-    } catch (error) {
-      console.error(error);
-      enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
-      throw error;
-    } finally {
-      setLoading(false);
-    }
-  });
+  const clear = useAtomCallback(
+    useCallback(
+      async (get, set) => {
+        const condition = get(pluginConditionAtom(conditionId));
+        set(alreadyLookupAtom(conditionId), false);
+        await clearLookup(condition);
+        enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
+      },
+      [conditionId]
+    )
+  );
 
-  const clear = useRecoilCallback(({ snapshot }) => async () => {
-    const condition = await snapshot.getPromise(pluginConditionState);
-    setAlreadyLookup(false);
-    await clearLookup(condition!);
-    enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
-  });
-
-  return { loading, start, clear };
+  return { start, clear };
 };

@@ -53,7 +53,7 @@ listener.add(events, async (event) => {
       position: relative;
     `);
 
-    createRoot(div).render(<App {...{ condition }} />);
+    createRoot(div).render(<App conditionId={condition.id} />);
   }
 
   return event;

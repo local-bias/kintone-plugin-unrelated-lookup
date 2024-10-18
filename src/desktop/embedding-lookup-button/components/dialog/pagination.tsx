@@ -1,10 +1,11 @@
-import React, { FC, FCX } from 'react';
-import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import styled from '@emotion/styled';
 import { Pagination } from '@mui/material';
-
-import { dialogPageChunkState, dialogPageIndexState } from '../../states';
-import { filteredRecordsState } from '../../states/records';
+import { useAtom, useAtomValue } from 'jotai';
+import React, { FC, FCX } from 'react';
+import { SetterOrUpdater } from 'recoil';
+import { dialogPageChunkAtom, dialogPageIndexAtom } from '../../states/dialog';
+import { filteredRecordsAtom } from '../../states/records';
+import { useConditionId } from '../condition-id-context';
 
 type Props = {
   size: number;
@@ -27,9 +28,10 @@ const Component: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) 
 const StyledComponent = styled(Component)``;
 
 const Container: FC = () => {
-  const records = useRecoilValue(filteredRecordsState);
-  const [index, setIndex] = useRecoilState(dialogPageIndexState);
-  const chunkSize = useRecoilValue(dialogPageChunkState);
+  const conditionId = useConditionId();
+  const records = useAtomValue(filteredRecordsAtom(conditionId));
+  const [index, setIndex] = useAtom(dialogPageIndexAtom(conditionId));
+  const chunkSize = useAtomValue(dialogPageChunkAtom(conditionId));
 
   const size = records.length || 0;
 

@@ -1,8 +1,9 @@
-import React, { ChangeEventHandler, FC } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { TextField } from '@mui/material';
-
-import { dialogPageIndexState, searchInputState } from '../../states';
+import { useAtom, useSetAtom } from 'jotai';
+import React, { ChangeEventHandler, FC } from 'react';
+import { searchInputAtom } from '../../states';
+import { dialogPageIndexAtom } from '../../states/dialog';
+import { useConditionId } from '../condition-id-context';
 
 type Props = {
   value: string;
@@ -20,8 +21,9 @@ const Component: FC<Props> = ({ value, onChange }) => (
 );
 
 const Container: FC = () => {
-  const [value, setValue] = useRecoilState(searchInputState);
-  const setPageIndex = useSetRecoilState(dialogPageIndexState);
+  const conditionId = useConditionId();
+  const [value, setValue] = useAtom(searchInputAtom(conditionId));
+  const setPageIndex = useSetAtom(dialogPageIndexAtom(conditionId));
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setValue(e.target.value);
