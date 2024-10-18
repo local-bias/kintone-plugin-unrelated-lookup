@@ -22,6 +22,11 @@ const Container: FC = () => {
           return;
         }
 
+        const allRecords = get(srcAllRecordsAtom(conditionId));
+        if (allRecords.length) {
+          return;
+        }
+
         const condition = get(pluginConditionAtom(conditionId));
         try {
           const app = condition.srcAppId;
