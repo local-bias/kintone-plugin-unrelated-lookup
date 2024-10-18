@@ -1,9 +1,9 @@
-import { cleanse, restorePluginConfig } from '@/lib/plugin';
-import { lookup } from '../embedding-lookup-button/action';
-import { lookupObserver } from '../lookup-observer';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { listener } from '@/lib/listener';
 import { ENV } from '@/lib/global';
+import { listener } from '@/lib/listener';
+import { cleanse, restorePluginConfig } from '@/lib/plugin';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { lookup } from '../embedding-lookup-button/action';
+import { getCachedValue } from '../states';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 
@@ -21,12 +21,15 @@ listener.add(events, async (event) => {
 
   for (const condition of targetConditions) {
     const { id, dstField } = condition;
+
     try {
+      const cachedValue = getCachedValue(id);
+
       // 次の場合は処理の対象外
       // 1. プラグインに設定されているフィールド情報が不正
       // 2. 対象フィールドに値が設定されていない
       // 3. ユーザーの操作によってルックアップが実行されている場合
-      if (!event.record[dstField]?.value || lookupObserver[id].lookuped) {
+      if (!event.record[dstField]?.value || cachedValue.lookuped) {
         continue;
       }
 

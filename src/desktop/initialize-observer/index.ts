@@ -1,8 +1,7 @@
-import { cleanse, restorePluginConfig } from '@/lib/plugin';
-import { lookupObserver } from '../lookup-observer';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/lib/listener';
-import { ENV } from '@/lib/global';
+import { cleanse, restorePluginConfig } from '@/lib/plugin';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { setCachedValue } from '../states';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
@@ -23,14 +22,12 @@ listener.add(events, async (event) => {
       continue;
     }
 
-    lookupObserver[id] = {
+    setCachedValue(id, {
       fieldCode: dstField,
-      valueAtStart: (event.record[condition.dstField].value as string) || '',
+      valueAtStart: (event.record[dstField].value as string) || '',
       lookuped: false,
-    };
+    });
   }
-
-  ENV === 'development' && console.log({ lookupObserver });
 
   return event;
 });

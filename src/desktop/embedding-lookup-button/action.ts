@@ -1,11 +1,11 @@
-import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
-import { SetterOrUpdater } from 'recoil';
-
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { someFieldValue } from '@/lib/kintone-api';
-import { lookupObserver } from '../lookup-observer';
 import { PLUGIN_NAME } from '@/lib/statics';
 import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
+import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
+import { SetterOrUpdater } from 'recoil';
+import { cacheAtom } from '../states';
+import { store } from '../store';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -179,11 +179,9 @@ export const apply = (
   }
 
   if (option) {
+    const atom = cacheAtom(condition.id);
     option.setLookuped(true);
-    lookupObserver[condition.id].lookuped = true;
-    if (process?.env?.NODE_ENV === 'development') {
-      console.log({ lookupObserver });
-    }
+    store.set(atom, (prev) => ({ ...prev, lookuped: true }));
   }
   return record;
 };
@@ -241,6 +239,7 @@ export const clearLookup = async (condition: Plugin.Condition) => {
     }
   }
 
-  lookupObserver[condition.id].lookuped = false;
+  const atom = cacheAtom(condition.id);
+  store.set(atom, (prev) => ({ ...prev, lookuped: false }));
   setCurrentRecord({ record });
 };
