@@ -21,7 +21,7 @@ type Props = {
   hasCached: boolean;
 };
 
-const Component: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
+const DialogTableComponent: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
   <Layout>
     {!records.length && !hasCached && <LoaderWithLabel label='レコードを取得しています' />}
     {!records.length && hasCached && <Empty />}
@@ -53,7 +53,7 @@ const Component: FC<Props> = ({ records, onRowClick, condition, hasCached }) => 
   </Layout>
 );
 
-const Container: FC = () => {
+const DialogTableContainer: FC = () => {
   const conditionId = useConditionId();
   const condition = useAtomValue(pluginConditionAtom(conditionId));
   const rawRecords = useAtomValue(displayingRecordsAtom(conditionId));
@@ -73,7 +73,7 @@ const Container: FC = () => {
     setDialogShown(false);
   };
 
-  return <Component {...{ records, onRowClick, condition, hasCached }} />;
+  return <DialogTableComponent {...{ records, onRowClick, condition, hasCached }} />;
 };
 
-export default Container;
+export default DialogTableContainer;

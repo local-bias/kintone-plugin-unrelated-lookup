@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 
 const Component: FCwC = ({ className, children }) => <div {...{ className }}>{children}</div>;
 
-const StyledComponent = styled(Component)`
+const StyledDialogTableLayoutComponent = styled(Component)`
   table {
     width: 100%;
     padding: 0 16px 16px;
@@ -83,4 +83,4 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-export default StyledComponent;
+export default StyledDialogTableLayoutComponent;

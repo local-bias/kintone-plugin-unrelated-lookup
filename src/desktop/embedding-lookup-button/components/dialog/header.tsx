@@ -4,14 +4,14 @@ import styled from '@emotion/styled';
 import Pagination from './pagination';
 import Input from './search-input';
 
-const Component: FCX = ({ className }) => (
+const DialogTitleComponent: FCX = ({ className }) => (
   <div {...{ className }}>
     <Input />
     <Pagination />
   </div>
 );
 
-const StyledComponent = styled(Component)`
+const StyledDialogTitleComponent = styled(DialogTitleComponent)`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,4 +24,4 @@ const StyledComponent = styled(Component)`
   z-index: 2;
 `;
 
-export default StyledComponent;
+export default StyledDialogTitleComponent;

@@ -12,7 +12,11 @@ type Props = {
   onClearButtonClick: () => void;
 };
 
-const Component: FCX<Props> = ({ className, onLookupButtonClick, onClearButtonClick }) => {
+const LookupButtonComponent: FCX<Props> = ({
+  className,
+  onLookupButtonClick,
+  onClearButtonClick,
+}) => {
   const conditionId = useConditionId();
   const loading = useAtomValue(loadingAtom(conditionId));
   return (
@@ -30,7 +34,7 @@ const Component: FCX<Props> = ({ className, onLookupButtonClick, onClearButtonCl
   );
 };
 
-const StyledComponent = styled(Component)`
+const StyledLookupButtonComponent = styled(LookupButtonComponent)`
   display: flex;
   & > div {
     position: relative;
@@ -44,14 +48,14 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
+const LookupButtonContainer: FC = () => {
   const conditionId = useConditionId();
   const { start, clear } = useLookup(conditionId);
 
   const onClearButtonClick = clear;
   const onLookupButtonClick = start;
 
-  return <StyledComponent {...{ onLookupButtonClick, onClearButtonClick }} />;
+  return <StyledLookupButtonComponent {...{ onLookupButtonClick, onClearButtonClick }} />;
 };
 
-export default Container;
+export default LookupButtonContainer;

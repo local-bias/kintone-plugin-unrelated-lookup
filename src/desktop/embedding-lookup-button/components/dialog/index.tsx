@@ -13,7 +13,7 @@ type Props = Readonly<{
   onClose: () => void;
 }>;
 
-const Component: FCX<Props> = ({ className, open, onClose }) => (
+const DialogComponent: FCX<Props> = ({ className, open, onClose }) => (
   <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
     <Suspense fallback={<DialogTitle>アプリからデータを取得</DialogTitle>}>
       <Title />
@@ -30,7 +30,7 @@ const Component: FCX<Props> = ({ className, open, onClose }) => (
   </Dialog>
 );
 
-const StyledComponent = styled(Component)`
+const StyledDialogComponent = styled(DialogComponent)`
   & > div {
     & > div {
       height: 90vh;
@@ -48,13 +48,13 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
+const DialogContainer: FC = () => {
   const conditionId = useConditionId();
   const [open, setOpen] = useAtom(isDialogShownAtom(conditionId));
 
   const onClose = () => setOpen(false);
 
-  return <StyledComponent {...{ open, onClose }} />;
+  return <StyledDialogComponent {...{ open, onClose }} />;
 };
 
-export default Container;
+export default DialogContainer;

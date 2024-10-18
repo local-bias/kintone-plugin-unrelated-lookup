@@ -7,13 +7,13 @@ import { useConditionId } from './condition-id-context';
 
 type Props = Readonly<{ visible: boolean }>;
 
-const Component: FCX<Props> = ({ className }) => (
+const LookupStatusBadgeComponent: FCX<Props> = ({ className }) => (
   <div {...{ className }}>
     <CheckIcon />
   </div>
 );
 
-const StyledComponent = styled(Component)`
+const StyledLookupStatusBadgeComponent = styled(LookupStatusBadgeComponent)`
   position: absolute;
   border-radius: 50%;
   display: flex;
@@ -36,10 +36,10 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
+const LookupStatusBadgeContainer: FC = () => {
   const conditionId = useConditionId();
   const visible = useAtomValue(alreadyLookupAtom(conditionId));
-  return <StyledComponent {...{ visible }} />;
+  return <StyledLookupStatusBadgeComponent {...{ visible }} />;
 };
 
-export default Container;
+export default LookupStatusBadgeContainer;

@@ -9,7 +9,7 @@ import SrcCacheController from './components/src-cache-controller';
 
 type Props = { conditionId: string };
 
-const Component: FC<Props> = ({ conditionId }) => (
+const App: FC<Props> = ({ conditionId }) => (
   <ConditionIdProvider conditionId={conditionId}>
     <SrcCacheController />
     <LookupStatusBadge />
@@ -21,4 +21,4 @@ const Component: FC<Props> = ({ conditionId }) => (
   </ConditionIdProvider>
 );
 
-export default Component;
+export default App;
