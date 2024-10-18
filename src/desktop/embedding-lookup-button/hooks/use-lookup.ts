@@ -62,6 +62,7 @@ export const useLookup = () => {
 
       setCurrentRecord({ record: lookuped });
     } catch (error) {
+      console.error(error);
       enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
       throw error;
     } finally {

@@ -1,5 +1,6 @@
 import { KintoneEventManager } from '@konomi-app/kintone-utilities';
 import { PLUGIN_NAME } from './statics';
+import { ENV } from './global';
 
 export const listener = new KintoneEventManager({
   errorHandler: (error, props) => {
@@ -11,5 +12,4 @@ export const listener = new KintoneEventManager({
   logDisabled: process.env.NODE_ENV === 'production',
 });
 
-process.env.NODE_ENV === 'development' &&
-  console.info('[plugin] Event listener has been initialized');
+ENV === 'development' && console.info('[plugin] Event listener has been initialized');

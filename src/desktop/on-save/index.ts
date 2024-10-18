@@ -3,6 +3,7 @@ import { lookup } from '../embedding-lookup-button/action';
 import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/lib/listener';
+import { ENV } from '@/lib/global';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 
@@ -35,9 +36,8 @@ listener.add(events, async (event) => {
       /** 取得した関連レコード */
       const lookuped = await lookup({ condition, record: event.record });
 
-      if (process?.env?.NODE_ENV === 'development') {
+      if (ENV === 'development') {
         console.log({ lookuped });
-        await new Promise((resolve) => setTimeout(resolve, 1000 * 20));
       }
 
       event.record = lookuped;

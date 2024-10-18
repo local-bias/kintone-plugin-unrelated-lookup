@@ -9,7 +9,7 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
-import { GUEST_SPACE_ID } from '@/lib/global';
+import { ENV, GUEST_SPACE_ID } from '@/lib/global';
 
 const PREFIX = 'kintone';
 
@@ -18,7 +18,7 @@ export const kintoneAppsState = selector({
   get: async ({ get }) => {
     const apps = await getAllApps({
       guestSpaceId: GUEST_SPACE_ID,
-      debug: process?.env?.NODE_ENV === 'development',
+      debug: ENV === 'development',
     });
     return apps;
   },
@@ -57,7 +57,7 @@ export const appFieldsState = selector<kintoneAPI.FieldProperties>({
       app,
       preview: true,
       guestSpaceId: GUEST_SPACE_ID,
-      debug: process?.env?.NODE_ENV === 'development',
+      debug: ENV === 'development',
     });
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
 
@@ -77,7 +77,7 @@ export const dstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       app,
       preview: true,
       guestSpaceId: GUEST_SPACE_ID,
-      debug: process?.env?.NODE_ENV === 'development',
+      debug: ENV === 'development',
     });
     const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
 
@@ -112,7 +112,7 @@ export const srcAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       app: srcAppId,
       preview: true,
       guestSpaceId,
-      debug: process?.env?.NODE_ENV === 'development',
+      debug: ENV === 'development',
     });
     const filtered = omitFieldProperties(properties, ['GROUP', 'SUBTABLE']);
 

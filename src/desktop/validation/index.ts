@@ -2,6 +2,8 @@ import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { lookupObserver } from '../lookup-observer';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { listener } from '@/lib/listener';
+import { ENV } from '@/lib/global';
+import { PLUGIN_NAME } from '@/lib/statics';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 
@@ -37,6 +39,8 @@ listener.add(events, async (event) => {
       continue;
     }
   }
+
+  ENV === 'development' && console.log(`[${PLUGIN_NAME}] Validation has been completed`);
 
   return event;
 });
