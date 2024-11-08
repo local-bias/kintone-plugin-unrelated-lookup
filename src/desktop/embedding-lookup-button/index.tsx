@@ -8,6 +8,8 @@ import App from './app';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
+const getElementId = (conditionId: string) => `embedding-lookup-button-${conditionId}`;
+
 listener.add(events, async (event) => {
   const { conditions } = cleanse(restorePluginConfig());
 
@@ -40,20 +42,24 @@ listener.add(events, async (event) => {
       return event;
     }
 
-    wrapper.classList.remove('disabled-cybozu');
+    let element = document.getElementById(getElementId(condition.id));
+    if (!element) {
+      wrapper.classList.remove('disabled-cybozu');
 
-    wrapper.classList.add(css`
-      display: flex;
-    `);
+      wrapper.classList.add(css`
+        display: flex;
+      `);
 
-    const div = document.createElement('div');
-    wrapper.append(div);
-    div.classList.add(css`
-      display: flex;
-      position: relative;
-    `);
+      element = document.createElement('div');
+      element.id = `embedding-lookup-button-${condition.id}`;
+      wrapper.append(element);
+      element.classList.add(css`
+        display: flex;
+        position: relative;
+      `);
+    }
 
-    createRoot(div).render(<App conditionId={condition.id} />);
+    createRoot(element).render(<App conditionId={condition.id} />);
   }
 
   return event;
