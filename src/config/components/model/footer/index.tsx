@@ -1,15 +1,15 @@
-import React, { FC, useState, FCX, useCallback, ChangeEventHandler } from 'react';
-import { useRecoilCallback } from 'recoil';
-import { useSnackbar } from 'notistack';
-import { Button } from '@mui/material';
 import { PluginFooterBundle } from '@konomi-app/kintone-utilities-react';
+import { Button } from '@mui/material';
+import { useSnackbar } from 'notistack';
+import { ChangeEventHandler, FC, useCallback, useState } from 'react';
+import { useRecoilCallback } from 'recoil';
 
 import { storeStorage } from '@konomi-app/kintone-utilities';
 
 import { storageState } from '../../../states/plugin';
 
-import { PLUGIN_NAME } from '@/lib/statics';
 import { createConfig, migrateConfig } from '@/lib/plugin';
+import { PLUGIN_NAME } from '@/lib/statics';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();

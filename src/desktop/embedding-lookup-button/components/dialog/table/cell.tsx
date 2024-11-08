@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
-import { sanitize } from 'dompurify';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { sanitize } from 'dompurify';
+import { FC } from 'react';
 
 type ContainerProps = Readonly<{ field: kintoneAPI.Field }>;
 

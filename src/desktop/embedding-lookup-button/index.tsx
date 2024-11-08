@@ -2,7 +2,6 @@ import { listener } from '@/lib/listener';
 import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { css } from '@emotion/css';
 import { getMetaFieldId_UNSTABLE, kintoneAPI } from '@konomi-app/kintone-utilities';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './app';
 

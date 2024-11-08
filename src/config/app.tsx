@@ -1,4 +1,5 @@
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { LANGUAGE } from '@/lib/global';
 import { URL_BANNER, URL_PROMOTION } from '@/lib/statics';
 import {
   Notification,
@@ -8,15 +9,14 @@ import {
   PluginLayout,
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
+import { enUS, esES, jaJP, zhCN } from '@mui/material/locale';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { SnackbarProvider } from 'notistack';
-import React, { FC, Suspense } from 'react';
+import { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import config from '../../plugin.config.mjs';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { jaJP, enUS, zhCN, esES } from '@mui/material/locale';
-import { LANGUAGE } from '@/lib/global';
 import Sidebar from './components/sidebar';
 
 const Component: FC = () => {

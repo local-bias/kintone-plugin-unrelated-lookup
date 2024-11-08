@@ -1,12 +1,12 @@
+import { ENV } from '@/lib/global';
 import { getAllRecords, getFieldValueAsString, getYuruChara } from '@konomi-app/kintone-utilities';
+import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { FC, useCallback, useEffect } from 'react';
 import { getLookupSrcFields } from '../action';
 import { alreadyCacheAtom, isRecordCacheEnabledAtom, pluginConditionAtom } from '../states';
 import { HandledRecord, srcAllRecordsAtom } from '../states/records';
 import { useConditionId } from './condition-id-context';
-import { ENV } from '@/lib/global';
-import { useAtomValue } from 'jotai';
 
 const Container: FC = () => {
   const conditionId = useConditionId();

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import CheckIcon from '@mui/icons-material/Check';
 import { useAtomValue } from 'jotai';
-import React, { FC, FCX } from 'react';
+import { FC, FCX } from 'react';
 import { alreadyLookupAtom } from '../states';
 import { useConditionId } from './condition-id-context';
 

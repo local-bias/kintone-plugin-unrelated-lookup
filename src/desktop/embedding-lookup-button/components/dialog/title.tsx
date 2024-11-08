@@ -1,6 +1,6 @@
 import { DialogTitle } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { dialogTitleAtom } from '../../states/dialog';
 import { useConditionId } from '../condition-id-context';
 

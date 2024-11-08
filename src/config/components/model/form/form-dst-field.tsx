@@ -1,6 +1,6 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { Skeleton } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
+import { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { dstAppPropertiesState } from '../../../states/kintone';
 import { dstFieldState } from '../../../states/plugin';

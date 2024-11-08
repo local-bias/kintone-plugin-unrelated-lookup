@@ -2,7 +2,7 @@ import { conditionsState, selectedConditionIdState } from '@/config/states/plugi
 import { getNewCondition } from '@/lib/plugin';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { useRecoilState } from 'recoil';
 
 const Sidebar: FC = () => {

@@ -1,5 +1,5 @@
-import React, { FCwC } from 'react';
 import styled from '@emotion/styled';
+import { FCwC } from 'react';
 
 const Component: FCwC = ({ className, children }) => <div {...{ className }}>{children}</div>;
 

@@ -1,9 +1,12 @@
-import React, { FC } from 'react';
-import DstFieldForm from './form-dst-field';
-import SrcAppForm from './form-src-app';
-import SrcFieldForm from './form-src-field';
-import CopiesForm from './form-copies';
-import DisplayFieldsForm from './form-display-fields';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+  RecoilSwitch,
+  RecoilText,
+} from '@konomi-app/kintone-utilities-react';
+import { FC } from 'react';
 import {
   autoLookupState,
   enablesCacheState,
@@ -15,15 +18,12 @@ import {
   queryState,
   saveAndLookupState,
 } from '../../../states/plugin';
-import {
-  PluginFormDescription,
-  PluginFormSection,
-  PluginFormTitle,
-  RecoilSwitch,
-  RecoilText,
-} from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './condition-delete-button';
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import CopiesForm from './form-copies';
+import DisplayFieldsForm from './form-display-fields';
+import DstFieldForm from './form-dst-field';
+import SrcAppForm from './form-src-app';
+import SrcFieldForm from './form-src-field';
 
 const Component: FC = () => (
   <div className='p-4'>

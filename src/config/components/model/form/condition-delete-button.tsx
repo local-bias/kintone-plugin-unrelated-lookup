@@ -1,9 +1,9 @@
-import React, { FC, memo } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { produce } from 'immer';
 import { PluginConditionDeleteButton } from '@konomi-app/kintone-utilities-react';
-import { selectedConditionIdState, storageState } from '../../../states/plugin';
+import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
+import { FC, memo } from 'react';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { selectedConditionIdState, storageState } from '../../../states/plugin';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();

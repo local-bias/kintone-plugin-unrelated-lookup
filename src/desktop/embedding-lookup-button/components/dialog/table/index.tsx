@@ -2,7 +2,7 @@ import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { useSnackbar } from 'notistack';
-import React, { FC, useDeferredValue } from 'react';
+import { FC, useDeferredValue } from 'react';
 import { apply } from '../../../action';
 import { alreadyCacheAtom, alreadyLookupAtom, pluginConditionAtom } from '../../../states';
 

@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import { GripVertical } from 'lucide-react';
 import { nanoid } from 'nanoid';
-import React, { FC, FCX, Suspense } from 'react';
+import { FC, FCX, Suspense } from 'react';
 import { useRecoilValue } from 'recoil';
 import { displayFieldsState } from '../../../states/plugin';
 import SelectSrcFields from './select-src-fields';

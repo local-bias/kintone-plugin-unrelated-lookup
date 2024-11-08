@@ -1,5 +1,5 @@
-import React, { FCX } from 'react';
 import styled from '@emotion/styled';
+import { FCX } from 'react';
 
 const Component: FCX = ({ className }) => (
   <div {...{ className }}>

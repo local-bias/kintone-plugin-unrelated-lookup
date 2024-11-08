@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import { useAtom } from 'jotai';
-import React, { FC, FCX, Suspense } from 'react';
+import { FC, FCX, Suspense } from 'react';
 import { isDialogShownAtom } from '../../states/dialog';
 import { useConditionId } from '../condition-id-context';
 import Header from './header';

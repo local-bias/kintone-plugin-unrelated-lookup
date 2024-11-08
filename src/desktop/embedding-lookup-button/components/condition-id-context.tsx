@@ -1,4 +1,4 @@
-import React, { createContext, useContext, type FC, type ReactNode } from 'react';
+import { createContext, useContext, type FC, type ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
 type ContextType = {

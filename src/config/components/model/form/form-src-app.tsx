@@ -1,5 +1,5 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
+import { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { kintoneAppsState, kintoneSpacesState } from '../../../states/kintone';
 import { isSrcAppGuestSpaceState, srcAppIdState, srcSpaceIdState } from '../../../states/plugin';

@@ -1,6 +1,6 @@
 import { TextField } from '@mui/material';
 import { useAtom, useSetAtom } from 'jotai';
-import React, { ChangeEventHandler, FC } from 'react';
+import { ChangeEventHandler, FC } from 'react';
 import { searchInputAtom } from '../../states';
 import { dialogPageIndexAtom } from '../../states/dialog';
 import { useConditionId } from '../condition-id-context';
