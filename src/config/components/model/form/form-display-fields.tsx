@@ -70,7 +70,7 @@ const Row: FC<{
           <AddIcon fontSize='small' fill='#0006' />
         </IconButton>
       </Tooltip>
-      {deletable && (
+      {!displayField.isLookupField && deletable && (
         <Tooltip title='この表示フィールドを削除する'>
           <IconButton size='small' onClick={() => deleteRow(index)}>
             <DeleteIcon fontSize='small' fill='#0006' />
