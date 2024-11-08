@@ -1,6 +1,7 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { Skeleton } from '@mui/material';
 import { produce } from 'immer';
+import { nanoid } from 'nanoid';
 import { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { srcAppPropertiesState } from '../../../states/kintone';
@@ -18,6 +19,7 @@ const Component: FCX = () => {
             draft.srcField = value;
             const index = draft.displayFields.findIndex((field) => field.isLookupField);
             if (index === -1) {
+              draft.displayFields.unshift({ id: nanoid(), fieldCode: value, isLookupField: true });
               return draft;
             }
             draft.displayFields[index].fieldCode = value;
