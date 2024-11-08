@@ -1,9 +1,10 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { Skeleton } from '@mui/material';
+import { produce } from 'immer';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { srcAppPropertiesState } from '../../../states/kintone';
-import { srcFieldState } from '../../../states/plugin';
+import { selectedConditionState, srcFieldState } from '../../../states/plugin';
 
 const Component: FCX = () => {
   const fields = useRecoilValue(srcAppPropertiesState);
@@ -12,7 +13,16 @@ const Component: FCX = () => {
   const onFieldChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
-        set(srcFieldState, value);
+        set(selectedConditionState, (prev) =>
+          produce(prev, (draft) => {
+            draft.srcField = value;
+            const index = draft.displayFields.findIndex((field) => field.isLookupField);
+            if (index === -1) {
+              return draft;
+            }
+            draft.displayFields[index].fieldCode = value;
+          })
+        );
       },
     []
   );

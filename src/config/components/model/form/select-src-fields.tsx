@@ -7,6 +7,7 @@ type Props = {
   fieldCode: string;
   onChange: (code: string) => void;
   label?: string;
+  disabled?: boolean;
 };
 
 const Component: FC<Props> = (props) => {

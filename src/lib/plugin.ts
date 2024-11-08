@@ -5,13 +5,21 @@ import { nanoid } from 'nanoid';
 
 export const getNewCondition = (): Plugin.Condition => ({
   id: nanoid(),
+  type: 'single',
   srcAppId: '',
   srcSpaceId: null,
   isSrcAppGuestSpace: false,
   srcField: '',
   dstField: '',
   copies: [{ from: '', to: '' }],
-  sees: [''],
+  displayFields: [
+    {
+      id: nanoid(),
+      fieldCode: '',
+      isLookupField: false,
+    },
+  ],
+  sortCriteria: [{ fieldCode: '', order: 'asc' }],
   enablesCache: true,
   enablesValidation: false,
   autoLookup: true,
@@ -27,7 +35,7 @@ export const getNewCondition = (): Plugin.Condition => ({
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 4,
+  version: 5,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -76,6 +84,28 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         })),
       });
     case 4:
+      return migrateConfig({
+        ...anyConfig,
+        version: 5,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          type: 'single',
+          sortCriteria: [{ fieldCode: '', order: 'asc' }],
+          displayFields: [
+            {
+              id: nanoid(),
+              fieldCode: condition.srcField,
+              isLookupField: true,
+            },
+            ...condition.sees.map((fieldCode) => ({
+              id: nanoid(),
+              fieldCode,
+              isLookupField: false,
+            })),
+          ],
+        })),
+      });
+    case 5:
     default:
       return anyConfig;
   }
@@ -90,7 +120,8 @@ export const cleanse = (target: Plugin.Config): Plugin.Config => {
   const cleansed = produce(target, (draft) => {
     for (const condition of draft.conditions) {
       condition.copies = condition.copies.filter(({ from, to }) => from && to);
-      condition.sees = condition.sees.filter((field) => field);
+      condition.displayFields = condition.displayFields.filter((field) => !!field.fieldCode);
+      condition.sortCriteria = condition.sortCriteria.filter(({ fieldCode }) => !!fieldCode);
     }
   });
   return cleansed;

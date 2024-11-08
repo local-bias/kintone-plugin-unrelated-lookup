@@ -7,6 +7,7 @@ type ContainerProps = {
   fieldCode: string;
   onChange: (code: string) => void;
   label?: string;
+  disabled?: boolean;
 };
 
 type Props = {
@@ -14,9 +15,10 @@ type Props = {
   fields: kintoneAPI.FieldProperty[];
   onFieldChange: (_: any, field: kintoneAPI.FieldProperty | null) => void;
   label: string;
+  disabled?: boolean;
 };
 
-const Component: FC<Props> = ({ fields, value, onFieldChange, label }) => (
+const Component: FC<Props> = ({ fields, value, onFieldChange, label, disabled }) => (
   <Autocomplete
     value={value}
     sx={{ width: '350px' }}
@@ -27,6 +29,7 @@ const Component: FC<Props> = ({ fields, value, onFieldChange, label }) => (
     renderInput={(params) => (
       <TextField {...params} label={label} variant='outlined' color='primary' />
     )}
+    disabled={disabled}
   />
 );
 
@@ -42,7 +45,13 @@ const Container: FC<ContainerProps> = (props) => {
 
   return (
     <Component
-      {...{ onFieldChange, value, fields: props.fields, label: props.label ?? '対象フィールド' }}
+      {...{
+        onFieldChange,
+        value,
+        fields: props.fields,
+        label: props.label ?? '対象フィールド',
+        disabled: props.disabled,
+      }}
     />
   );
 };

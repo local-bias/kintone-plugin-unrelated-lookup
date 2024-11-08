@@ -3,7 +3,7 @@ import DstFieldForm from './form-dst-field';
 import SrcAppForm from './form-src-app';
 import SrcFieldForm from './form-src-field';
 import CopiesForm from './form-copies';
-import DisplayFieldsForm from './form-sees';
+import DisplayFieldsForm from './form-display-fields';
 import {
   autoLookupState,
   enablesCacheState,
@@ -75,7 +75,7 @@ const Component: FC = () => (
         ルックアップ実行時に、対象レコードを選択するダイアログ上に表示するフィールドを選択してください。
       </PluginFormDescription>
       <PluginFormDescription last>
-        「取得するフィールド」に指定し他フィールドは、必ず行の先頭に表示されます。
+        ここで設定した並び順が、そのままテーブルヘッダーの並び順に反映されます。
       </PluginFormDescription>
       <DisplayFieldsForm />
     </PluginFormSection>

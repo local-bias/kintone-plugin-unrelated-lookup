@@ -1,6 +1,6 @@
 declare namespace Plugin {
   /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-  type Config = ConfigV4;
+  type Config = ConfigV5;
 
   /** 🔌 プラグインの共通設定 */
   type Common = Config['common'];
@@ -9,7 +9,26 @@ declare namespace Plugin {
   type Condition = Config['conditions'][number];
 
   /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
-  type AnyConfig = ConfigV1 | ConfigV2 | ConfigV3 | ConfigV4;
+  type AnyConfig = ConfigV1 | ConfigV2 | ConfigV3 | ConfigV4 | ConfigV5;
+
+  type ConfigV5 = {
+    version: 5;
+    common: {};
+    conditions: (Omit<ConfigV4['conditions'][number], 'sees'> & {
+      /** フィールドの設置タイプ */
+      type: 'single' | 'subtable';
+      /** ルックアップ実行時、ダイアログ内のレコード一覧に表示するフィールド */
+      displayFields: {
+        id: string;
+        fieldCode: string;
+        isLookupField: boolean;
+      }[];
+      sortCriteria: {
+        fieldCode: string;
+        order: 'asc' | 'desc';
+      }[];
+    })[];
+  };
 
   type ConfigV4 = {
     version: 4;

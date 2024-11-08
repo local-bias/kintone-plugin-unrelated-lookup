@@ -17,7 +17,7 @@ import Layout from './layout';
 type Props = {
   records: kintoneAPI.RecordData[];
   onRowClick: (record: any) => void;
-  condition: Plugin.Condition | null;
+  condition: Plugin.Condition;
   hasCached: boolean;
 };
 
@@ -29,24 +29,21 @@ const DialogTableComponent: FC<Props> = ({ records, onRowClick, condition, hasCa
       <table>
         <thead>
           <tr>
-            <th>{condition?.srcField}</th>
-            {!!condition && condition.sees.map((code, i) => <th key={i}>{code}</th>)}
+            {condition.displayFields.map((field, i) => (
+              <th key={i}>{field.fieldCode}</th>
+            ))}
           </tr>
         </thead>
         <tbody>
-          {!!condition &&
-            records.map((record, i) => (
-              <tr key={i} onClick={() => onRowClick(record)}>
-                <td>
-                  <Cell field={record[condition.srcField]} />
+          {records.map((record, i) => (
+            <tr key={i} onClick={() => onRowClick(record)}>
+              {condition.displayFields.map((field, j) => (
+                <td key={j}>
+                  <Cell field={record[field.fieldCode]} />
                 </td>
-                {condition.sees.map((code, j) => (
-                  <td key={j}>
-                    <Cell field={record[code]} />
-                  </td>
-                ))}
-              </tr>
-            ))}
+              ))}
+            </tr>
+          ))}
         </tbody>
       </table>
     )}

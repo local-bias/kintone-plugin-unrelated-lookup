@@ -79,6 +79,7 @@ const conditionPropertyState = selectorFamily<
     (key) =>
     ({ get, set }, newValue) => {
       if (newValue instanceof DefaultValue) {
+        process.env.NODE_ENV === 'development' && console.warn('newValue is DefaultValue');
         return;
       }
       set(selectedConditionState, (current) =>
@@ -108,7 +109,9 @@ export const srcFieldState = conditionPropertyState('srcField') as RecoilState<
 export const copiesState = conditionPropertyState('copies') as RecoilState<
   Plugin.Condition['copies']
 >;
-export const seesState = conditionPropertyState('sees') as RecoilState<Plugin.Condition['sees']>;
+export const displayFieldsState = conditionPropertyState('displayFields') as RecoilState<
+  Plugin.Condition['displayFields']
+>;
 export const queryState = conditionPropertyState('query') as RecoilState<Plugin.Condition['query']>;
 export const enablesCacheState = conditionPropertyState('enablesCache') as RecoilState<
   Plugin.Condition['enablesCache']
