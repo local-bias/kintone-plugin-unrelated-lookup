@@ -9,7 +9,7 @@ import { storeStorage } from '@konomi-app/kintone-utilities';
 import { storageState } from '../../../states/plugin';
 
 import { PLUGIN_NAME } from '@/lib/statics';
-import { createConfig } from '@/lib/plugin';
+import { createConfig, migrateConfig } from '@/lib/plugin';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -50,7 +50,7 @@ const Container: FC = () => {
           const [file] = Array.from(files);
           const fileEvent = await onFileLoad(file);
           const text = (fileEvent.target?.result ?? '') as string;
-          set(storageState, JSON.parse(text));
+          set(storageState, migrateConfig(JSON.parse(text)));
           enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
         } catch (error) {
           enqueueSnackbar(
