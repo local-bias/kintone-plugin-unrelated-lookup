@@ -4,7 +4,7 @@ import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { PLUGIN_NAME } from '@/lib/statics';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { cacheAtom } from '../states';
-import { store } from '../store';
+import { store } from '@/lib/store';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 

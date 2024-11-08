@@ -10,7 +10,7 @@ import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 import { cacheAtom } from '../states';
-import { store } from '../store';
+import { store } from '@/lib/store';
 import { ENV } from '@/lib/global';
 
 type EnqueueSnackbar = (

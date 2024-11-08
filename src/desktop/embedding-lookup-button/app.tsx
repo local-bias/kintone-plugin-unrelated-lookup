@@ -6,19 +6,23 @@ import EventObserver from './components/event-observer';
 import LookupButton from './components/lookup-button';
 import LookupStatusBadge from './components/lookup-status-badge';
 import SrcCacheController from './components/src-cache-controller';
+import { Provider } from 'jotai';
+import { store } from '@/lib/store';
 
 type Props = { conditionId: string };
 
 const App: FC<Props> = ({ conditionId }) => (
-  <ConditionIdProvider conditionId={conditionId}>
-    <SrcCacheController />
-    <LookupStatusBadge />
-    <SnackbarProvider maxSnack={1}>
-      <EventObserver />
-      <LookupButton />
-      <SearchDialog />
-    </SnackbarProvider>
-  </ConditionIdProvider>
+  <Provider store={store}>
+    <ConditionIdProvider conditionId={conditionId}>
+      <SrcCacheController />
+      <LookupStatusBadge />
+      <SnackbarProvider maxSnack={1}>
+        <EventObserver />
+        <LookupButton />
+        <SearchDialog />
+      </SnackbarProvider>
+    </ConditionIdProvider>
+  </Provider>
 );
 
 export default App;

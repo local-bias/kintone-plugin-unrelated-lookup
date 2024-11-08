@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
-import { store } from './store';
+import { store } from '@/lib/store';
 
 type Field = {
   fieldCode: string;
