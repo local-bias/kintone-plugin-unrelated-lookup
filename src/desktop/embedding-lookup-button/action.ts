@@ -116,7 +116,11 @@ export const lookup = async (params: {
 export const getLookupSrcFields = (condition: Plugin.Condition) => {
   const fields = [
     ...new Set(
-      [condition.copies.map(({ from }) => from), condition.sees, condition.srcField].flat()
+      [
+        condition.copies.map(({ from }) => from),
+        condition.displayFields.map((field) => field.fieldCode),
+        condition.srcField,
+      ].flat()
     ),
   ];
   return fields;
@@ -207,7 +211,7 @@ export const clearLookup = async (condition: Plugin.Condition) => {
     }
 
     if (condition.autoLookup) {
-      //@ts-expect-error 未定義のプロパティ
+      //@ts-ignore
       record[to].lookup = 'CLEAR';
     }
   }
