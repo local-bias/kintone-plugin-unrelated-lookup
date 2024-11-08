@@ -4,9 +4,9 @@ import { pluginConditionAtom } from './plugin';
 import { getApp } from '@konomi-app/kintone-utilities';
 import { ENV } from '@/lib/global';
 
-export const dialogPageIndexAtom = atomFamily((conditionId: string) => atom(1));
-export const dialogPageChunkAtom = atomFamily((conditionId: string) => atom(80));
-export const isDialogShownAtom = atomFamily((conditionId: string) => atom(false));
+export const dialogPageIndexAtom = atomFamily((_conditionId: string) => atom(1));
+export const dialogPageChunkAtom = atomFamily((_conditionId: string) => atom(80));
+export const isDialogShownAtom = atomFamily((_conditionId: string) => atom(false));
 
 export const dialogTitleAtom = atomFamily((conditionId: string) => {
   return atom(async (get) => {
