@@ -1,9 +1,11 @@
 import styled from '@emotion/styled';
 import { FCwC } from 'react';
 
-const Component: FCwC = ({ className, children }) => <div {...{ className }}>{children}</div>;
+const DialogTableLayout: FCwC = ({ className, children }) => (
+  <div {...{ className }}>{children}</div>
+);
 
-const StyledDialogTableLayoutComponent = styled(Component)`
+const StyledDialogTableLayout = styled(DialogTableLayout)`
   table {
     width: 100%;
     padding: 0 16px 16px;
@@ -83,4 +85,4 @@ const StyledDialogTableLayoutComponent = styled(Component)`
   }
 `;
 
-export default StyledDialogTableLayoutComponent;
+export default StyledDialogTableLayout;
