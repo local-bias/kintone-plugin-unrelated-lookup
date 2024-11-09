@@ -10,7 +10,7 @@ type Props = {
   onChange: ChangeEventHandler<HTMLInputElement>;
 };
 
-const Component: FC<Props> = ({ value, onChange }) => (
+const SearchInput: FC<Props> = ({ value, onChange }) => (
   <TextField
     label='レコードを検索'
     variant='outlined'
@@ -20,7 +20,7 @@ const Component: FC<Props> = ({ value, onChange }) => (
   />
 );
 
-const Container: FC = () => {
+const SearchInputContainer: FC = () => {
   const conditionId = useConditionId();
   const [value, setValue] = useAtom(searchInputAtom(conditionId));
   const setPageIndex = useSetAtom(dialogPageIndexAtom(conditionId));
@@ -30,7 +30,7 @@ const Container: FC = () => {
     setPageIndex(1);
   };
 
-  return <Component {...{ value, onChange }} />;
+  return <SearchInput {...{ value, onChange }} />;
 };
 
-export default Container;
+export default SearchInputContainer;
