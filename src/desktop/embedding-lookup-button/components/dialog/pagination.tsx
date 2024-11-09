@@ -14,7 +14,7 @@ type Props = {
   chunkSize: number;
 };
 
-const Component: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) => (
+const DialogPagination: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) => (
   <div className={className}>
     <Pagination
       count={Math.ceil(size / chunkSize)}
@@ -25,9 +25,9 @@ const Component: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) 
   </div>
 );
 
-const StyledComponent = styled(Component)``;
+const StyledComponent = styled(DialogPagination)``;
 
-const Container: FC = () => {
+const DialogPaginationContainer: FC = () => {
   const conditionId = useConditionId();
   const records = useAtomValue(filteredRecordsAtom(conditionId));
   const [index, setIndex] = useAtom(dialogPageIndexAtom(conditionId));
@@ -38,4 +38,4 @@ const Container: FC = () => {
   return <>{!!size && <StyledComponent {...{ size, index, setIndex, chunkSize }} />}</>;
 };
 
-export default Container;
+export default DialogPaginationContainer;
