@@ -1,14 +1,13 @@
-import { restorePluginConfig } from '@/lib/plugin';
-import { Provider, useAtomValue } from 'jotai';
-import React, { type FC } from 'react';
-import { cacheAtom } from '../states';
-import JsonView from '@uiw/react-json-view';
+import { store } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { css } from '@emotion/css';
+import JsonView from '@uiw/react-json-view';
+import { Provider, useAtomValue } from 'jotai';
+import { type FC } from 'react';
 import { alreadyCacheAtom, isRecordCacheEnabledAtom } from '../embedding-lookup-button/states';
-import { srcAllRecordsAtom } from '../embedding-lookup-button/states/records';
 import { isDialogShownAtom } from '../embedding-lookup-button/states/dialog';
-import { store } from '@/lib/store';
+import { srcAllRecordsAtom } from '../embedding-lookup-button/states/records';
+import { cacheAtom, pluginConfigAtom } from '../states';
 
 const Condition: FC<{ condition: Plugin.Condition }> = ({ condition }) => {
   const id = condition.id;
@@ -34,9 +33,18 @@ const Condition: FC<{ condition: Plugin.Condition }> = ({ condition }) => {
   );
 };
 
-const Component: FC = () => {
-  const pluginConfig = restorePluginConfig();
+const DebugContent: FC = () => {
+  const pluginConfig = useAtomValue(pluginConfigAtom);
+  return (
+    <div>
+      {pluginConfig.conditions.map((condition) => (
+        <Condition key={condition.id} condition={condition} />
+      ))}
+    </div>
+  );
+};
 
+const DebugContainer: FC = () => {
   return (
     <Provider store={store}>
       <div
@@ -79,15 +87,13 @@ const Component: FC = () => {
             <div className='mb-4 text-sm text-green-300 font-bold'>
               Plugin Debug Menu
               <div className='text-xs'>(Not displayed in production)</div>
+              <DebugContent />
             </div>
           </div>
-          {pluginConfig.conditions.map((condition) => (
-            <Condition key={condition.id} condition={condition} />
-          ))}
         </div>
       </div>
     </Provider>
   );
 };
 
-export default Component;
+export default DebugContainer;
