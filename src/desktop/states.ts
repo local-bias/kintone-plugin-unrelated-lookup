@@ -1,6 +1,9 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { store } from '@/lib/store';
+import { cleanse, restorePluginConfig } from '@/lib/plugin';
+
+export const pluginConfigAtom = atom(cleanse(restorePluginConfig()));
 
 type Field = {
   fieldCode: string;

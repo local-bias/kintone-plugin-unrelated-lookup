@@ -1,14 +1,14 @@
 import { ENV } from '@/lib/global';
 import { listener } from '@/lib/listener';
-import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { lookup } from '../embedding-lookup-button/action';
-import { getCachedValue } from '../states';
+import { getCachedValue, pluginConfigAtom } from '../states';
+import { store } from '@/lib/store';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 
 listener.add(events, async (event) => {
-  const { conditions } = cleanse(restorePluginConfig());
+  const { conditions } = store.get(pluginConfigAtom);
 
   const targetConditions = conditions.filter(
     (condition) => condition.srcField && condition.srcAppId && condition.saveAndLookup

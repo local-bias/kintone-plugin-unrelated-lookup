@@ -1,8 +1,6 @@
-import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
-
-export const pluginConfigAtom = atom(cleanse(restorePluginConfig()));
+import { pluginConfigAtom } from '@/desktop/states';
 
 export const pluginConditionAtom = atomFamily((conditionId: string) =>
   atom<Plugin.Condition>((get) => {

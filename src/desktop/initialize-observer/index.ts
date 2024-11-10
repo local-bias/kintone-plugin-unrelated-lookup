@@ -1,12 +1,12 @@
 import { listener } from '@/lib/listener';
-import { cleanse, restorePluginConfig } from '@/lib/plugin';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { setCachedValue } from '../states';
+import { pluginConfigAtom, setCachedValue } from '@/desktop/states';
+import { store } from '@/lib/store';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
 listener.add(events, async (event) => {
-  const { conditions } = cleanse(restorePluginConfig());
+  const { conditions } = store.get(pluginConfigAtom);
 
   const targetConditions = conditions.filter(
     (condition) => condition.srcField && condition.srcAppId
