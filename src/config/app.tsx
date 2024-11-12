@@ -1,6 +1,6 @@
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 import { LANGUAGE } from '@/lib/global';
-import { URL_BANNER, URL_PROMOTION } from '@/lib/statics';
+import { URL_BANNER, URL_PROMOTION } from '@/lib/constants';
 import {
   Notification,
   PluginBanner,

@@ -1,13 +1,13 @@
 import { ENV } from '@/lib/global';
-import { listener } from '@/lib/listener';
-import { PLUGIN_NAME } from '@/lib/statics';
+import { PLUGIN_NAME } from '@/lib/constants';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { cacheAtom, pluginConfigAtom } from '../states';
 import { store } from '@/lib/store';
+import { manager } from '@/lib/event-manager';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.submit', 'app.record.edit.submit'];
 
-listener.add(events, async (event) => {
+manager.add(events, async (event) => {
   const { conditions } = store.get(pluginConfigAtom);
 
   const targetConditions = conditions.filter(

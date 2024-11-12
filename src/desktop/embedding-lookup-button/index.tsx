@@ -1,16 +1,16 @@
-import { listener } from '@/lib/listener';
+import { manager } from '@/lib/event-manager';
+import { store } from '@/lib/store';
 import { css } from '@emotion/css';
 import { getMetaFieldId_UNSTABLE, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
-import App from './app';
-import { store } from '@/lib/store';
 import { pluginConfigAtom } from '../states';
+import App from './app';
 
 const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
 
 const getElementId = (conditionId: string) => `embedding-lookup-button-${conditionId}`;
 
-listener.add(events, async (event) => {
+manager.add(events, async (event) => {
   const { conditions } = store.get(pluginConfigAtom);
 
   for (const condition of conditions) {

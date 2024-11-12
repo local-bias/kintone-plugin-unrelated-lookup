@@ -1,14 +1,13 @@
+import { manager } from '@/lib/event-manager';
 import { ENV } from '@/lib/global';
-import { listener } from '@/lib/listener';
+import { css } from '@emotion/css';
 import { nanoid } from 'nanoid';
 import { createRoot } from 'react-dom/client';
-import React from 'react';
 import App from './app';
-import { css } from '@emotion/css';
 
 const ROOT_ID = nanoid();
 
-listener.add(
+manager.add(
   [
     'app.record.index.show',
     'app.record.detail.show',

@@ -4,7 +4,7 @@ import {
   FIELD_TYPES_FOR_REQUIRE_ESCAPING,
   someFieldValue,
 } from '@/lib/kintone-api';
-import { PLUGIN_NAME } from '@/lib/statics';
+import { PLUGIN_NAME } from '@/lib/constants';
 import {
   getAllRecordsWithCursor,
   getCurrentRecord,
