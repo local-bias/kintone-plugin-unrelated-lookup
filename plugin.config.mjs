@@ -26,17 +26,17 @@ export default /** @type { const } */ ({
       version: '1.13.1',
       type: 'APP',
       name: {
-        en: 'unrelated lookup plugin',
+        en: 'Unrelated Lookup Plugin',
         ja: '関連付けないルックアッププラグイン',
-        zh: '插件模板',
+        zh: '无关查找插件',
       },
       description: {
-        en: 'implements lookup that removes only lookup-associated functions, which can cause collective renewal or collective collection.Use a single line field.',
-        ja: '一括更新や一括取込の障害となってしまうことのある、ルックアップの関連付け機能のみを取り除いたルックアップを実装するプラグインです。文字列１行フィールドを使用します。',
-        zh: '插件模板',
+        en: 'This plugin uses a single-line text field instead of a lookup field to achieve data linkage between apps that cannot be realized with standard functions. It supports creating apps that are less prone to errors.',
+        ja: 'ルックアップフィールドの代わりに文字列1行フィールドを使用し、標準機能では実現できないアプリ間のデータ連携を実現します。エラーの発生しにくいアプリづくりをサポートします。',
+        zh: '该插件使用单行文本字段代替查找字段，以实现标准功能无法实现的应用程序之间的数据联动。它支持创建不易出错的应用程序。',
       },
       icon: 'icon.png',
-      homepage_url: { ja: hp, en: hp },
+      homepage_url: { ja: hp, en: hp, zh: hp },
       desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
       mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
       config: {
