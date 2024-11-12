@@ -1,6 +1,6 @@
 declare namespace Plugin {
   /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-  type Config = ConfigV5;
+  type Config = ConfigV6;
 
   /** 🔌 プラグインの共通設定 */
   type Common = Config['common'];
@@ -9,7 +9,17 @@ declare namespace Plugin {
   type Condition = Config['conditions'][number];
 
   /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
-  type AnyConfig = ConfigV1 | ConfigV2 | ConfigV3 | ConfigV4 | ConfigV5;
+  type AnyConfig = ConfigV1 | ConfigV2 | ConfigV3 | ConfigV4 | ConfigV5 | ConfigV6;
+
+  type ConfigV6 = {
+    version: 6;
+    common: {};
+    conditions: (ConfigV5['conditions'][number] & {
+      dstSubtableFieldCode: string;
+      dstInsubtableFieldCode: string;
+      insubtableCopies: { from: string; to: string }[];
+    })[];
+  };
 
   type ConfigV5 = {
     version: 5;

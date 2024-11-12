@@ -24,9 +24,19 @@ import DisplayFieldsForm from './form-display-fields';
 import DstFieldForm from './form-dst-field';
 import SrcAppForm from './form-src-app';
 import SrcFieldForm from './form-src-field';
+import ConditionTypeForm from './form-condition-type';
+import DstSubtableForm from './form-dst-subtable';
 
 const Component: FC = () => (
   <div className='p-4'>
+    {/* <PluginFormSection>
+      <PluginFormTitle>サブテーブルモード</PluginFormTitle>
+      <PluginFormDescription last>
+        サブテーブル内の文字列１行フィールドを対象とする場合は、この設定を有効にしてください。
+      </PluginFormDescription>
+      <ConditionTypeForm />
+    </PluginFormSection>
+    <DstSubtableForm /> */}
     <PluginFormSection>
       <PluginFormTitle>対象フィールド(ルックアップボタンを設置するフィールド)</PluginFormTitle>
       <PluginFormDescription>

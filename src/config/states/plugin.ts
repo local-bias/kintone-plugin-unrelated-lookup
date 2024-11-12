@@ -137,3 +137,15 @@ export const isHankakuKatakanaSensitiveState = conditionPropertyState(
 export const isZenkakuEisujiSensitiveState = conditionPropertyState(
   'isZenkakuEisujiSensitive'
 ) as RecoilState<Plugin.Condition['isZenkakuEisujiSensitive']>;
+export const conditionTypeState = conditionPropertyState('type') as RecoilState<
+  Plugin.Condition['type']
+>;
+export const dstSubtableFieldCodeState = conditionPropertyState(
+  'dstSubtableFieldCode'
+) as RecoilState<Plugin.Condition['dstSubtableFieldCode']>;
+export const dstInsubtableFieldCodeState = conditionPropertyState(
+  'dstInsubtableFieldCode'
+) as RecoilState<Plugin.Condition['dstInsubtableFieldCode']>;
+export const insubtableCopiesState = conditionPropertyState('insubtableCopies') as RecoilState<
+  Plugin.Condition['insubtableCopies']
+>;

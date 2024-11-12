@@ -29,13 +29,16 @@ export const getNewCondition = (): Plugin.Condition => ({
   isKatakanaSensitive: false,
   isZenkakuEisujiSensitive: false,
   isHankakuKatakanaSensitive: false,
+  dstSubtableFieldCode: '',
+  dstInsubtableFieldCode: '',
+  insubtableCopies: [{ from: '', to: '' }],
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 5,
+  version: 6,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -106,6 +109,17 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         })),
       });
     case 5:
+      return migrateConfig({
+        version: 6,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          dstSubtableFieldCode: '',
+          dstInsubtableFieldCode: '',
+          insubtableCopies: [],
+        })),
+      });
+    case 6:
     default:
       return anyConfig;
   }

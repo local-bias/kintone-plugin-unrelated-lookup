@@ -1,9 +1,9 @@
 import { selector } from 'recoil';
 import { DEFAULT_DEFINED_FIELDS, omitFieldProperties } from '@/lib/kintone-api';
-import { getAppId } from '@lb-ribbit/kintone-xapp';
-import { srcAppIdState } from './plugin';
+import { conditionTypeState, dstSubtableFieldCodeState, srcAppIdState } from './plugin';
 import {
   getAllApps,
+  getAppId,
   getFormFields,
   getSpace,
   withSpaceIdFallback,
@@ -65,7 +65,7 @@ export const appFieldsState = selector<kintoneAPI.FieldProperties>({
   },
 });
 
-export const dstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+export const dstAppPropertiesState = selector<kintoneAPI.FieldProperties>({
   key: `${PREFIX}dstAppPropertiesState`,
   get: async ({ get }) => {
     const app = getAppId();
@@ -79,9 +79,46 @@ export const dstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       guestSpaceId: GUEST_SPACE_ID,
       debug: ENV === 'development',
     });
-    const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
 
+    return properties;
+  },
+});
+
+export const targetDstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}targetDstAppPropertiesState`,
+  get: async ({ get }) => {
+    const dstAppProperties = get(dstAppPropertiesState);
+    const omitted = omitFieldProperties(dstAppProperties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
     return Object.values(omitted).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+  },
+});
+
+export const dstAppSubtablePropertiesState = selector<kintoneAPI.property.Subtable[]>({
+  key: `${PREFIX}dstAppSubtablePropertiesState`,
+  get: async ({ get }) => {
+    const dstAppProperties = get(dstAppPropertiesState);
+    const subtables = Object.values(dstAppProperties).filter((field) => field.type === 'SUBTABLE');
+    return subtables;
+  },
+});
+
+export const dstAppInsubtablePropertiesState = selector<kintoneAPI.property.InSubtable[]>({
+  key: `${PREFIX}dstAppInsubtablePropertiesState`,
+  get: async ({ get }) => {
+    const subtableProperties = get(dstAppSubtablePropertiesState);
+    const fieldCode = get(dstSubtableFieldCodeState);
+    if (!fieldCode) {
+      return [];
+    }
+
+    const subtable = subtableProperties.find((field) => field.code === fieldCode);
+    if (!subtable) {
+      return [];
+    }
+
+    return Object.values(subtable.fields)
+      .filter((field) => field.type === 'SINGLE_LINE_TEXT')
+      .sort((a, b) => a.label.localeCompare(b.label, 'ja'));
   },
 });
 

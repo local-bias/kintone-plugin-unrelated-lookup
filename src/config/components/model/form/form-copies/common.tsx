@@ -1,20 +1,29 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
+import { getNewCondition } from '@/lib/plugin';
+import { useRecoilRow } from '@konomi-app/kintone-utilities-react';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import { produce } from 'immer';
-import { FC, FCX, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { dstAppPropertiesState } from '../../../states/kintone';
-import { copiesState } from '../../../states/plugin';
+import { FC, FCX, Suspense } from 'react';
+import { RecoilState, RecoilValueReadOnly, useRecoilCallback, useRecoilValue } from 'recoil';
+import SelectSrcFields from '../select-src-fields';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
-import SelectSrcFields from './select-src-fields';
+type Props = {
+  appPropertiesState: RecoilValueReadOnly<kintoneAPI.FieldProperty[]>;
+  copiesState: RecoilState<Plugin.Condition['copies'] | Plugin.Condition['insubtableCopies']>;
+};
 
-const Component: FCX = () => {
-  const dstFields = useRecoilValue(dstAppPropertiesState);
+const Component: FCX<Props> = ({ appPropertiesState, copiesState }) => {
+  const dstFields = useRecoilValue(appPropertiesState);
 
   const copies = useRecoilValue(copiesState);
+  const { addRow, deleteRow } = useRecoilRow({
+    state: copiesState,
+    getNewRow: () => getNewCondition().copies[0],
+  });
 
   const onCopyFromChange = useRecoilCallback(
     ({ set }) =>
@@ -27,36 +36,13 @@ const Component: FCX = () => {
       },
     []
   );
+
   const onCopyToChange = useRecoilCallback(
     ({ set }) =>
       (rowIndex: number, value: string) => {
         set(copiesState, (current) =>
           produce(current, (draft) => {
             draft[rowIndex].to = value;
-          })
-        );
-      },
-    []
-  );
-
-  const addCopy = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number) => {
-        set(copiesState, (current) =>
-          produce(current, (draft) => {
-            draft.splice(rowIndex + 1, 0, { from: '', to: '' });
-          })
-        );
-      },
-    []
-  );
-
-  const removeCopy = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number) => {
-        set(copiesState, (current) =>
-          produce(current, (draft) => {
-            draft.splice(rowIndex, 1);
           })
         );
       },
@@ -80,13 +66,13 @@ const Component: FCX = () => {
             onChange={(code) => onCopyToChange(i, code)}
           />
           <Tooltip title='コピー設定を追加する'>
-            <IconButton size='small' onClick={() => addCopy(i)}>
+            <IconButton size='small' onClick={() => addRow(i)}>
               <AddIcon fontSize='small' />
             </IconButton>
           </Tooltip>
           {copies.length > 1 && (
             <Tooltip title='このコピー設定を削除する'>
-              <IconButton size='small' onClick={() => removeCopy(i)}>
+              <IconButton size='small' onClick={() => deleteRow(i)}>
                 <DeleteIcon fontSize='small' />
               </IconButton>
             </Tooltip>
@@ -97,7 +83,7 @@ const Component: FCX = () => {
   );
 };
 
-const Container: FC = () => {
+const ConditionCopiesForm: FC<Props> = (props) => {
   return (
     <Suspense
       fallback={
@@ -117,9 +103,9 @@ const Container: FC = () => {
         </div>
       }
     >
-      <Component />
+      <Component {...props} />
     </Suspense>
   );
 };
 
-export default memo(Container);
+export default ConditionCopiesForm;

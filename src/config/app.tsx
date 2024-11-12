@@ -19,7 +19,7 @@ import Footer from './components/model/footer';
 import Form from './components/model/form';
 import Sidebar from './components/sidebar';
 
-const Component: FC = () => {
+const App: FC = () => {
   return (
     <>
       <Sidebar />
@@ -34,7 +34,7 @@ const Component: FC = () => {
   );
 };
 
-const Container: FC = () => (
+const AppContainer: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
     <ThemeProvider
       theme={createTheme(
@@ -49,7 +49,7 @@ const Container: FC = () => (
             <SnackbarProvider maxSnack={1}>
               <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
                 <PluginLayout>
-                  <Component />
+                  <App />
                 </PluginLayout>
               </Suspense>
             </SnackbarProvider>
@@ -61,4 +61,4 @@ const Container: FC = () => (
   </Suspense>
 );
 
-export default Container;
+export default AppContainer;
