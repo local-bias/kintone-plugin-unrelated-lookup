@@ -1,4 +1,4 @@
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
+import { getCurrentRecord, setCurrentRecord } from '@konomi-app/kintone-utilities';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import { clearLookup, lookup } from '../action';

@@ -5,8 +5,12 @@ import {
   someFieldValue,
 } from '@/lib/kintone-api';
 import { PLUGIN_NAME } from '@/lib/statics';
-import { getAllRecordsWithCursor, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
+import {
+  getAllRecordsWithCursor,
+  getCurrentRecord,
+  kintoneAPI,
+  setCurrentRecord,
+} from '@konomi-app/kintone-utilities';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
 import { cacheAtom } from '../states';

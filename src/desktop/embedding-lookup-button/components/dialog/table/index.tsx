@@ -1,6 +1,5 @@
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { kintoneAPI, getCurrentRecord, setCurrentRecord } from '@konomi-app/kintone-utilities';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { useSnackbar } from 'notistack';
 import { FC, useDeferredValue } from 'react';
 import { apply } from '../../../action';
