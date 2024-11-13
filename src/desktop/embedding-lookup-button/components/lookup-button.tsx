@@ -1,8 +1,8 @@
 import styled from '@emotion/styled';
-import { Button, CircularProgress } from '@mui/material';
-import { FC, FCX } from 'react';
-
+import { LoadingButton } from '@mui/lab';
+import { Button } from '@mui/material';
 import { useAtomValue } from 'jotai';
+import { FC, FCX } from 'react';
 import { useLookup } from '../hooks/use-lookup';
 import { loadingAtom } from '../states';
 import { useConditionId } from './condition-id-context';
@@ -21,12 +21,9 @@ const LookupButtonComponent: FCX<Props> = ({
   const loading = useAtomValue(loadingAtom(conditionId));
   return (
     <div {...{ className }}>
-      <div>
-        <Button color='primary' onClick={onLookupButtonClick} disabled={loading}>
-          取得
-        </Button>
-        {loading && <CircularProgress className='circle' size={24} />}
-      </div>
+      <LoadingButton color='primary' onClick={onLookupButtonClick} loading={loading}>
+        取得
+      </LoadingButton>
       <Button color='primary' onClick={onClearButtonClick} disabled={loading}>
         クリア
       </Button>

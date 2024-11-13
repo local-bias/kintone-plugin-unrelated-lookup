@@ -31,7 +31,7 @@ export default /** @type { const } */ ({
         zh: '无关查找插件',
       },
       description: {
-        en: 'This plugin uses a single-line text field instead of a lookup field to achieve data linkage between apps that cannot be realized with standard functions. It supports creating apps that are less prone to errors.',
+        en: 'This plugin uses a single-line text field instead of a lookup field to achieve data linkage between apps that cannot be realized with standard functions.',
         ja: 'ルックアップフィールドの代わりに文字列1行フィールドを使用し、標準機能では実現できないアプリ間のデータ連携を実現します。エラーの発生しにくいアプリづくりをサポートします。',
         zh: '该插件使用单行文本字段代替查找字段，以实现标准功能无法实现的应用程序之间的数据联动。它支持创建不易出错的应用程序。',
       },
