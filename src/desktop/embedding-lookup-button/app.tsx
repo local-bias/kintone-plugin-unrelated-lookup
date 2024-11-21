@@ -2,26 +2,27 @@ import { store } from '@/lib/store';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import { FC } from 'react';
-import { ConditionIdProvider } from './components/condition-id-context';
+import { AttachmentPropsProvider } from './components/attachment-context';
 import SearchDialog from './components/dialog';
 import EventObserver from './components/event-observer';
 import LookupButton from './components/lookup-button';
 import LookupStatusBadge from './components/lookup-status-badge';
-import SrcCacheController from './components/src-cache-controller';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 
-type Props = { conditionId: string };
+export type AttachmentProps = { conditionId: string; rowIndex?: number };
 
-const App: FC<Props> = ({ conditionId }) => (
+const App: FC<AttachmentProps> = (props) => (
   <Provider store={store}>
-    <ConditionIdProvider conditionId={conditionId}>
-      <SrcCacheController />
-      <LookupStatusBadge />
-      <SnackbarProvider maxSnack={1}>
-        <EventObserver />
-        <LookupButton />
-        <SearchDialog />
-      </SnackbarProvider>
-    </ConditionIdProvider>
+    <PluginErrorBoundary>
+      <AttachmentPropsProvider {...props}>
+        <LookupStatusBadge />
+        <SnackbarProvider maxSnack={1}>
+          <EventObserver />
+          <LookupButton />
+          <SearchDialog />
+        </SnackbarProvider>
+      </AttachmentPropsProvider>
+    </PluginErrorBoundary>
   </Provider>
 );
 

@@ -5,7 +5,7 @@ import { FC, FCX } from 'react';
 import { SetterOrUpdater } from 'recoil';
 import { dialogPageChunkAtom, dialogPageIndexAtom } from '../../states/dialog';
 import { filteredRecordsAtom } from '../../states/records';
-import { useConditionId } from '../condition-id-context';
+import { useAttachmentProps } from '../attachment-context';
 
 type Props = {
   size: number;
@@ -28,10 +28,10 @@ const DialogPagination: FCX<Props> = ({ className, size, index, setIndex, chunkS
 const StyledComponent = styled(DialogPagination)``;
 
 const DialogPaginationContainer: FC = () => {
-  const conditionId = useConditionId();
-  const records = useAtomValue(filteredRecordsAtom(conditionId));
-  const [index, setIndex] = useAtom(dialogPageIndexAtom(conditionId));
-  const chunkSize = useAtomValue(dialogPageChunkAtom(conditionId));
+  const attachmentProps = useAttachmentProps();
+  const records = useAtomValue(filteredRecordsAtom(attachmentProps));
+  const [index, setIndex] = useAtom(dialogPageIndexAtom(attachmentProps));
+  const chunkSize = useAtomValue(dialogPageChunkAtom(attachmentProps.conditionId));
 
   const size = records.length || 0;
 

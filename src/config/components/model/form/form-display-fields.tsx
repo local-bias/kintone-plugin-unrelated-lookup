@@ -1,3 +1,4 @@
+import { PluginCondition } from '@/lib/plugin';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -16,7 +17,7 @@ import { useRecoilValue } from 'recoil';
 import { displayFieldsState } from '../../../states/plugin';
 import SelectSrcFields from './select-src-fields';
 
-type DisplayField = Plugin.Condition['displayFields'][number];
+type DisplayField = PluginCondition['displayFields'][number];
 
 const Row: FC<{
   displayField: DisplayField;

@@ -3,7 +3,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/
 import { useAtom } from 'jotai';
 import { FC, FCX, Suspense } from 'react';
 import { isDialogShownAtom } from '../../states/dialog';
-import { useConditionId } from '../condition-id-context';
+import { useAttachmentProps } from '../attachment-context';
 import Header from './header';
 import Table from './table';
 import Title from './title';
@@ -49,8 +49,8 @@ const StyledDialogComponent = styled(DialogComponent)`
 `;
 
 const DialogContainer: FC = () => {
-  const conditionId = useConditionId();
-  const [open, setOpen] = useAtom(isDialogShownAtom(conditionId));
+  const attachmentProps = useAttachmentProps();
+  const [open, setOpen] = useAtom(isDialogShownAtom(attachmentProps));
 
   const onClose = () => setOpen(false);
 

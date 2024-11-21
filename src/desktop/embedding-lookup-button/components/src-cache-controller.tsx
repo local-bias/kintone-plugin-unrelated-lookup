@@ -6,7 +6,7 @@ import { FC, useCallback, useEffect } from 'react';
 import { getLookupSrcFields } from '../action';
 import { alreadyCacheAtom, isRecordCacheEnabledAtom, pluginConditionAtom } from '../states';
 import { HandledRecord, srcAllRecordsAtom } from '../states/records';
-import { useConditionId } from './condition-id-context';
+import { useConditionId } from './attachment-context';
 
 const Container: FC = () => {
   const conditionId = useConditionId();

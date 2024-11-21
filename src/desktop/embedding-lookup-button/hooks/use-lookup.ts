@@ -1,61 +1,60 @@
-import { getCurrentRecord, setCurrentRecord } from '@konomi-app/kintone-utilities';
+import {
+  getCurrentRecord,
+  getFieldValueAsString,
+  setCurrentRecord,
+} from '@konomi-app/kintone-utilities';
+import { useSetAtom } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import { clearLookup, lookup } from '../action';
+import { useAttachmentProps } from '../components/attachment-context';
 import {
-  alreadyCacheAtom,
-  alreadyLookupAtom,
   isRecordCacheEnabledAtom,
   loadingCountAtom,
   pluginConditionAtom,
   searchInputAtom,
 } from '../states';
-import { srcAllRecordsAtom } from '../states/records';
 import { dialogPageIndexAtom, isDialogShownAtom } from '../states/dialog';
-import { useSetAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { isAlreadyLookupedAtom } from '@/desktop/states';
 
-export const useLookup = (conditionId: string) => {
+export const useLookup = () => {
+  const attachmentProps = useAttachmentProps();
   const { enqueueSnackbar } = useSnackbar();
-  const setShown = useSetAtom(isDialogShownAtom(conditionId));
-  const setAlreadyLookup = useSetAtom(alreadyLookupAtom(conditionId));
+  const setShown = useSetAtom(isDialogShownAtom(attachmentProps));
 
   const start = useAtomCallback(
     useCallback(
       async (get, set) => {
+        const { conditionId, rowIndex } = attachmentProps;
         try {
           set(loadingCountAtom(conditionId), (c) => c + 1);
-          set(alreadyLookupAtom(conditionId), false);
-          set(dialogPageIndexAtom(conditionId), 1);
+          set(isAlreadyLookupedAtom(attachmentProps), false);
+          set(dialogPageIndexAtom(attachmentProps), 1);
           set(isRecordCacheEnabledAtom(conditionId), true);
 
           const condition = get(pluginConditionAtom(conditionId));
+          const conditionType = condition.type;
 
-          const { record } = getCurrentRecord();
-          const input = (record[condition.dstField].value as string) || '';
-          set(searchInputAtom(conditionId), input);
-
-          if (!input) {
-            set(isDialogShownAtom(conditionId), true);
-            return;
+          if (conditionType === 'subtable' && rowIndex === undefined) {
+            throw new Error('サブテーブルモードで行番号が指定されていません');
           }
 
-          const hasCached = get(alreadyCacheAtom(conditionId));
-          const handledRecords = get(srcAllRecordsAtom(conditionId));
+          const { record } = getCurrentRecord();
+          let input = getFieldValueAsString(record[condition.dstField]);
 
-          const cachedRecords = handledRecords.map(({ record }) => record);
+          set(searchInputAtom(attachmentProps), input);
+
+          if (!input) {
+            set(isDialogShownAtom(attachmentProps), true);
+            return;
+          }
 
           const lookuped = await lookup({
             condition,
             record,
-            option: {
-              input,
-              hasCached,
-              cachedRecords,
-              enqueueSnackbar,
-              setShown,
-              setLookuped: setAlreadyLookup,
-            },
+            attachmentProps,
+            option: { input, enqueueSnackbar, setShown },
           });
 
           setCurrentRecord({ record: lookuped });
@@ -67,19 +66,19 @@ export const useLookup = (conditionId: string) => {
           set(loadingCountAtom(conditionId), (c) => c - 1);
         }
       },
-      [conditionId]
+      [attachmentProps]
     )
   );
 
   const clear = useAtomCallback(
     useCallback(
       async (get, set) => {
+        const { conditionId } = attachmentProps;
         const condition = get(pluginConditionAtom(conditionId));
-        set(alreadyLookupAtom(conditionId), false);
-        await clearLookup(condition);
+        await clearLookup({ condition, attachmentProps });
         enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
       },
-      [conditionId]
+      [attachmentProps]
     )
   );
 

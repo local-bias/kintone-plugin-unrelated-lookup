@@ -1,5 +1,6 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
-import { getNewCondition } from '@/lib/plugin';
+import { getNewCondition, PluginCondition } from '@/lib/plugin';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useRecoilRow } from '@konomi-app/kintone-utilities-react';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -9,11 +10,10 @@ import { produce } from 'immer';
 import { FC, FCX, Suspense } from 'react';
 import { RecoilState, RecoilValueReadOnly, useRecoilCallback, useRecoilValue } from 'recoil';
 import SelectSrcFields from '../select-src-fields';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 type Props = {
   appPropertiesState: RecoilValueReadOnly<kintoneAPI.FieldProperty[]>;
-  copiesState: RecoilState<Plugin.Condition['copies'] | Plugin.Condition['insubtableCopies']>;
+  copiesState: RecoilState<PluginCondition['copies'] | PluginCondition['insubtableCopies']>;
 };
 
 const Component: FCX<Props> = ({ appPropertiesState, copiesState }) => {

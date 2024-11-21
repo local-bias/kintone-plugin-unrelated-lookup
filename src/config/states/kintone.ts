@@ -1,5 +1,5 @@
 import { selector } from 'recoil';
-import { DEFAULT_DEFINED_FIELDS, omitFieldProperties } from '@/lib/kintone-api';
+import { FIELD_TYPES_SYSTEM, omitFieldProperties } from '@/lib/kintone-api';
 import { conditionTypeState, dstSubtableFieldCodeState, srcAppIdState } from './plugin';
 import {
   getAllApps,
@@ -59,7 +59,7 @@ export const appFieldsState = selector<kintoneAPI.FieldProperties>({
       guestSpaceId: GUEST_SPACE_ID,
       debug: ENV === 'development',
     });
-    const omitted = omitFieldProperties(properties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
+    const omitted = omitFieldProperties(properties, [...FIELD_TYPES_SYSTEM, 'SUBTABLE']);
 
     return omitted;
   },
@@ -88,7 +88,7 @@ export const targetDstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>(
   key: `${PREFIX}targetDstAppPropertiesState`,
   get: async ({ get }) => {
     const dstAppProperties = get(dstAppPropertiesState);
-    const omitted = omitFieldProperties(dstAppProperties, [...DEFAULT_DEFINED_FIELDS, 'SUBTABLE']);
+    const omitted = omitFieldProperties(dstAppProperties, [...FIELD_TYPES_SYSTEM, 'SUBTABLE']);
     return Object.values(omitted).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
   },
 });
@@ -116,9 +116,10 @@ export const dstAppInsubtablePropertiesState = selector<kintoneAPI.property.InSu
       return [];
     }
 
-    return Object.values(subtable.fields)
-      .filter((field) => field.type === 'SINGLE_LINE_TEXT')
-      .sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+    const omitted = omitFieldProperties(subtable.fields, [...FIELD_TYPES_SYSTEM, 'SUBTABLE']);
+    return Object.values(omitted).sort((a, b) =>
+      a.label.localeCompare(b.label, 'ja')
+    ) as kintoneAPI.property.InSubtable[];
   },
 });
 

@@ -1,14 +1,14 @@
-import { kintoneAPI, getCurrentRecord, setCurrentRecord } from '@konomi-app/kintone-utilities';
+import { isDialogShownAtom } from '@/desktop/embedding-lookup-button/states/dialog';
+import { PluginCondition } from '@/lib/plugin';
+import { getCurrentRecord, kintoneAPI, setCurrentRecord } from '@konomi-app/kintone-utilities';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
 import { FC, useDeferredValue } from 'react';
 import { apply } from '../../../action';
-import { alreadyCacheAtom, alreadyLookupAtom, pluginConditionAtom } from '../../../states';
-
-import { isDialogShownAtom } from '@/desktop/embedding-lookup-button/states/dialog';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { alreadyCacheAtom, pluginConditionAtom } from '../../../states';
 import { displayingRecordsAtom } from '../../../states/records';
-import { useConditionId } from '../../condition-id-context';
+import { useAttachmentProps } from '../../attachment-context';
 import Cell from './cell';
 import Empty from './empty';
 import Layout from './layout';
@@ -16,7 +16,7 @@ import Layout from './layout';
 type Props = {
   records: kintoneAPI.RecordData[];
   onRowClick: (record: any) => void;
-  condition: Plugin.Condition;
+  condition: PluginCondition;
   hasCached: boolean;
 };
 
@@ -50,20 +50,22 @@ const DialogTableComponent: FC<Props> = ({ records, onRowClick, condition, hasCa
 );
 
 const DialogTableContainer: FC = () => {
-  const conditionId = useConditionId();
-  const condition = useAtomValue(pluginConditionAtom(conditionId));
-  const rawRecords = useAtomValue(displayingRecordsAtom(conditionId));
+  const attachmentProps = useAttachmentProps();
+  const condition = useAtomValue(pluginConditionAtom(attachmentProps.conditionId));
+  const rawRecords = useAtomValue(displayingRecordsAtom(attachmentProps));
   const records = useDeferredValue(rawRecords);
-  const setDialogShown = useSetAtom(isDialogShownAtom(conditionId));
-  const setLookuped = useSetAtom(alreadyLookupAtom(conditionId));
-  const hasCached = useAtomValue(alreadyCacheAtom(conditionId));
+  const hasCached = useAtomValue(alreadyCacheAtom(attachmentProps.conditionId));
+  const setDialogShown = useSetAtom(isDialogShownAtom(attachmentProps));
   const { enqueueSnackbar } = useSnackbar();
 
-  const onRowClick = (selectedRecord: kintoneAPI.RecordData) => {
+  const onRowClick = (sourceRecord: kintoneAPI.RecordData) => {
     const { record } = getCurrentRecord();
-    const applied = apply(condition!, record, selectedRecord, {
-      enqueueSnackbar,
-      setLookuped,
+    const applied = apply({
+      condition,
+      targetRecord: record,
+      sourceRecord,
+      attachmentProps,
+      option: { enqueueSnackbar },
     });
     setCurrentRecord({ record: applied });
     setDialogShown(false);

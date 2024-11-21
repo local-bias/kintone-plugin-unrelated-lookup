@@ -1,39 +1,115 @@
+import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { css } from '@emotion/css';
+import { getCurrentRecord, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { Fab } from '@mui/material';
 import JsonView from '@uiw/react-json-view';
 import { Provider, useAtomValue } from 'jotai';
-import { type FC } from 'react';
-import { alreadyCacheAtom, isRecordCacheEnabledAtom } from '../embedding-lookup-button/states';
+import { memo, useEffect, useMemo, useState, type FC } from 'react';
+import { AttachmentProps } from '../embedding-lookup-button/app';
+import {
+  alreadyCacheAtom,
+  isRecordCacheEnabledAtom,
+  searchInputAtom,
+} from '../embedding-lookup-button/states';
 import { isDialogShownAtom } from '../embedding-lookup-button/states/dialog';
 import { srcAllRecordsAtom } from '../embedding-lookup-button/states/records';
-import { cacheAtom, pluginConfigAtom } from '../states';
+import {
+  isAlreadyLookupedAtom,
+  isCacheStartedAtom,
+  pluginConfigAtom,
+  valueAtLookupAtom,
+  valueAtStartAtom,
+} from '../states';
 
-const Condition: FC<{ condition: Plugin.Condition }> = ({ condition }) => {
-  const id = condition.id;
-  const cache = useAtomValue(cacheAtom(id));
-  const isRecordCacheComplete = useAtomValue(alreadyCacheAtom(id));
-  const allSrcRecords = useAtomValue(srcAllRecordsAtom(id));
-  const isRecordCacheEnabled = useAtomValue(isRecordCacheEnabledAtom(id));
-  const isDialogShown = useAtomValue(isDialogShownAtom(id));
+const Attachment: FC<AttachmentProps> = memo((props) => {
+  const valueAtStart = useAtomValue(valueAtStartAtom(props));
+  const valueAtLookup = useAtomValue(valueAtLookupAtom(props));
+  const isDialogShown = useAtomValue(isDialogShownAtom(props));
+  const isAlreadyLookuped = useAtomValue(isAlreadyLookupedAtom(props));
+  const searchInput = useAtomValue(searchInputAtom(props));
+
+  return (
+    <JsonView
+      value={{
+        ...props,
+        値: {
+          開始時: valueAtStart,
+          ルックアップ時: valueAtLookup,
+        },
+        isDialogShown,
+        isAlreadyLookuped,
+        ダイアログ: {
+          入力値: searchInput,
+        },
+      }}
+    />
+  );
+});
+
+const SubtableMode: FC<{ condition: PluginCondition }> = ({ condition }) => {
+  const [record, setRecord] = useState<kintoneAPI.RecordData | null>(null);
+
+  useEffect(() => {
+    const current = getCurrentRecord();
+    if (current?.record) {
+      setRecord(current.record);
+    }
+  }, []);
+
+  if (!record) {
+    return null;
+  }
+
+  const subtable = record[condition.dstSubtableFieldCode] as kintoneAPI.field.Subtable;
 
   return (
     <div>
-      <JsonView
-        value={{
-          id: condition.id,
-          cache,
-          isRecordCacheComplete,
-          isRecordCacheEnabled,
-          srcRecordsLength: allSrcRecords.length,
-          isDialogShown,
-        }}
-      />
+      {subtable.value.map(({ value }, i) => (
+        <Attachment key={i} conditionId={condition.id} rowIndex={i} />
+      ))}
     </div>
   );
 };
 
-const DebugContent: FC = () => {
+const SingleTypeCondition: FC<{ condition: PluginCondition }> = ({ condition }) => {
+  return <Attachment conditionId={condition.id} />;
+};
+
+const Condition: FC<{ condition: PluginCondition }> = ({ condition }) => {
+  const id = useMemo(() => condition.id, [condition.id]);
+  const isRecordCacheComplete = useAtomValue(alreadyCacheAtom(id));
+  const allSrcRecords = useAtomValue(srcAllRecordsAtom(id));
+  const isRecordCacheEnabled = useAtomValue(isRecordCacheEnabledAtom(id));
+  const isCacheStarted = useAtomValue(isCacheStartedAtom(id));
+
+  return (
+    <div>
+      <details>
+        <summary>
+          {condition.id}({condition.type})
+        </summary>
+        <JsonView
+          value={{
+            キャッシュ: {
+              設定: isRecordCacheEnabled ? '有効' : '無効',
+              ステータス: isRecordCacheComplete ? '完了' : isCacheStarted ? '開始' : '開始前',
+              件数: allSrcRecords.length,
+            },
+          }}
+        />
+        {condition.type === 'single' ? (
+          <SingleTypeCondition condition={condition} />
+        ) : (
+          <SubtableMode condition={condition} />
+        )}
+      </details>
+    </div>
+  );
+};
+
+const DebugContent: FC = memo(() => {
   const pluginConfig = useAtomValue(pluginConfigAtom);
   return (
     <div>
@@ -42,55 +118,45 @@ const DebugContent: FC = () => {
       ))}
     </div>
   );
-};
+});
 
 const DebugContainer: FC = () => {
+  const [shown, setShown] = useState(false);
+
+  const onButtonClick = () => {
+    setShown((prev) => !prev);
+  };
+
   return (
     <Provider store={store}>
-      <div
-        className={cn(
-          '🐸',
-          css`
-            --w-rjv-color: #9cdcfe;
-            --w-rjv-key-number: #268bd2;
-            --w-rjv-key-string: #9cdcfe;
-            --w-rjv-background-color: #1e1e1e;
-            --w-rjv-line-color: #36334280;
-            --w-rjv-arrow-color: #838383;
-            --w-rjv-edit-color: #9cdcfe;
-            --w-rjv-info-color: #9c9c9c7a;
-            --w-rjv-update-color: #9cdcfe;
-            --w-rjv-copied-color: #9cdcfe;
-            --w-rjv-copied-success-color: #28a745;
-            --w-rjv-curlybraces-color: #d4d4d4;
-            --w-rjv-colon-color: #d4d4d4;
-            --w-rjv-brackets-color: #d4d4d4;
-            --w-rjv-ellipsis-color: #cb4b16;
-            --w-rjv-quotes-color: #9cdcfe;
-            --w-rjv-quotes-string-color: #ce9178;
-            --w-rjv-type-string-color: #ce9178;
-            --w-rjv-type-int-color: #b5cea8;
-            --w-rjv-type-float-color: #b5cea8;
-            --w-rjv-type-bigint-color: #b5cea8;
-            --w-rjv-type-boolean-color: #569cd6;
-            --w-rjv-type-date-color: #b5cea8;
-            --w-rjv-type-url-color: #3b89cf;
-            --w-rjv-type-null-color: #569cd6;
-            --w-rjv-type-nan-color: #859900;
-            --w-rjv-type-undefined-color: #569cd6;
-          `
-        )}
-      >
-        <div className='fixed left-full top-0 z-10 w-[25dvw] box-border p-4 bg-gray-900 text-white h-[125dvh] overflow-auto'>
-          <div className='flex gap-2'>
-            <div className='text-3xl'>🐛</div>
-            <div className='mb-4 text-sm text-green-300 font-bold'>
+      <div className='🐸'>
+        <div
+          className={cn(
+            'transition-all opacity-100 fixed right-0 top-0 z-40 bg-white/60 backdrop-blur-sm text-gray-800 p-4 overflow-auto h-screen',
+            {
+              'opacity-0 pointer-events-none': !shown,
+            },
+            css`
+              --w-rjv-background-color: transparent;
+            `
+          )}
+        >
+          <div className='box-border p-4 overflow-auto'>
+            <div className='mb-4 text-sm text-green-800 font-bold'>
               Plugin Debug Menu
-              <div className='text-xs'>(Not displayed in production)</div>
-              <DebugContent />
+              <span className='text-xs'>(Not displayed in production)</span>
             </div>
+            <DebugContent />
           </div>
         </div>
+        <Fab
+          onClick={onButtonClick}
+          color='warning'
+          size='small'
+          className='fixed right-3 bottom-3 z-50'
+        >
+          🐛
+        </Fab>
       </div>
     </Provider>
   );

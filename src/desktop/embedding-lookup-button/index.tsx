@@ -1,17 +1,17 @@
 import { manager } from '@/lib/event-manager';
+import { isProd } from '@/lib/global';
 import { store } from '@/lib/store';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { pluginConfigAtom } from '../states';
+import { ComponentManager } from '@konomi-app/kintone-utilities-react';
+import { singleTypePluginConditionsAtom } from '../states';
 import { embeddingSingleMode } from './single-mode';
 
-const events: kintoneAPI.js.EventType[] = ['app.record.create.show', 'app.record.edit.show'];
+ComponentManager.getInstance().debug = !isProd;
 
-manager.add(events, async (event) => {
-  const { conditions } = store.get(pluginConfigAtom);
+const singleTypeConditions = store.get(singleTypePluginConditionsAtom);
 
-  for (const condition of conditions) {
+for (const condition of singleTypeConditions) {
+  manager.addChangeEvents(['app.record.create.show', 'app.record.edit.show'], (event) => {
     embeddingSingleMode({ condition, record: event.record });
-  }
-
-  return event;
-});
+    return event;
+  });
+}

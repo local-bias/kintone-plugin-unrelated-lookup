@@ -1,7 +1,6 @@
-import { ComponentManager } from '@/lib/component-manager';
+import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { manager } from '@/lib/event-manager';
 import { ENV } from '@/lib/global';
-import { css } from '@emotion/css';
 import { nanoid } from 'nanoid';
 import App from './app';
 
@@ -19,14 +18,9 @@ manager.add(
       return event;
     }
 
-    document.body.classList.add(css`
-      transform: scale(0.8) translateX(-12.5%) translateY(-12.5%);
-      height: 125dvh;
-    `);
-
     const componentManager = ComponentManager.getInstance();
     componentManager.renderComponent({
-      elementId: ROOT_ID,
+      id: ROOT_ID,
       component: <App />,
     });
 

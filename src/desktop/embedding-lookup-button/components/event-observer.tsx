@@ -3,12 +3,12 @@ import { useAtomValue } from 'jotai';
 import { FC, useEffect } from 'react';
 import { useLookup } from '../hooks/use-lookup';
 import { pluginConditionAtom } from '../states';
-import { useConditionId } from './condition-id-context';
+import { useConditionId } from './attachment-context';
 
 const FieldKeyEventListener: FC = () => {
   const conditionId = useConditionId();
   const condition = useAtomValue(pluginConditionAtom(conditionId));
-  const { start } = useLookup(conditionId);
+  const { start } = useLookup();
 
   useEffect(() => {
     if (!condition) {

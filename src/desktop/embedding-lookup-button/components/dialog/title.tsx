@@ -2,7 +2,7 @@ import { DialogTitle } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { FC } from 'react';
 import { dialogTitleAtom } from '../../states/dialog';
-import { useConditionId } from '../condition-id-context';
+import { useConditionId } from '../attachment-context';
 
 const Container: FC = () => {
   const conditionId = useConditionId();

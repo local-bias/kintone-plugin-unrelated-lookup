@@ -1,10 +1,10 @@
-import { restorePluginConfig } from '@/lib/plugin';
+import { PluginCondition, PluginConfig, restorePluginConfig } from '@/lib/plugin';
 import { produce } from 'immer';
 import { DefaultValue, RecoilState, atom, selector, selectorFamily } from 'recoil';
 
 const PREFIX = 'plugin';
 
-export const storageState = atom<Plugin.Config>({
+export const storageState = atom<PluginConfig>({
   key: `${PREFIX}storageState`,
   default: restorePluginConfig(),
 });
@@ -19,11 +19,11 @@ export const tabIndexState = atom<number>({
   default: 0,
 });
 
-export const conditionsState = selector<Plugin.Condition[]>({
+export const conditionsState = selector<PluginCondition[]>({
   key: `${PREFIX}conditionsState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage.conditions ?? [];
+    return storage.conditions;
   },
   set: ({ set }, newValue) => {
     if (newValue instanceof DefaultValue) {
@@ -47,7 +47,7 @@ export const selectedConditionIdState = atom<string | null>({
   }),
 });
 
-export const selectedConditionState = selector<Plugin.Condition>({
+export const selectedConditionState = selector<PluginCondition>({
   key: `${PREFIX}selectedConditionState`,
   get: ({ get }) => {
     const conditions = get(conditionsState);
@@ -65,8 +65,8 @@ export const selectedConditionState = selector<Plugin.Condition>({
 });
 
 const conditionPropertyState = selectorFamily<
-  Plugin.Condition[keyof Plugin.Condition],
-  keyof Plugin.Condition
+  PluginCondition[keyof PluginCondition],
+  keyof PluginCondition
 >({
   key: `${PREFIX}conditionPropertyState`,
   get:
@@ -92,60 +92,60 @@ const conditionPropertyState = selectorFamily<
 });
 
 export const dstFieldState = conditionPropertyState('dstField') as RecoilState<
-  Plugin.Condition['dstField']
+  PluginCondition['dstField']
 >;
 export const srcAppIdState = conditionPropertyState('srcAppId') as RecoilState<
-  Plugin.Condition['srcAppId']
+  PluginCondition['srcAppId']
 >;
 export const srcSpaceIdState = conditionPropertyState('srcSpaceId') as RecoilState<
-  Plugin.Condition['srcSpaceId']
+  PluginCondition['srcSpaceId']
 >;
 export const isSrcAppGuestSpaceState = conditionPropertyState('isSrcAppGuestSpace') as RecoilState<
-  Plugin.Condition['isSrcAppGuestSpace']
+  PluginCondition['isSrcAppGuestSpace']
 >;
 export const srcFieldState = conditionPropertyState('srcField') as RecoilState<
-  Plugin.Condition['srcField']
+  PluginCondition['srcField']
 >;
 export const copiesState = conditionPropertyState('copies') as RecoilState<
-  Plugin.Condition['copies']
+  PluginCondition['copies']
 >;
 export const displayFieldsState = conditionPropertyState('displayFields') as RecoilState<
-  Plugin.Condition['displayFields']
+  PluginCondition['displayFields']
 >;
-export const queryState = conditionPropertyState('query') as RecoilState<Plugin.Condition['query']>;
+export const queryState = conditionPropertyState('query') as RecoilState<PluginCondition['query']>;
 export const enablesCacheState = conditionPropertyState('enablesCache') as RecoilState<
-  Plugin.Condition['enablesCache']
+  PluginCondition['enablesCache']
 >;
 export const autoLookupState = conditionPropertyState('autoLookup') as RecoilState<
-  Plugin.Condition['autoLookup']
+  PluginCondition['autoLookup']
 >;
 export const enablesValidationState = conditionPropertyState('enablesValidation') as RecoilState<
-  Plugin.Condition['enablesValidation']
+  PluginCondition['enablesValidation']
 >;
 export const saveAndLookupState = conditionPropertyState('saveAndLookup') as RecoilState<
-  Plugin.Condition['saveAndLookup']
+  PluginCondition['saveAndLookup']
 >;
 export const isCaseSensitiveState = conditionPropertyState('isCaseSensitive') as RecoilState<
-  Plugin.Condition['isCaseSensitive']
+  PluginCondition['isCaseSensitive']
 >;
 export const isKatakanaSensitiveState = conditionPropertyState(
   'isKatakanaSensitive'
-) as RecoilState<Plugin.Condition['isKatakanaSensitive']>;
+) as RecoilState<PluginCondition['isKatakanaSensitive']>;
 export const isHankakuKatakanaSensitiveState = conditionPropertyState(
   'isHankakuKatakanaSensitive'
-) as RecoilState<Plugin.Condition['isHankakuKatakanaSensitive']>;
+) as RecoilState<PluginCondition['isHankakuKatakanaSensitive']>;
 export const isZenkakuEisujiSensitiveState = conditionPropertyState(
   'isZenkakuEisujiSensitive'
-) as RecoilState<Plugin.Condition['isZenkakuEisujiSensitive']>;
+) as RecoilState<PluginCondition['isZenkakuEisujiSensitive']>;
 export const conditionTypeState = conditionPropertyState('type') as RecoilState<
-  Plugin.Condition['type']
+  PluginCondition['type']
 >;
 export const dstSubtableFieldCodeState = conditionPropertyState(
   'dstSubtableFieldCode'
-) as RecoilState<Plugin.Condition['dstSubtableFieldCode']>;
+) as RecoilState<PluginCondition['dstSubtableFieldCode']>;
 export const dstInsubtableFieldCodeState = conditionPropertyState(
   'dstInsubtableFieldCode'
-) as RecoilState<Plugin.Condition['dstInsubtableFieldCode']>;
+) as RecoilState<PluginCondition['dstInsubtableFieldCode']>;
 export const insubtableCopiesState = conditionPropertyState('insubtableCopies') as RecoilState<
-  Plugin.Condition['insubtableCopies']
+  PluginCondition['insubtableCopies']
 >;
