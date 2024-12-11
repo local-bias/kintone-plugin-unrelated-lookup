@@ -1,10 +1,10 @@
 import { isProd } from '@/lib/global';
-import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
+import { areKintoneFieldValuesEqual } from '@/lib/utils';
+import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { AttachmentProps } from '../embedding-lookup-button/app';
 import { isAlreadyLookupedAtom, valueAtLookupAtom, valueAtStartAtom } from '../states';
-import { areKintoneFieldValuesEqual } from '@/lib/utils';
 
 export const onFieldChange = async (params: {
   condition: PluginCondition;

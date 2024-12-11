@@ -1,4 +1,10 @@
-import { getApp, getFormFields } from '@konomi-app/kintone-utilities';
+import {
+  getApp,
+  getCurrentRecord,
+  getFieldValueAsString,
+  getFormFields,
+  getYuruChara,
+} from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { pluginConditionAtom } from './plugin';
@@ -33,3 +39,18 @@ export const srcAppPropertiesAtom = atomFamily((conditionId: string) =>
     return properties;
   })
 );
+
+export const currentRecordAtom = atom(getCurrentRecord()?.record);
+
+export const currentRecordWithQuickSearchAtom = atom((get) => {
+  const record = get(currentRecordAtom);
+  return {
+    __quickSearch: Object.entries(record).reduce<Record<string, string>>(
+      (acc, [fieldCode, field]) => {
+        return { ...acc, [fieldCode]: getYuruChara(getFieldValueAsString(field)) };
+      },
+      {}
+    ),
+    record,
+  };
+});

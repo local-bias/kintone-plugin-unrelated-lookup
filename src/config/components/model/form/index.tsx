@@ -3,13 +3,12 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  RecoilSwitch,
-  RecoilText,
 } from '@konomi-app/kintone-utilities-react';
+import { RecoilSwitch, RecoilText, RecoilTogglePanel } from '@konomi-app/kintone-utilities-recoil';
 import { FC } from 'react';
 import {
   autoLookupState,
-  enablesCacheState,
+  conditionTypeState,
   enablesValidationState,
   isCaseSensitiveState,
   isHankakuKatakanaSensitiveState,
@@ -19,29 +18,43 @@ import {
   saveAndLookupState,
 } from '../../../states/plugin';
 import DeleteButton from './condition-delete-button';
+import ConditionTypeForm from './form-condition-type';
 import CopiesForm from './form-copies';
 import DisplayFieldsForm from './form-display-fields';
 import DstFieldForm from './form-dst-field';
+import DstSubtableForm from './form-dst-subtable';
+import DynamicConditionsForm from './form-dynamic-conditions';
 import SrcAppForm from './form-src-app';
 import SrcFieldForm from './form-src-field';
-import ConditionTypeForm from './form-condition-type';
-import DstSubtableForm from './form-dst-subtable';
 
 const Component: FC = () => (
   <div className='p-4'>
-    {/* <PluginFormSection>
+    <PluginFormSection>
       <PluginFormTitle>サブテーブルモード</PluginFormTitle>
       <PluginFormDescription last>
         サブテーブル内の文字列１行フィールドを対象とする場合は、この設定を有効にしてください。
       </PluginFormDescription>
       <ConditionTypeForm />
+      <RecoilTogglePanel
+        className='px-4 py-2 ml-4 mt-2 border-l'
+        atom={conditionTypeState}
+        shouldShow={(value) => value === 'subtable'}
+      >
+        <PluginFormSection>
+          <h3 className='text-base font-bold'>対象となるサブテーブル</h3>
+          <PluginFormDescription last>
+            ルックアップを設定するサブテーブルを選択してください。
+          </PluginFormDescription>
+          <DstSubtableForm />
+        </PluginFormSection>
+      </RecoilTogglePanel>
     </PluginFormSection>
-    <DstSubtableForm /> */}
     <PluginFormSection>
       <PluginFormTitle>対象フィールド(ルックアップボタンを設置するフィールド)</PluginFormTitle>
       <PluginFormDescription>
-        <span style={{ color: 'red' }}>
-          ルックアップフィールドは使用しません。文字列1行フィールドを選択してください。
+        <span style={{ color: 'red' }}>文字列1行フィールドを選択してください。</span>
+        <span style={{ color: 'orangered' }}>
+          ルックアップフィールドを使用することも可能ですが、非推奨です。
         </span>
       </PluginFormDescription>
       <PluginFormDescription last>
@@ -91,6 +104,14 @@ const Component: FC = () => (
     </PluginFormSection>
 
     <PluginFormSection>
+      <PluginFormTitle>対象データの動的絞り込み</PluginFormTitle>
+      <PluginFormDescription last>
+        参照するデータを、編集しているレコードの特定のフィールドの値によって動的に絞り込むことができます。
+      </PluginFormDescription>
+      <DynamicConditionsForm />
+    </PluginFormSection>
+
+    <PluginFormSection>
       <PluginFormTitle>コピー元レコードの取得条件</PluginFormTitle>
       <PluginFormDescription>
         ルックアップ実行時に、対象レコードを絞り込む条件を設定します。
@@ -110,10 +131,6 @@ const Component: FC = () => (
       <PluginFormTitle>その他のオプション</PluginFormTitle>
       <PluginFormDescription last></PluginFormDescription>
       <div className='flex flex-col gap-1'>
-        <RecoilSwitch
-          label='事前に参照アプリのレコードを取得し、検索を高速化する'
-          state={enablesCacheState}
-        />
         <RecoilSwitch
           label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する'
           state={autoLookupState}

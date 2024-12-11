@@ -6,8 +6,8 @@ import {
   isTextSearchableFieldType,
   someFieldValue,
 } from '@/lib/kintone-api';
-import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
+import { PluginCondition } from '@/schema/plugin-config';
 import {
   getCurrentRecord,
   getFieldValueAsString,
@@ -17,12 +17,12 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
+import { convertFieldValueByTargetType } from '../common';
 import { isAlreadyLookupedAtom, valueAtLookupAtom } from '../states';
 import { AttachmentProps } from './app';
 import { alreadyCacheAtom } from './states';
 import { srcAppPropertiesAtom } from './states/kintone';
 import { srcAllRecordsAtom } from './states/records';
-import { convertFieldValueByTargetType } from '../common';
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -41,7 +41,11 @@ export const lookup = async (params: {
 }): Promise<kintoneAPI.RecordData> => {
   const { attachmentProps, condition, record, option } = params;
 
-  let dstField = record[condition.dstField];
+  if (condition.type === 'subtable') {
+    return record;
+  }
+
+  const dstField = record[condition.dstField];
 
   const isAlreadyCached = store.get(alreadyCacheAtom(attachmentProps.conditionId));
   if (isAlreadyCached) {
@@ -151,13 +155,14 @@ export const getLookupSrcFields = (condition: PluginCondition) => {
         condition.insubtableCopies.map(({ from }) => from),
         condition.displayFields.map((field) => field.fieldCode),
         condition.srcField,
+        condition.dynamicConditions.map((condition) => condition.srcAppFieldCode),
       ].flat()
     ),
   ];
   return fields;
 };
 
-export const apply = (params: {
+export const apply = async (params: {
   condition: PluginCondition;
   /** 値を反映するレコード */
   targetRecord: kintoneAPI.RecordData;
@@ -169,7 +174,11 @@ export const apply = (params: {
   const { attachmentProps, condition, targetRecord, sourceRecord, option } = params;
   const record = { ...targetRecord };
 
-  let field = record[condition.dstField];
+  if (condition.type === 'subtable') {
+    return record;
+  }
+
+  const field = record[condition.dstField];
 
   const dstValue = sourceRecord[condition.srcField].value;
 
@@ -178,10 +187,13 @@ export const apply = (params: {
     targetFieldType: field.type,
     sourceField: sourceRecord[condition.srcField],
   });
+  // @ts-expect-error `lookup`プロパティが未定義のため
+  field.lookup = true;
   store.set(valueAtLookupAtom(attachmentProps), dstValue);
 
   // @ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
   field.error = null;
+
   for (const { from, to } of condition.copies) {
     record[to].value = sourceRecord[from].value;
 
@@ -216,7 +228,9 @@ export const clearLookup = async (params: {
   const { condition, attachmentProps } = params;
   const { record } = getCurrentRecord()!;
 
-  record[condition.dstField].value = '';
+  clearField(record[condition.dstField]);
+  // @ts-expect-error `lookup`プロパティが未定義のため
+  record[condition.dstField].lookup = 'CLEAR';
   // @ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
   record[condition.dstField].error = null;
   for (const { to } of condition.copies) {
@@ -224,7 +238,7 @@ export const clearLookup = async (params: {
     clearField(field);
 
     if (condition.autoLookup) {
-      //@ts-ignore
+      // @ts-expect-error `lookup`プロパティが未定義のため
       record[to].lookup = 'CLEAR';
     }
   }

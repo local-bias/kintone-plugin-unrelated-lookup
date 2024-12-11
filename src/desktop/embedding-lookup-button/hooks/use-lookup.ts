@@ -1,3 +1,4 @@
+import { isAlreadyLookupedAtom } from '@/desktop/states';
 import {
   getCurrentRecord,
   getFieldValueAsString,
@@ -16,7 +17,7 @@ import {
   searchInputAtom,
 } from '../states';
 import { dialogPageIndexAtom, isDialogShownAtom } from '../states/dialog';
-import { isAlreadyLookupedAtom } from '@/desktop/states';
+import { currentRecordAtom } from '../states/kintone';
 
 export const useLookup = () => {
   const attachmentProps = useAttachmentProps();
@@ -34,13 +35,9 @@ export const useLookup = () => {
           set(isRecordCacheEnabledAtom(conditionId), true);
 
           const condition = get(pluginConditionAtom(conditionId));
-          const conditionType = condition.type;
-
-          if (conditionType === 'subtable' && rowIndex === undefined) {
-            throw new Error('サブテーブルモードで行番号が指定されていません');
-          }
 
           const { record } = getCurrentRecord();
+          set(currentRecordAtom, record);
           let input = getFieldValueAsString(record[condition.dstField]);
 
           set(searchInputAtom(attachmentProps), input);
@@ -60,7 +57,11 @@ export const useLookup = () => {
           setCurrentRecord({ record: lookuped });
         } catch (error) {
           console.error(error);
-          enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
+          if (error instanceof Error) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+          } else {
+            enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
+          }
           throw error;
         } finally {
           set(loadingCountAtom(conditionId), (c) => c - 1);

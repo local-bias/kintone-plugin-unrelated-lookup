@@ -1,7 +1,7 @@
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
-import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
+import { PluginCondition } from '@/schema/plugin-config';
 import { getAllRecords, getFieldValueAsString, getYuruChara } from '@konomi-app/kintone-utilities';
 import { getLookupSrcFields } from '../embedding-lookup-button/action';
 import { alreadyCacheAtom } from '../embedding-lookup-button/states';

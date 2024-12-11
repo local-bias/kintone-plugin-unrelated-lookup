@@ -1,5 +1,6 @@
 import { conditionsState, selectedConditionIdState } from '@/config/states/plugin';
-import { getNewCondition, PluginCondition, validateCondition } from '@/lib/plugin';
+import { getNewCondition, validateCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useSnackbar } from 'notistack';
 import { FC, useCallback } from 'react';
@@ -13,22 +14,8 @@ const Sidebar: FC = () => {
     const { condition, index } = params;
 
     let label = '未設定';
-    if (
-      condition.type === 'single' &&
-      condition.srcAppId &&
-      condition.srcField &&
-      condition.dstField
-    ) {
+    if (condition.srcAppId && condition.srcField && condition.dstField) {
       label = `${condition.srcField} → ${condition.dstField}`;
-    }
-    if (
-      condition.type === 'subtable' &&
-      condition.srcAppId &&
-      condition.srcField &&
-      condition.dstSubtableFieldCode &&
-      condition.dstInsubtableFieldCode
-    ) {
-      label = `${condition.srcField} → ${condition.dstInsubtableFieldCode}(${condition.dstSubtableFieldCode})`;
     }
 
     return (

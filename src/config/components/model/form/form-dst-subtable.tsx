@@ -1,14 +1,9 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { Skeleton } from '@mui/material';
-import { FC, FCX, memo, Suspense } from 'react';
+import { FC, FCX, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { dstAppSubtablePropertiesState } from '../../../states/kintone';
-import { conditionTypeState, dstSubtableFieldCodeState } from '../../../states/plugin';
-import {
-  PluginFormDescription,
-  PluginFormSection,
-  PluginFormTitle,
-} from '@konomi-app/kintone-utilities-react';
+import { dstSubtableFieldCodeState } from '../../../states/plugin';
 
 const Component: FCX = () => {
   const fields = useRecoilValue(dstAppSubtablePropertiesState);
@@ -28,22 +23,10 @@ const Component: FCX = () => {
 };
 
 const DstSubtableForm: FC = () => {
-  const conditionType = useRecoilValue(conditionTypeState);
-
-  if (conditionType !== 'subtable') {
-    return null;
-  }
-
   return (
-    <PluginFormSection>
-      <PluginFormTitle>対象となるサブテーブル</PluginFormTitle>
-      <PluginFormDescription last>
-        ルックアップを設定するサブテーブルを選択してください。
-      </PluginFormDescription>
-      <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
-        <Component />
-      </Suspense>
-    </PluginFormSection>
+    <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
+      <Component />
+    </Suspense>
   );
 };
 

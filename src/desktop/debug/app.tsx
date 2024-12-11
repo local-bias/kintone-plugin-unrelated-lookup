@@ -1,6 +1,6 @@
-import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
 import { cn } from '@/lib/utils';
+import { PluginCondition } from '@/schema/plugin-config';
 import { css } from '@emotion/css';
 import { getCurrentRecord, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Fab } from '@mui/material';

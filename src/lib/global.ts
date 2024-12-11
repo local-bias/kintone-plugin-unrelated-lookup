@@ -7,7 +7,7 @@ export const LANGUAGE = kintone.getLoginUser().language as 'ja' | 'en' | 'zh' | 
 export const ENV = (process?.env?.NODE_ENV ?? 'production') as 'production' | 'development';
 export const isProd = ENV === 'production';
 
-ENV === 'development' &&
+!isProd &&
   console.log('[plugin] Global variables have been redefined', {
     PLUGIN_ID,
     GUEST_SPACE_ID,

@@ -1,9 +1,9 @@
 import { manager } from '@/lib/event-manager';
-import { isProd } from '@/lib/global';
 import { store } from '@/lib/store';
-import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { singleTypePluginConditionsAtom } from '../states';
 import { embeddingSingleMode } from './single-mode';
+import { ComponentManager } from '@konomi-app/kintone-utilities-react';
+import { isProd } from '@/lib/global';
 
 ComponentManager.getInstance().debug = !isProd;
 

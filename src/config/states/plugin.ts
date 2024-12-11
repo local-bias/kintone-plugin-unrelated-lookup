@@ -1,4 +1,5 @@
-import { PluginCondition, PluginConfig, restorePluginConfig } from '@/lib/plugin';
+import { restorePluginConfig } from '@/lib/plugin';
+import { PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { produce } from 'immer';
 import { DefaultValue, RecoilState, atom, selector, selectorFamily } from 'recoil';
 
@@ -12,11 +13,6 @@ export const storageState = atom<PluginConfig>({
 export const loadingState = atom<boolean>({
   key: `${PREFIX}loadingState`,
   default: false,
-});
-
-export const tabIndexState = atom<number>({
-  key: `${PREFIX}tabIndexState`,
-  default: 0,
 });
 
 export const conditionsState = selector<PluginCondition[]>({
@@ -90,6 +86,9 @@ const conditionPropertyState = selectorFamily<
       );
     },
 });
+
+export const getConditionPropertyState = <T extends keyof PluginCondition>(property: T) =>
+  conditionPropertyState(property) as unknown as RecoilState<PluginCondition[T]>;
 
 export const dstFieldState = conditionPropertyState('dstField') as RecoilState<
   PluginCondition['dstField']

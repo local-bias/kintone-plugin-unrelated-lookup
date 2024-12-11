@@ -1,5 +1,6 @@
 import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
-import { getNewCondition, PluginCondition } from '@/lib/plugin';
+import { getNewCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useRecoilRow } from '@konomi-app/kintone-utilities-react';
 import AddIcon from '@mui/icons-material/Add';

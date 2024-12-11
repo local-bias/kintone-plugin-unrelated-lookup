@@ -8,7 +8,7 @@ import {
   isStringArrayValueFieldType,
   isStringValueFieldType,
 } from '@/lib/kintone-api';
-import { PluginCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
 
 export const getDstField = (condition: PluginCondition, record: kintoneAPI.RecordData) => {

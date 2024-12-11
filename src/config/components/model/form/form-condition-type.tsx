@@ -1,21 +1,15 @@
-import { conditionTypeState } from '@/config/states/plugin';
-import { FormControlLabel, Switch } from '@mui/material';
+import { FormControlLabel, Switch, Tooltip } from '@mui/material';
 import { type FC } from 'react';
-import { useRecoilState } from 'recoil';
 
 const ConditionTypeForm: FC = () => {
-  const [mode, setMode] = useRecoilState(conditionTypeState);
-
-  const onChange = (_: any, checked: boolean) => {
-    setMode(checked ? 'subtable' : 'single');
-  };
-
   return (
     <div>
-      <FormControlLabel
-        control={<Switch checked={mode === 'subtable'} onChange={onChange} />}
-        label='サブテーブル内で使用する'
-      />
+      <Tooltip title='この機能は拡張ルックアップ プラスでのみご利用いただけます'>
+        <FormControlLabel
+          control={<Switch checked={false} disabled />}
+          label='サブテーブル内で使用する'
+        />
+      </Tooltip>
     </div>
   );
 };
