@@ -1,6 +1,6 @@
 import { manager } from '@/lib/event-manager';
-import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
+import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { singleTypePluginConditionsAtom } from '../states';
 import { validateSingleMode } from './single-mode';

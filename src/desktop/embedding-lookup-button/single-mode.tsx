@@ -1,6 +1,6 @@
 import { PLUGIN_NAME } from '@/lib/constants';
 import { isProd } from '@/lib/global';
-import { PluginCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { css } from '@emotion/css';
 import { getMetaFieldId_UNSTABLE, isMobile, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
@@ -54,6 +54,12 @@ export const embeddingSingleMode = (params: {
     display: ${isMobile() ? 'grid' : displayType};
     position: relative;
     gap: ${isMobile() ? '4px' : '0'};
+
+    /** 標準機能のルックアップボタンを非表示 */
+    .input-lookup-gaia,
+    .input-clear-gaia {
+      display: none;
+    }
   `);
 
   ComponentManager.getInstance().renderComponent({

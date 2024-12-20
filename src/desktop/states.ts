@@ -14,7 +14,7 @@ export const validPluginConditionsAtom = atom((get) =>
 );
 
 export const singleTypePluginConditionsAtom = atom((get) =>
-  get(validPluginConditionsAtom).filter((c) => c.dstField)
+  get(validPluginConditionsAtom).filter((c) => c.type === 'single' && c.dstField)
 );
 
 export const valueAtStartAtom = atomFamily(
@@ -27,7 +27,7 @@ export const valueAtLookupAtom = atomFamily(
   areAttachmentsEqual
 );
 
-export const currentAppPropertiesAtom = atom(async () => {
+export const currentAppPropertiesAtom = atom<Promise<kintoneAPI.FieldProperties>>(async () => {
   const { properties } = await getFormFields({
     app: getAppId()!,
     guestSpaceId: GUEST_SPACE_ID,

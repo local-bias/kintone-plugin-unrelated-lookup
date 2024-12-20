@@ -1,7 +1,7 @@
 import { PLUGIN_NAME } from '@/lib/constants';
 import { isProd } from '@/lib/global';
-import { PluginCondition } from '@/lib/plugin';
 import { store } from '@/lib/store';
+import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { lookup } from '../embedding-lookup-button/action';
 import { AttachmentProps } from '../embedding-lookup-button/app';

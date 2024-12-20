@@ -1,9 +1,9 @@
-import { atom } from 'jotai';
-import { areAttachmentsEqual, AttachmentAtomParams, pluginConditionAtom, searchInputAtom } from '.';
-import { kintoneAPI, getYuruChara } from '@konomi-app/kintone-utilities';
-import { atomFamily } from 'jotai/utils';
-import { dialogPageChunkAtom, dialogPageIndexAtom } from './dialog';
 import { isProd } from '@/lib/global';
+import { getYuruChara, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { atom } from 'jotai';
+import { atomFamily } from 'jotai/utils';
+import { areAttachmentsEqual, AttachmentAtomParams, pluginConditionAtom, searchInputAtom } from '.';
+import { dialogPageChunkAtom, dialogPageIndexAtom } from './dialog';
 
 export type HandledRecord = { __quickSearch: string; record: kintoneAPI.RecordData };
 
@@ -14,7 +14,7 @@ export const filteredRecordsAtom = atomFamily(
     atom<kintoneAPI.RecordData[]>((get) => {
       const { conditionId } = params;
       const condition = get(pluginConditionAtom(conditionId));
-      const cachedRecords = get(srcAllRecordsAtom(conditionId));
+      const records = get(srcAllRecordsAtom(conditionId));
       const text = get(searchInputAtom(params));
 
       const {
@@ -32,12 +32,12 @@ export const filteredRecordsAtom = atomFamily(
       });
 
       const words = input.split(/\s+/g);
-      const filtered = cachedRecords.filter(({ __quickSearch }) =>
+      const filtered = records.filter(({ __quickSearch }) =>
         words.every((word) => ~__quickSearch.indexOf(word))
       );
 
       !isProd &&
-        console.log({
+        console.log(`🔎 applied text filtering`, {
           conditionId,
           rowIndex: params.rowIndex,
           text,

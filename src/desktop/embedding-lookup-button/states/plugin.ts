@@ -1,5 +1,5 @@
 import { pluginConfigAtom } from '@/desktop/states';
-import { PluginCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { AttachmentProps } from '../app';

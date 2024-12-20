@@ -1,142 +1,16 @@
-import { restoreStorage } from '@konomi-app/kintone-utilities';
+import {
+  AnyConfig,
+  LatestPluginConditionSchema,
+  PluginCondition,
+  PluginConfig,
+} from '@/schema/plugin-config';
+import { restorePluginConfig as restore } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { nanoid } from 'nanoid';
-import { z } from 'zod';
 import { PLUGIN_ID } from './global';
 
-const PluginConditionV1Schema = z.object({
-  srcAppId: z.string(),
-  srcField: z.string(),
-  dstField: z.string(),
-  copies: z.array(z.object({ from: z.string(), to: z.string() })),
-  sees: z.array(z.string()),
-  enablesCache: z.boolean(),
-  enablesValidation: z.boolean(),
-  autoLookup: z.boolean(),
-  saveAndLookup: z.boolean(),
-  query: z.string(),
-  ignoresLetterCase: z.boolean().optional(),
-  ignoresKatakana: z.boolean().optional(),
-  ignoresZenkakuEisuji: z.boolean().optional(),
-  ignoresHankakuKatakana: z.boolean().optional(),
-});
-const PluginConfigV1Schema = z.object({
-  version: z.literal(1),
-  common: z.object({}),
-  conditions: z.array(PluginConditionV1Schema),
-});
-type PluginConfigV1 = z.infer<typeof PluginConfigV1Schema>;
-
-const PluginConditionV2Schema = PluginConditionV1Schema.omit({
-  ignoresLetterCase: true,
-  ignoresKatakana: true,
-  ignoresZenkakuEisuji: true,
-  ignoresHankakuKatakana: true,
-}).merge(
-  z.object({
-    isCaseSensitive: z.boolean(),
-    isKatakanaSensitive: z.boolean(),
-    isZenkakuEisujiSensitive: z.boolean(),
-    isHankakuKatakanaSensitive: z.boolean(),
-  })
-);
-const PluginConfigV2Schema = z.object({
-  version: z.literal(2),
-  conditions: z.array(PluginConditionV2Schema),
-});
-type PluginConfigV2 = z.infer<typeof PluginConfigV2Schema>;
-
-const PluginConditionV3Schema = PluginConditionV2Schema.merge(
-  z.object({
-    srcSpaceId: z.string().nullable(),
-    isSrcAppGuestSpace: z.boolean(),
-  })
-);
-const PluginConfigV3Schema = z.object({
-  version: z.literal(3),
-  conditions: z.array(PluginConditionV3Schema),
-});
-type PluginConfigV3 = z.infer<typeof PluginConfigV3Schema>;
-
-const PluginConditionV4Schema = PluginConditionV3Schema.merge(
-  z.object({
-    id: z.string(),
-  })
-);
-const PluginConfigV4Schema = z.object({
-  version: z.literal(4),
-  common: z.object({}),
-  conditions: z.array(PluginConditionV4Schema),
-});
-type PluginConfigV4 = z.infer<typeof PluginConfigV4Schema>;
-
-const PluginConditionV5Schema = PluginConditionV4Schema.omit({
-  sees: true,
-}).merge(
-  z.object({
-    type: z.union([z.literal('single'), z.literal('subtable')]),
-    displayFields: z.array(
-      z.object({
-        id: z.string(),
-        fieldCode: z.string(),
-        isLookupField: z.boolean(),
-      })
-    ),
-    sortCriteria: z.array(
-      z.object({
-        fieldCode: z.string(),
-        order: z.union([z.literal('asc'), z.literal('desc')]),
-      })
-    ),
-  })
-);
-const PluginConfigV5Schema = z.object({
-  version: z.literal(5),
-  common: z.object({}),
-  conditions: z.array(PluginConditionV5Schema),
-});
-type PluginConfigV5 = z.infer<typeof PluginConfigV5Schema>;
-
-const PluginConditionV6Schema = PluginConditionV5Schema.merge(
-  z.object({
-    dstSubtableFieldCode: z.string(),
-    dstInsubtableFieldCode: z.string(),
-    insubtableCopies: z.array(z.object({ from: z.string(), to: z.string() })),
-  })
-);
-const PluginConfigV6Schema = z.object({
-  version: z.literal(6),
-  common: z.object({}),
-  conditions: z.array(PluginConditionV6Schema),
-});
-type PluginConfigV6 = z.infer<typeof PluginConfigV6Schema>;
-
-// const PluginConditionV7Schema = PluginConditionV6Schema.merge(
-//   z.object({
-//     dynamicCondition: z.array(
-//       z.object({
-//         type: z.union([z.literal('include'), z.literal('exclude')]),
-//         targetFieldCode: z.string(),
-//         sourceFieldCode: z.string(),
-//       })
-//     ),
-//   })
-// );
-
-export type PluginConfig = PluginConfigV6;
-export type PluginCommonConfig = PluginConfig['common'];
-export type PluginCondition = PluginConfig['conditions'][number];
-
-export type AnyConfig =
-  | PluginConfigV1
-  | PluginConfigV2
-  | PluginConfigV3
-  | PluginConfigV4
-  | PluginConfigV5
-  | PluginConfigV6;
-
 export const validateCondition = (condition: unknown): PluginCondition => {
-  return PluginConditionV6Schema.parse(condition);
+  return LatestPluginConditionSchema.parse(condition);
 };
 
 export const getNewCondition = (): PluginCondition => ({
@@ -168,13 +42,22 @@ export const getNewCondition = (): PluginCondition => ({
   dstSubtableFieldCode: '',
   dstInsubtableFieldCode: '',
   insubtableCopies: [{ from: '', to: '' }],
+  isAutoCompletionEnabled: true,
+  dynamicConditions: [
+    {
+      type: 'include',
+      isFuzzySearchEnabled: true,
+      srcAppFieldCode: '',
+      dstAppFieldCode: '',
+    },
+  ],
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 6,
+  version: 8,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -256,6 +139,36 @@ export const migrateConfig = (anyConfig: AnyConfig): PluginConfig => {
         })),
       });
     case 6:
+      return migrateConfig({
+        version: 7,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          isAutoCompletionEnabled: true,
+          dynamicCondition: [
+            {
+              type: 'include',
+              isFuzzySearchEnabled: true,
+              sourceFieldCode: '',
+              targetFieldCode: '',
+            },
+          ],
+        })),
+      });
+    case 7:
+      return migrateConfig({
+        version: 8,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          dynamicConditions: condition.dynamicCondition.map((dynamicCondition) => ({
+            ...dynamicCondition,
+            srcAppFieldCode: dynamicCondition.sourceFieldCode,
+            dstAppFieldCode: dynamicCondition.targetFieldCode,
+          })),
+        })),
+      });
+    case 8:
     default:
       return anyConfig;
   }
@@ -281,7 +194,7 @@ export const cleanse = (target: PluginConfig): PluginConfig => {
  * プラグインの設定情報を復元します
  */
 export const restorePluginConfig = (): PluginConfig => {
-  const config = restoreStorage<PluginConfig>(PLUGIN_ID) ?? createConfig();
+  const config = restore<PluginConfig>(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
 };
 

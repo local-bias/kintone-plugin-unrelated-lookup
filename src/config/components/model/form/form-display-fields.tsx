@@ -1,4 +1,4 @@
-import { PluginCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';

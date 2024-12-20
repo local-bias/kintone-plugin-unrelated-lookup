@@ -1,7 +1,7 @@
-import { selector } from 'recoil';
+import { ENV, GUEST_SPACE_ID } from '@/lib/global';
 import { FIELD_TYPES_SYSTEM, omitFieldProperties } from '@/lib/kintone-api';
-import { conditionTypeState, dstSubtableFieldCodeState, srcAppIdState } from './plugin';
 import {
+  filterFieldProperties,
   getAllApps,
   getAppId,
   getFormFields,
@@ -9,7 +9,8 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
-import { ENV, GUEST_SPACE_ID } from '@/lib/global';
+import { selector } from 'recoil';
+import { dstSubtableFieldCodeState, srcAppIdState } from './plugin';
 
 const PREFIX = 'kintone';
 
@@ -84,12 +85,35 @@ export const dstAppPropertiesState = selector<kintoneAPI.FieldProperties>({
   },
 });
 
+export const dstAppDynamicFilterPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}dstAppDynamicFilterPropertiesState`,
+  get: async ({ get }) => {
+    const dstAppProperties = get(dstAppPropertiesState);
+    const filtered = filterFieldProperties(
+      dstAppProperties,
+      (field) =>
+        field.type === 'SINGLE_LINE_TEXT' ||
+        field.type === 'NUMBER' ||
+        field.type === 'RADIO_BUTTON' ||
+        field.type === 'DROP_DOWN' ||
+        field.type === 'CHECK_BOX' ||
+        field.type === 'CREATOR' ||
+        field.type === 'MODIFIER' ||
+        field.type === 'STATUS_ASSIGNEE'
+    );
+    return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+  },
+});
+
 export const targetDstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   key: `${PREFIX}targetDstAppPropertiesState`,
   get: async ({ get }) => {
     const dstAppProperties = get(dstAppPropertiesState);
-    const omitted = omitFieldProperties(dstAppProperties, [...FIELD_TYPES_SYSTEM, 'SUBTABLE']);
-    return Object.values(omitted).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+    const filtered = filterFieldProperties(
+      dstAppProperties,
+      (field) => field.type === 'SINGLE_LINE_TEXT' || field.type === 'NUMBER'
+    );
+    return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
   },
 });
 
@@ -116,8 +140,11 @@ export const dstAppInsubtablePropertiesState = selector<kintoneAPI.property.InSu
       return [];
     }
 
-    const omitted = omitFieldProperties(subtable.fields, [...FIELD_TYPES_SYSTEM, 'SUBTABLE']);
-    return Object.values(omitted).sort((a, b) =>
+    const filtered = filterFieldProperties(
+      subtable.fields,
+      (field) => field.type === 'SINGLE_LINE_TEXT'
+    );
+    return Object.values(filtered).sort((a, b) =>
       a.label.localeCompare(b.label, 'ja')
     ) as kintoneAPI.property.InSubtable[];
   },
@@ -152,7 +179,7 @@ export const srcAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       guestSpaceId,
       debug: ENV === 'development',
     });
-    const filtered = omitFieldProperties(properties, ['GROUP', 'SUBTABLE']);
+    const filtered = omitFieldProperties(properties, ['GROUP', 'SUBTABLE', 'REFERENCE_TABLE']);
 
     return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
   },

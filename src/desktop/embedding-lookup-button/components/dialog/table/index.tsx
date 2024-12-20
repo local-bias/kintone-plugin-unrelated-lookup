@@ -1,5 +1,5 @@
 import { isDialogShownAtom } from '@/desktop/embedding-lookup-button/states/dialog';
-import { PluginCondition } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { getCurrentRecord, kintoneAPI, setCurrentRecord } from '@konomi-app/kintone-utilities';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { useAtomValue, useSetAtom } from 'jotai';
@@ -58,17 +58,26 @@ const DialogTableContainer: FC = () => {
   const setDialogShown = useSetAtom(isDialogShownAtom(attachmentProps));
   const { enqueueSnackbar } = useSnackbar();
 
-  const onRowClick = (sourceRecord: kintoneAPI.RecordData) => {
-    const { record } = getCurrentRecord();
-    const applied = apply({
-      condition,
-      targetRecord: record,
-      sourceRecord,
-      attachmentProps,
-      option: { enqueueSnackbar },
-    });
-    setCurrentRecord({ record: applied });
-    setDialogShown(false);
+  const onRowClick = async (sourceRecord: kintoneAPI.RecordData) => {
+    try {
+      const { record } = getCurrentRecord();
+      const applied = await apply({
+        condition,
+        targetRecord: record,
+        sourceRecord,
+        attachmentProps,
+        option: { enqueueSnackbar },
+      });
+      setCurrentRecord({ record: applied });
+      setDialogShown(false);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof Error) {
+        enqueueSnackbar(error.message, { variant: 'error' });
+      } else {
+        enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
+      }
+    }
   };
 
   return <DialogTableComponent {...{ records, onRowClick, condition, hasCached }} />;
