@@ -48,7 +48,7 @@ export const selectedConditionState = selector<PluginCondition>({
   get: ({ get }) => {
     const conditions = get(conditionsState);
     const selectedId = get(selectedConditionIdState);
-    return conditions.find((condition) => condition.id === selectedId) ?? conditions[0];
+    return conditions.find((condition) => condition.id === selectedId) ?? conditions[0]!;
   },
   set: ({ get, set }, newValue) => {
     if (newValue instanceof DefaultValue) {
@@ -111,7 +111,9 @@ export const copiesState = conditionPropertyState('copies') as RecoilState<
 export const displayFieldsState = conditionPropertyState('displayFields') as RecoilState<
   PluginCondition['displayFields']
 >;
-export const queryState = conditionPropertyState('query') as RecoilState<PluginCondition['query']>;
+export const queryState = conditionPropertyState('filterQuery') as RecoilState<
+  PluginCondition['filterQuery']
+>;
 export const enablesCacheState = conditionPropertyState('enablesCache') as RecoilState<
   PluginCondition['enablesCache']
 >;
@@ -136,15 +138,9 @@ export const isHankakuKatakanaSensitiveState = conditionPropertyState(
 export const isZenkakuEisujiSensitiveState = conditionPropertyState(
   'isZenkakuEisujiSensitive'
 ) as RecoilState<PluginCondition['isZenkakuEisujiSensitive']>;
-export const conditionTypeState = conditionPropertyState('type') as RecoilState<
-  PluginCondition['type']
->;
-export const dstSubtableFieldCodeState = conditionPropertyState(
-  'dstSubtableFieldCode'
-) as RecoilState<PluginCondition['dstSubtableFieldCode']>;
-export const dstInsubtableFieldCodeState = conditionPropertyState(
-  'dstInsubtableFieldCode'
-) as RecoilState<PluginCondition['dstInsubtableFieldCode']>;
-export const insubtableCopiesState = conditionPropertyState('insubtableCopies') as RecoilState<
-  PluginCondition['insubtableCopies']
->;
+export const conditionTypeState = getConditionPropertyState('type');
+export const dstSubtableFieldCodeState = getConditionPropertyState('dstSubtableFieldCode');
+export const dstInsubtableFieldCodeState = getConditionPropertyState('dstInsubtableFieldCode');
+export const insubtableCopiesState = getConditionPropertyState('insubtableCopies');
+export const isFailSoftEnabledState = getConditionPropertyState('isFailSoftEnabled');
+export const sortCriteriaState = getConditionPropertyState('sortCriteria');
