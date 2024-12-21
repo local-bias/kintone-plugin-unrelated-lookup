@@ -105,6 +105,19 @@ export const dstAppDynamicFilterPropertiesState = selector<kintoneAPI.FieldPrope
   },
 });
 
+export const copyableDstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}copyableDstAppPropertiesState`,
+  get: async ({ get }) => {
+    const dstAppProperties = get(dstAppPropertiesState);
+    const filtered = filterFieldProperties(
+      dstAppProperties,
+      (field) =>
+        field.type !== 'SUBTABLE' && field.type !== 'GROUP' && field.type !== 'REFERENCE_TABLE'
+    );
+    return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+  },
+});
+
 export const targetDstAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   key: `${PREFIX}targetDstAppPropertiesState`,
   get: async ({ get }) => {
