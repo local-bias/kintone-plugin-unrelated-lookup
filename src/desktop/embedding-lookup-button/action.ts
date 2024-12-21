@@ -17,12 +17,18 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
 import { SetterOrUpdater } from 'recoil';
-import { convertFieldValueByTargetType } from '../common';
+import { clone } from 'remeda';
+import { convertFieldValueByTargetType, getDstField } from '../common';
 import { isAlreadyLookupedAtom, valueAtLookupAtom } from '../states';
 import { AttachmentProps } from './app';
 import { alreadyCacheAtom } from './states';
 import { srcAppPropertiesAtom } from './states/kintone';
-import { srcAllRecordsAtom } from './states/records';
+import { srcAllHandledRecordsAtom } from './states/records';
+
+type CurrentKintoneField = kintoneAPI.Field & {
+  lookup?: boolean | 'CLEAR';
+  error?: null | string;
+};
 
 type EnqueueSnackbar = (
   message: SnackbarMessage,
@@ -45,7 +51,10 @@ export const lookup = async (params: {
     return record;
   }
 
-  const dstField = record[condition.dstField];
+  const dstField = getDstField({ condition, record, rowIndex: attachmentProps.rowIndex });
+  if (!dstField) {
+    throw new Error('ルックアップ先のフィールドが見つかりません');
+  }
 
   const isAlreadyCached = store.get(alreadyCacheAtom(attachmentProps.conditionId));
   if (isAlreadyCached) {
@@ -54,18 +63,22 @@ export const lookup = async (params: {
         '♻ 全てのレコードがキャッシュ済みのため、キャッシュされたレコードから検索します'
       );
 
-    const allRecords = store.get(srcAllRecordsAtom(attachmentProps.conditionId));
+    const allRecords = store.get(srcAllHandledRecordsAtom(attachmentProps.conditionId));
     // 🚧 改修が必要
     // せっかく比較対象それぞれのフィールド情報を持っているので、値としてではなくフィールドタイプ毎に比較する方が望ましい
     // 例えば、ユーザーエンティティ同士であれば、ユーザーコードを比較する
-    const filtered = allRecords.filter((r) =>
-      someFieldValue(r.record[condition.srcField], getFieldValueAsString(dstField))
-    );
+    const filtered = allRecords.filter((r) => {
+      const srcField = r.record[condition.srcField];
+      if (!srcField) {
+        return false;
+      }
+      return someFieldValue(srcField, getFieldValueAsString(dstField));
+    });
     if (filtered.length === 1) {
       const applied = apply({
         condition,
         targetRecord: record,
-        sourceRecord: filtered[0].record,
+        sourceRecord: filtered[0]!.record,
         attachmentProps,
         option,
       });
@@ -85,7 +98,7 @@ export const lookup = async (params: {
   }
 
   const app = condition.srcAppId;
-  const additionalQuery = condition.query || '';
+  const additionalQuery = condition.filterQuery || '';
   const srcAppProperties = await store.get(srcAppPropertiesAtom(attachmentProps.conditionId));
   const srcField = srcAppProperties[condition.srcField];
 
@@ -93,14 +106,14 @@ export const lookup = async (params: {
   if (dstField.value) {
     const queryValue = getQueryValue(dstField);
 
-    if (isMultipleSearchableFieldType(srcField.type)) {
+    if (isMultipleSearchableFieldType(srcField?.type)) {
       if (Array.isArray(queryValue)) {
         query = `${condition.srcField} in (${queryValue.join(',')})`;
       } else {
         query = `${condition.srcField} in (${queryValue})`;
       }
     } else {
-      const operator = isTextSearchableFieldType(srcField.type) ? 'like' : '=';
+      const operator = isTextSearchableFieldType(srcField?.type) ? 'like' : '=';
       if (Array.isArray(queryValue)) {
         query = `(${queryValue.map((v) => `${condition.srcField} ${operator} ${v}`).join(' or ')})`;
       } else {
@@ -142,7 +155,7 @@ export const lookup = async (params: {
     condition,
     targetRecord: record,
     attachmentProps,
-    sourceRecord: lookupRecords[0],
+    sourceRecord: lookupRecords[0]!,
     option,
   });
 };
@@ -156,6 +169,7 @@ export const getLookupSrcFields = (condition: PluginCondition) => {
         condition.displayFields.map((field) => field.fieldCode),
         condition.srcField,
         condition.dynamicConditions.map((condition) => condition.srcAppFieldCode),
+        condition.sortCriteria.map((criteria) => criteria.fieldCode),
       ].flat()
     ),
   ];
@@ -178,30 +192,43 @@ export const apply = async (params: {
     return record;
   }
 
-  const field = record[condition.dstField];
+  const dstField = getDstField({ condition, record, rowIndex: attachmentProps.rowIndex });
+  if (!dstField) {
+    throw new Error('ルックアップ先のフィールドが見つかりません');
+  }
 
-  const dstValue = sourceRecord[condition.srcField].value;
+  const srcField = sourceRecord[condition.srcField];
+  if (!srcField) {
+    throw new Error(
+      'ルックアップの参照元フィールドが存在しません。プラグインの設定を確認してください。'
+    );
+  }
 
-  field.value = convertFieldValueByTargetType({
-    // @ts-ignore
-    targetFieldType: field.type,
-    sourceField: sourceRecord[condition.srcField],
+  const srcValue = srcField.value;
+
+  dstField.value = convertFieldValueByTargetType({
+    targetFieldType: dstField.type,
+    sourceField: srcField,
   });
-  // @ts-expect-error `lookup`プロパティが未定義のため
-  field.lookup = true;
-  store.set(valueAtLookupAtom(attachmentProps), dstValue);
+  (dstField as CurrentKintoneField).lookup = true;
+  store.set(valueAtLookupAtom(attachmentProps), srcValue);
 
-  // @ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
-  field.error = null;
+  (dstField as CurrentKintoneField).error = null;
 
   for (const { from, to } of condition.copies) {
-    record[to].value = sourceRecord[from].value;
+    const fromField = sourceRecord[from];
+    const toField = record[to];
+    if (!fromField || !toField) {
+      console.error(
+        `[${PLUGIN_NAME}] ⚠️ ルックアップ時にコピーするフィールドが見つかりませんでした。プラグインの設定を確認してください。`,
+        { fromField, toField }
+      );
+      continue;
+    }
 
-    if (
-      option &&
-      condition.autoLookup &&
-      ['SINGLE_LINE_TEXT', 'NUMBER'].includes(record[to].type)
-    ) {
+    toField.value = fromField.value;
+
+    if (option && condition.autoLookup && ['SINGLE_LINE_TEXT', 'NUMBER'].includes(toField.type)) {
       setTimeout(() => {
         const { record } = getCurrentRecord()!;
         //@ts-ignore
@@ -227,14 +254,26 @@ export const clearLookup = async (params: {
 }) => {
   const { condition, attachmentProps } = params;
   const { record } = getCurrentRecord()!;
+  const originalRecord = clone(record);
 
-  clearField(record[condition.dstField]);
+  const dstField = record[condition.dstField];
+  if (!dstField) {
+    throw new Error('ルックアップ先のフィールドが見つかりません');
+  }
+  clearField(dstField);
   // @ts-expect-error `lookup`プロパティが未定義のため
-  record[condition.dstField].lookup = 'CLEAR';
+  dstField.lookup = 'CLEAR';
   // @ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
-  record[condition.dstField].error = null;
+  dstField.error = null;
   for (const { to } of condition.copies) {
     const field = record[to];
+    if (!field) {
+      console.error(
+        `[${PLUGIN_NAME}] ⚠️ ルックアップ時にコピーするフィールドが見つかりませんでした。プラグインの設定を確認してください。`,
+        { field }
+      );
+      continue;
+    }
     clearField(field);
 
     if (condition.autoLookup) {
@@ -245,6 +284,7 @@ export const clearLookup = async (params: {
 
   store.set(isAlreadyLookupedAtom(attachmentProps), false);
   setCurrentRecord({ record });
+  return { originalRecord };
 };
 
 const clearField = (field: kintoneAPI.Field) => {
