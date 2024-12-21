@@ -7,6 +7,7 @@ import { useAttachmentProps } from '../attachment-context';
 import Header from './header';
 import Table from './table';
 import Title from './title';
+import FailSoftAlert from '../../fail-soft-alert';
 
 type Props = Readonly<{
   open: boolean;
@@ -15,6 +16,7 @@ type Props = Readonly<{
 
 const DialogComponent: FCX<Props> = ({ className, open, onClose }) => (
   <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
+    <FailSoftAlert />
     <Suspense fallback={<DialogTitle>アプリからデータを取得</DialogTitle>}>
       <Title />
     </Suspense>
