@@ -35,6 +35,9 @@ export const isRecordCacheEnabledAtom = atomFamily((conditionId: string) =>
 );
 
 export const alreadyCacheAtom = atomFamily((_conditionId: string) => atom(false));
+
+export const cacheErrorAtom = atomFamily((_conditionId: string) => atom<string | null>(null));
+
 export const searchInputAtom = atomFamily(
   (_params: AttachmentAtomParams) => atom<string>(''),
   areAttachmentsEqual
