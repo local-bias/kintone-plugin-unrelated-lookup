@@ -14,7 +14,7 @@ import {
   searchInputAtom,
 } from '../embedding-lookup-button/states';
 import { isDialogShownAtom } from '../embedding-lookup-button/states/dialog';
-import { srcAllRecordsAtom } from '../embedding-lookup-button/states/records';
+import { srcAllHandledRecordsAtom } from '../embedding-lookup-button/states/records';
 import {
   isAlreadyLookupedAtom,
   isCacheStartedAtom,
@@ -80,7 +80,7 @@ const SingleTypeCondition: FC<{ condition: PluginCondition }> = ({ condition }) 
 const Condition: FC<{ condition: PluginCondition }> = ({ condition }) => {
   const id = useMemo(() => condition.id, [condition.id]);
   const isRecordCacheComplete = useAtomValue(alreadyCacheAtom(id));
-  const allSrcRecords = useAtomValue(srcAllRecordsAtom(id));
+  const allSrcRecords = useAtomValue(srcAllHandledRecordsAtom(id));
   const isRecordCacheEnabled = useAtomValue(isRecordCacheEnabledAtom(id));
   const isCacheStarted = useAtomValue(isCacheStartedAtom(id));
 
@@ -146,7 +146,7 @@ const DebugContainer: FC = () => {
               Plugin Debug Menu
               <span className='text-xs'>(Not displayed in production)</span>
             </div>
-            <DebugContent />
+            {shown && <DebugContent />}
           </div>
         </div>
         <Fab
