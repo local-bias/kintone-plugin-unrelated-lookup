@@ -18,6 +18,8 @@ import {
 } from '../states';
 import { dialogPageIndexAtom, isDialogShownAtom } from '../states/dialog';
 import { currentRecordAtom } from '../states/kintone';
+import { getDstField } from '@/desktop/common';
+import { Button } from '@mui/material';
 
 export const useLookup = () => {
   const attachmentProps = useAttachmentProps();
@@ -38,7 +40,9 @@ export const useLookup = () => {
 
           const { record } = getCurrentRecord();
           set(currentRecordAtom, record);
-          let input = getFieldValueAsString(record[condition.dstField]);
+
+          const dstField = getDstField({ condition, record, rowIndex });
+          const input = dstField ? getFieldValueAsString(dstField) : '';
 
           set(searchInputAtom(attachmentProps), input);
 
@@ -76,8 +80,22 @@ export const useLookup = () => {
       async (get, set) => {
         const { conditionId } = attachmentProps;
         const condition = get(pluginConditionAtom(conditionId));
-        await clearLookup({ condition, attachmentProps });
-        enqueueSnackbar('参照先フィールドをクリアしました', { variant: 'success' });
+        const { originalRecord } = await clearLookup({ condition, attachmentProps });
+
+        const undo = () => {
+          setCurrentRecord({ record: originalRecord });
+          set(isAlreadyLookupedAtom(attachmentProps), true);
+          enqueueSnackbar('ルックアップを元に戻しました', { variant: 'success' });
+        };
+
+        enqueueSnackbar('参照先フィールドをクリアしました', {
+          variant: 'success',
+          action: (
+            <Button onClick={undo} color='inherit' variant='outlined' size='small'>
+              元に戻す
+            </Button>
+          ),
+        });
       },
       [attachmentProps]
     )
