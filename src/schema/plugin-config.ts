@@ -279,11 +279,89 @@ const PluginConfigV8Schema = z.object({
 });
 type PluginConfigV8 = z.infer<typeof PluginConfigV8Schema>;
 
-export type PluginConfig = PluginConfigV8;
+const PluginConditionV9Schema = z.object({
+  id: z.string(),
+  srcAppId: z.string(),
+  srcField: z.string(),
+  dstField: z.string(),
+  copies: z.array(z.object({ from: z.string(), to: z.string() })),
+  enablesCache: z.boolean(),
+  enablesValidation: z.boolean(),
+  autoLookup: z.boolean(),
+  saveAndLookup: z.boolean(),
+  isCaseSensitive: z.boolean(),
+  isKatakanaSensitive: z.boolean(),
+  isZenkakuEisujiSensitive: z.boolean(),
+  isHankakuKatakanaSensitive: z.boolean(),
+  srcSpaceId: z.string().nullable(),
+  isSrcAppGuestSpace: z.boolean(),
+  type: z.union([z.literal('single'), z.literal('subtable')]),
+  displayFields: z.array(
+    z.object({
+      id: z.string(),
+      fieldCode: z.string(),
+      isLookupField: z.boolean(),
+    })
+  ),
+  sortCriteria: z.array(
+    z.object({
+      fieldCode: z.string(),
+      order: z.union([z.literal('asc'), z.literal('desc')]),
+    })
+  ),
+  /**
+   * 絞り込み条件として、完全にフリーワードで指定するか、簡易的なモードを使用するかを指定します。
+   */
+  filterMode: z.union([z.literal('freeWord'), z.literal('simple')]),
+  filterQuery: z.string(),
+  filterConditions: z.array(
+    z.object({
+      fieldCode: z.string(),
+      operator: z.union([
+        z.literal('equal'),
+        z.literal('notEqual'),
+        z.literal('greaterThan'),
+        z.literal('greaterThanOrEqual'),
+        z.literal('lessThan'),
+        z.literal('lessThanOrEqual'),
+        z.literal('include'),
+        z.literal('notInclude'),
+      ]),
+      value: z.union([
+        z.object({ type: z.literal('single'), value: z.string() }),
+        z.object({ type: z.literal('multi'), value: z.array(z.string()) }),
+      ]),
+    })
+  ),
+  /** 絞り込み条件として、and検索かor検索どちらを利用するかを制御する */
+  filterConditionType: z.union([z.literal('and'), z.literal('or')]),
+  dstSubtableFieldCode: z.string(),
+  dstInsubtableFieldCode: z.string(),
+  insubtableCopies: z.array(z.object({ from: z.string(), to: z.string() })),
+  isAutoCompletionEnabled: z.boolean(),
+  dynamicConditions: z.array(
+    z.object({
+      type: z.union([z.literal('include'), z.literal('exclude')]),
+      isFuzzySearchEnabled: z.boolean(),
+      srcAppFieldCode: z.string(),
+      dstAppFieldCode: z.string(),
+    })
+  ),
+  /** `true`の場合、フェールソフト機能を有効にする */
+  isFailSoftEnabled: z.boolean(),
+});
+const PluginConfigV9Schema = z.object({
+  version: z.literal(9),
+  common: z.object({}),
+  conditions: z.array(PluginConditionV9Schema),
+});
+type PluginConfigV9 = z.infer<typeof PluginConfigV9Schema>;
+
+export type PluginConfig = PluginConfigV9;
 export type PluginCommonConfig = PluginConfig['common'];
 export type PluginCondition = PluginConfig['conditions'][number];
 
-export const LatestPluginConditionSchema = PluginConditionV8Schema;
+export const LatestPluginConditionSchema = PluginConditionV9Schema;
 
 export type AnyConfig =
   | PluginConfigV1
@@ -293,4 +371,5 @@ export type AnyConfig =
   | PluginConfigV5
   | PluginConfigV6
   | PluginConfigV7
-  | PluginConfigV8;
+  | PluginConfigV8
+  | PluginConfigV9;

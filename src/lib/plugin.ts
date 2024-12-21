@@ -34,7 +34,19 @@ export const getNewCondition = (): PluginCondition => ({
   enablesValidation: false,
   autoLookup: true,
   saveAndLookup: false,
-  query: '',
+  filterMode: 'freeWord',
+  filterQuery: '',
+  filterConditionType: 'and',
+  filterConditions: [
+    {
+      fieldCode: '',
+      operator: 'equal',
+      value: {
+        type: 'single',
+        value: '',
+      },
+    },
+  ],
   isCaseSensitive: false,
   isKatakanaSensitive: false,
   isZenkakuEisujiSensitive: false,
@@ -51,13 +63,14 @@ export const getNewCondition = (): PluginCondition => ({
       dstAppFieldCode: '',
     },
   ],
+  isFailSoftEnabled: true,
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 8,
+  version: 9,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -169,6 +182,28 @@ export const migrateConfig = (anyConfig: AnyConfig): PluginConfig => {
         })),
       });
     case 8:
+      return migrateConfig({
+        version: 9,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          filterMode: 'freeWord',
+          filterQuery: condition.query ?? '',
+          filterConditionType: 'and',
+          filterConditions: [
+            {
+              fieldCode: '',
+              operator: 'equal',
+              value: {
+                type: 'single',
+                value: '',
+              },
+            },
+          ],
+          isFailSoftEnabled: true,
+        })),
+      });
+    case 9:
     default:
       return anyConfig;
   }
