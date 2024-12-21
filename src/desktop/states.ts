@@ -43,6 +43,11 @@ export const currentAppPropertiesAtom = atom<Promise<kintoneAPI.FieldProperties>
 export const isCacheStartedAtom = atomFamily((_conditionId: string) => atom(false));
 
 /**
+ * `true`の場合、レコード取得に失敗し、フェールソフトモードになっていることを示す
+ */
+export const failSoftModeAtom = atomFamily((_conditionId: string) => atom(false));
+
+/**
  * 設置したルックアップフィールド単位で、ルックアップが完了しているかどうかを管理する
  * レコード保存時のバリデーションや、再ルックアップの判定に使用する
  */
