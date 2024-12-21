@@ -11,15 +11,59 @@ import {
 import { PluginCondition } from '@/schema/plugin-config';
 import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
 
-export const getDstField = (condition: PluginCondition, record: kintoneAPI.RecordData) => {
-  if (condition.type !== 'single') {
-    throw new Error(`type is not single: ${condition.id}`);
+export const getDstSubtable = (params: {
+  condition: PluginCondition;
+  record: kintoneAPI.RecordData;
+}): kintoneAPI.field.Subtable | null => {
+  const { condition, record } = params;
+  if (condition.type === 'single') {
+    return null;
   }
-  const dstField = record[condition.dstField];
-  if (!dstField) {
-    throw new Error(`dstField not found: ${condition.dstField}`);
+  const field = record[condition.dstSubtableFieldCode];
+  if (!field || field.type !== 'SUBTABLE') {
+    return null;
   }
-  return dstField;
+  return field;
+};
+
+/**
+ * レコードから目的のフィールドを取得します。
+ * @param params - パラメーター
+ * @param params.condition - プラグイン設定の条件
+ * @param params.record - kintoneレコードデータ
+ * @param params.rowIndex - サブテーブルの行インデックス（サブテーブルフィールドの場合）
+ * @returns フィールドオブジェクト。フィールドが見つからない場合はnull
+ *
+ * @example
+ * // 通常フィールドの場合
+ * getDstField({ condition, record });
+ *
+ * // サブテーブルフィールドの場合
+ * getDstField({ condition, record, rowIndex: 0 });
+ */
+export const getDstField = (params: {
+  condition: PluginCondition;
+  record: kintoneAPI.RecordData;
+  rowIndex?: number;
+}): kintoneAPI.Field | null => {
+  const { condition, record, rowIndex } = params;
+  if (condition.type === 'single') {
+    return record[condition.dstField] ?? null;
+  }
+  if (rowIndex === undefined) {
+    return null;
+  }
+
+  const subtable = getDstSubtable({ condition, record });
+  if (!subtable) {
+    return null;
+  }
+
+  const subtableRow = subtable.value[rowIndex];
+  if (subtableRow) {
+    return subtableRow.value[condition.dstInsubtableFieldCode] ?? null;
+  }
+  return null;
 };
 
 /**
@@ -27,10 +71,7 @@ export const getDstField = (condition: PluginCondition, record: kintoneAPI.Recor
  * @param params
  */
 export const convertFieldValueByTargetType = (params: {
-  targetFieldType: Exclude<
-    kintoneAPI.Field['type'],
-    (typeof FIELD_TYPES_SYSTEM)[number] | (typeof FIELD_TYPES_META)[number]
-  >;
+  targetFieldType: kintoneAPI.Field['type'];
   sourceField: kintoneAPI.Field;
 }): kintoneAPI.Field['value'] => {
   const { targetFieldType, sourceField } = params;
@@ -49,7 +90,7 @@ export const convertFieldValueByTargetType = (params: {
       return sourceField.value;
     }
     if (isEntityArrayValueField(sourceField)) {
-      return sourceField.value[0];
+      return sourceField.value[0]!;
     }
   }
   return sourceField.value;
