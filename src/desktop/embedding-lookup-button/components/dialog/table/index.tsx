@@ -6,12 +6,15 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
 import { FC, useDeferredValue } from 'react';
 import { apply } from '../../../action';
-import { alreadyCacheAtom, pluginConditionAtom } from '../../../states';
+import { alreadyCacheAtom, cacheErrorAtom, pluginConditionAtom } from '../../../states';
 import { displayingRecordsAtom } from '../../../states/records';
 import { useAttachmentProps } from '../../attachment-context';
 import Cell from './cell';
 import Empty from './empty';
 import Layout from './layout';
+import { CloudOff } from '@mui/icons-material';
+import { css } from '@emotion/css';
+import TableHeader from './table-header';
 
 type Props = {
   records: kintoneAPI.RecordData[];
@@ -20,19 +23,13 @@ type Props = {
   hasCached: boolean;
 };
 
-const DialogTableComponent: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
-  <Layout>
+const DialogTable: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
+  <>
     {!records.length && !hasCached && <LoaderWithLabel label='レコードを取得しています' />}
     {!records.length && hasCached && <Empty />}
     {!!records.length && (
       <table>
-        <thead>
-          <tr>
-            {condition.displayFields.map((field, i) => (
-              <th key={i}>{field.fieldCode}</th>
-            ))}
-          </tr>
-        </thead>
+        <TableHeader />
         <tbody>
           {records.map((record, i) => (
             <tr key={i} onClick={() => onRowClick(record)}>
@@ -46,11 +43,12 @@ const DialogTableComponent: FC<Props> = ({ records, onRowClick, condition, hasCa
         </tbody>
       </table>
     )}
-  </Layout>
+  </>
 );
 
-const DialogTableContainer: FC = () => {
+const DialogTableComponent: FC = () => {
   const attachmentProps = useAttachmentProps();
+  const cacheError = useAtomValue(cacheErrorAtom(attachmentProps.conditionId));
   const condition = useAtomValue(pluginConditionAtom(attachmentProps.conditionId));
   const rawRecords = useAtomValue(displayingRecordsAtom(attachmentProps));
   const records = useDeferredValue(rawRecords);
@@ -80,7 +78,47 @@ const DialogTableContainer: FC = () => {
     }
   };
 
-  return <DialogTableComponent {...{ records, onRowClick, condition, hasCached }} />;
+  if (cacheError) {
+    return (
+      <div
+        className={css`
+          svg {
+            width: 210px;
+            height: 210px;
+            color: #d1d5db;
+          }
+          small {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #d1d5db;
+          }
+          display: grid;
+          place-items: center;
+          font-size: 24px;
+          font-weight: bold;
+          color: #9ca3af;
+          padding: 64px;
+        `}
+      >
+        <div>
+          <CloudOff strokeWidth={1} />
+        </div>
+        <div>レコード情報を取得できませんでした</div>
+        <small>{cacheError}</small>
+      </div>
+    );
+  }
+
+  return <DialogTable {...{ records, onRowClick, condition, hasCached }} />;
+};
+
+const DialogTableContainer: FC = () => {
+  return (
+    <Layout>
+      <DialogTableComponent />
+    </Layout>
+  );
 };
 
 export default DialogTableContainer;
