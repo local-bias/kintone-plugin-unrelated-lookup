@@ -1,8 +1,8 @@
-import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { getNewCondition } from '@/lib/plugin';
 import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useRecoilRow } from '@konomi-app/kintone-utilities-react';
+import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,8 +18,6 @@ type Props = {
 };
 
 const Component: FCX<Props> = ({ appPropertiesState, copiesState }) => {
-  const dstFields = useRecoilValue(appPropertiesState);
-
   const copies = useRecoilValue(copiesState);
   const { addRow, deleteRow } = useRecoilRow({
     state: copiesState,
@@ -60,9 +58,9 @@ const Component: FCX<Props> = ({ appPropertiesState, copiesState }) => {
             onChange={(code) => onCopyFromChange(i, code)}
           />
           <ArrowForwardIcon />
-          <AutocompleteKintoneField
+          <RecoilFieldSelect
             label='コピー先'
-            fields={dstFields}
+            state={appPropertiesState}
             fieldCode={to}
             onChange={(code) => onCopyToChange(i, code)}
           />

@@ -1,7 +1,6 @@
-import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { FC } from 'react';
-import { useRecoilValue } from 'recoil';
 import { srcAppPropertiesState } from '../../../states/kintone';
+import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
 
 type Props = {
   fieldCode: string;
@@ -11,9 +10,7 @@ type Props = {
 };
 
 const Component: FC<Props> = (props) => {
-  const srcFields = useRecoilValue(srcAppPropertiesState);
-
-  return <AutocompleteKintoneField fields={srcFields} {...props} />;
+  return <RecoilFieldSelect state={srcAppPropertiesState} {...props} />;
 };
 
 export default Component;

@@ -1,7 +1,7 @@
-import { targetDstAppPropertiesState } from '../../../../states/kintone';
+import { copyableDstAppPropertiesState } from '../../../../states/kintone';
 import { copiesState } from '../../../../states/plugin';
 import CommonForm from './common';
 
 export default () => (
-  <CommonForm appPropertiesState={targetDstAppPropertiesState} copiesState={copiesState} />
+  <CommonForm appPropertiesState={copyableDstAppPropertiesState} copiesState={copiesState} />
 );

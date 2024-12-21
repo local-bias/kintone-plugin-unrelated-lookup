@@ -1,5 +1,5 @@
-import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
 import { Skeleton } from '@mui/material';
 import { FC, FCX, Suspense } from 'react';
 import { RecoilState, RecoilValueReadOnly, useRecoilCallback, useRecoilValue } from 'recoil';
@@ -10,7 +10,6 @@ type Props = {
 };
 
 const Component: FCX<Props> = ({ appPropertiesState, fieldCodeState }) => {
-  const fields = useRecoilValue(appPropertiesState);
   const fieldCode = useRecoilValue(fieldCodeState);
 
   const onFieldChange = useRecoilCallback(
@@ -22,7 +21,7 @@ const Component: FCX<Props> = ({ appPropertiesState, fieldCodeState }) => {
   );
 
   return (
-    <AutocompleteKintoneField fields={fields} fieldCode={fieldCode} onChange={onFieldChange} />
+    <RecoilFieldSelect state={appPropertiesState} fieldCode={fieldCode} onChange={onFieldChange} />
   );
 };
 
