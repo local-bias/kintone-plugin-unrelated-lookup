@@ -18,7 +18,7 @@ const App: FC<AttachmentProps> = (props) => (
       <PluginErrorBoundary>
         <AttachmentPropsProvider {...props}>
           <LookupStatusBadge />
-          <SnackbarProvider maxSnack={1}>
+          <SnackbarProvider maxSnack={1} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
             <EventObserver />
             <LookupButton />
             <SearchDialog />
