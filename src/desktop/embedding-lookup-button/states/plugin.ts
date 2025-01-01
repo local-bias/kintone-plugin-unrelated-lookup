@@ -1,14 +1,44 @@
-import { atom } from 'recoil';
+import { pluginConfigAtom } from '@/desktop/states';
+import { PluginCondition } from '@/schema/plugin-config';
+import { atom } from 'jotai';
+import { atomFamily } from 'jotai/utils';
+import { AttachmentProps } from '../app';
 
-const PREFIX = 'plugin';
+export type AttachmentAtomParams = AttachmentProps;
 
-export const pluginConditionState = atom<Plugin.Condition | null>({
-  key: `${PREFIX}pluginConditionState`,
-  default: null,
-});
+export const pluginConditionAtom = atomFamily((conditionId: string) =>
+  atom<PluginCondition>((get) => {
+    const config = get(pluginConfigAtom);
+    return config.conditions.find((c) => c.id === conditionId)!;
+  })
+);
 
-export const searchInputState = atom<string>({ key: `${PREFIX}searchInputState`, default: '' });
+export function areAttachmentsEqual(a: AttachmentAtomParams, b: AttachmentAtomParams) {
+  return a.conditionId === b.conditionId && a.rowIndex === b.rowIndex;
+}
 
-export const alreadyCacheState = atom({ key: `${PREFIX}alreadyCacheState`, default: false });
+const privateIsRecordCacheEnabledAtom = atomFamily((_conditionId: string) => atom(false));
+export const isRecordCacheEnabledAtom = atomFamily((conditionId: string) =>
+  atom(
+    (get) => {
+      const privateValue = get(privateIsRecordCacheEnabledAtom(conditionId));
+      if (privateValue) {
+        return true;
+      }
+      const condition = get(pluginConditionAtom(conditionId));
+      return condition.enablesCache;
+    },
+    (get, set, newValue) => {
+      set(privateIsRecordCacheEnabledAtom(conditionId), newValue as boolean);
+    }
+  )
+);
 
-export const alreadyLookupState = atom({ key: `${PREFIX}alreadyLookupState`, default: false });
+export const alreadyCacheAtom = atomFamily((_conditionId: string) => atom(false));
+
+export const cacheErrorAtom = atomFamily((_conditionId: string) => atom<string | null>(null));
+
+export const searchInputAtom = atomFamily(
+  (_params: AttachmentAtomParams) => atom<string>(''),
+  areAttachmentsEqual
+);

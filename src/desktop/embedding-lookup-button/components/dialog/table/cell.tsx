@@ -1,6 +1,5 @@
-import React, { FC } from 'react';
-import { sanitize } from 'dompurify';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { FC } from 'react';
 
 type ContainerProps = Readonly<{ field: kintoneAPI.Field }>;
 
@@ -50,8 +49,7 @@ const Container: FC<ContainerProps> = ({ field }) => {
         </>
       );
     case 'RICH_TEXT':
-      const __html = sanitize(field.value);
-      return <div dangerouslySetInnerHTML={{ __html }} />;
+      return <div dangerouslySetInnerHTML={{ __html: field.value }} />;
     case 'SUBTABLE':
       return <>{field.value.length}行</>;
     default:

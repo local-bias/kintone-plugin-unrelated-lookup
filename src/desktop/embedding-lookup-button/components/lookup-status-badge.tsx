@@ -1,18 +1,20 @@
-import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
 import CheckIcon from '@mui/icons-material/Check';
-import { useRecoilValue } from 'recoil';
-import { alreadyLookupState } from '../states';
+import { useAtomValue } from 'jotai';
+import { FC, FCX } from 'react';
+import { useAttachmentProps } from './attachment-context';
+import { isAlreadyLookupedAtom } from '@/desktop/states';
+import { isMobile } from '@konomi-app/kintone-utilities';
 
 type Props = Readonly<{ visible: boolean }>;
 
-const Component: FCX<Props> = ({ className }) => (
-  <div {...{ className }}>
+const LookupStatusBadgeComponent: FCX<Props> = ({ className }) => (
+  <div {...{ className }} data-is-mobile={isMobile() ? '' : undefined}>
     <CheckIcon />
   </div>
 );
 
-const StyledComponent = styled(Component)`
+const StyledLookupStatusBadgeComponent = styled(LookupStatusBadgeComponent)`
   position: absolute;
   border-radius: 50%;
   display: flex;
@@ -22,12 +24,17 @@ const StyledComponent = styled(Component)`
   transform: ${({ visible }) => (visible ? 'scale(1)' : 'scale(0)')};
   transition: transform 0.2s ease;
 
-  left: -16px;
+  right: 120px;
   top: -8px;
   width: 24px;
   height: 24px;
   background-color: #80beaf;
   color: #fff;
+
+  &[data-is-mobile] {
+    right: 0;
+    top: -8px;
+  }
 
   svg {
     width: 18px;
@@ -35,9 +42,10 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
-  const visible = useRecoilValue(alreadyLookupState);
-  return <StyledComponent {...{ visible }} />;
+const LookupStatusBadgeContainer: FC = () => {
+  const attachmentProps = useAttachmentProps();
+  const visible = useAtomValue(isAlreadyLookupedAtom(attachmentProps));
+  return <StyledLookupStatusBadgeComponent {...{ visible }} />;
 };
 
-export default Container;
+export default LookupStatusBadgeContainer;

@@ -1,24 +1,39 @@
-import { AutocompleteKintoneField } from '@/lib/components/autocomplete-field-input';
+import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
 import { Skeleton } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
+import { produce } from 'immer';
+import { nanoid } from 'nanoid';
+import { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { srcAppPropertiesState } from '../../../states/kintone';
-import { srcFieldState } from '../../../states/plugin';
+import { selectedConditionState, srcFieldState } from '../../../states/plugin';
 
 const Component: FCX = () => {
-  const fields = useRecoilValue(srcAppPropertiesState);
   const fieldCode = useRecoilValue(srcFieldState);
 
   const onFieldChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
-        set(srcFieldState, value);
+        set(selectedConditionState, (prev) =>
+          produce(prev, (draft) => {
+            draft.srcField = value;
+            const index = draft.displayFields.findIndex((field) => field.isLookupField);
+            if (index === -1) {
+              draft.displayFields.unshift({ id: nanoid(), fieldCode: value, isLookupField: true });
+              return draft;
+            }
+            draft.displayFields[index].fieldCode = value;
+          })
+        );
       },
     []
   );
 
   return (
-    <AutocompleteKintoneField fields={fields} fieldCode={fieldCode} onChange={onFieldChange} />
+    <RecoilFieldSelect
+      state={srcAppPropertiesState}
+      fieldCode={fieldCode}
+      onChange={onFieldChange}
+    />
   );
 };
 

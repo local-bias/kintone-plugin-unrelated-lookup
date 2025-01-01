@@ -1,5 +1,9 @@
 import '@/lib/global';
-import './initialize-observer';
+import './cache-control';
+import './debug';
 import './embedding-lookup-button';
-import './validation';
+import './initialize-observer';
+import './integration';
+import './on-field-change';
 import './on-save';
+import './validation';

@@ -1,15 +1,13 @@
-import React, { FC } from 'react';
-import { useRecoilValue } from 'recoil';
-import { dialogTitleState } from '../../states';
 import { DialogTitle } from '@mui/material';
-
-type Props = Readonly<{ title: string }>;
-
-const Component: FC<Props> = ({ title }) => <DialogTitle>{title}</DialogTitle>;
+import { useAtomValue } from 'jotai';
+import { FC } from 'react';
+import { dialogTitleAtom } from '../../states/dialog';
+import { useConditionId } from '../attachment-context';
 
 const Container: FC = () => {
-  const title = useRecoilValue(dialogTitleState);
-  return <Component {...{ title }} />;
+  const conditionId = useConditionId();
+  const title = useAtomValue(dialogTitleAtom(conditionId));
+  return <DialogTitle>{title}</DialogTitle>;
 };
 
 export default Container;

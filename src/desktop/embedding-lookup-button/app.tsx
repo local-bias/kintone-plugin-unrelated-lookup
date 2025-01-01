@@ -1,31 +1,32 @@
-import React, { FC } from 'react';
-import { RecoilRoot } from 'recoil';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { MUIThemeProvider } from '@/lib/components/theme-provider';
+import { store } from '@/lib/store';
+import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
-
-import { pluginConditionState } from './states';
-
-import EventObserver from './components/event-observer';
-import SrcCacheController from './components/src-cache-controller';
-import LookupStatusBadge from './components/lookup-status-badge';
-import LookupButton from './components/lookup-button';
+import { FC } from 'react';
+import { AttachmentPropsProvider } from './components/attachment-context';
 import SearchDialog from './components/dialog';
+import EventObserver from './components/event-observer';
+import LookupButton from './components/lookup-button';
+import LookupStatusBadge from './components/lookup-status-badge';
 
-type Props = { condition: Plugin.Condition };
+export type AttachmentProps = { conditionId: string; rowIndex?: number };
 
-const Component: FC<Props> = ({ condition }) => (
-  <RecoilRoot
-    initializeState={({ set }) => {
-      set(pluginConditionState, condition);
-    }}
-  >
-    <SrcCacheController />
-    <LookupStatusBadge />
-    <SnackbarProvider maxSnack={1}>
-      <EventObserver />
-      <LookupButton />
-      <SearchDialog />
-    </SnackbarProvider>
-  </RecoilRoot>
+const App: FC<AttachmentProps> = (props) => (
+  <Provider store={store}>
+    <MUIThemeProvider>
+      <PluginErrorBoundary>
+        <AttachmentPropsProvider {...props}>
+          <LookupStatusBadge />
+          <SnackbarProvider maxSnack={1} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
+            <EventObserver />
+            <LookupButton />
+            <SearchDialog />
+          </SnackbarProvider>
+        </AttachmentPropsProvider>
+      </PluginErrorBoundary>
+    </MUIThemeProvider>
+  </Provider>
 );
 
-export default Component;
+export default App;

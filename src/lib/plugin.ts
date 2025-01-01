@@ -1,55 +1,90 @@
-import { produce } from 'immer';
-import { getAppId, restoreStorage } from '@konomi-app/kintone-utilities';
-import { GUEST_SPACE_ID, PLUGIN_ID } from './global';
+import {
+  AnyConfig,
+  LatestPluginConditionSchema,
+  PluginCondition,
+  PluginConfig,
+} from "@/schema/plugin-config";
+import { restorePluginConfig as restore } from "@konomi-app/kintone-utilities";
+import { produce } from "immer";
+import { nanoid } from "nanoid";
+import { PLUGIN_ID } from "./global";
 
-export const getNewCondition = (): Plugin.Condition => ({
-  srcAppId: String(getAppId()!),
-  srcSpaceId: GUEST_SPACE_ID ?? null,
-  isSrcAppGuestSpace: !!GUEST_SPACE_ID,
-  srcField: '',
-  dstField: '',
-  copies: [{ from: '', to: '' }],
-  sees: [''],
+export const validateCondition = (condition: unknown): PluginCondition => {
+  return LatestPluginConditionSchema.parse(condition);
+};
+
+export const getNewCondition = (): PluginCondition => ({
+  id: nanoid(),
+  type: "single",
+  srcAppId: "",
+  srcSpaceId: null,
+  isSrcAppGuestSpace: false,
+  srcField: "",
+  dstField: "",
+  copies: [{ from: "", to: "" }],
+  displayFields: [
+    {
+      id: nanoid(),
+      fieldCode: "",
+      isLookupField: false,
+    },
+  ],
+  sortCriteria: [{ fieldCode: "", order: "asc" }],
   enablesCache: true,
   enablesValidation: false,
   autoLookup: true,
   saveAndLookup: false,
-  query: '',
+  filterMode: "freeWord",
+  filterQuery: "",
+  filterConditionType: "and",
+  filterConditions: [
+    {
+      fieldCode: "",
+      operator: "equal",
+      value: {
+        type: "single",
+        value: "",
+      },
+    },
+  ],
   isCaseSensitive: false,
   isKatakanaSensitive: false,
   isZenkakuEisujiSensitive: false,
   isHankakuKatakanaSensitive: false,
+  dstSubtableFieldCode: "",
+  dstInsubtableFieldCode: "",
+  insubtableCopies: [{ from: "", to: "" }],
+  isAutoCompletionEnabled: true,
+  dynamicConditions: [
+    {
+      type: "include",
+      isFuzzySearchEnabled: true,
+      srcAppFieldCode: "",
+      dstAppFieldCode: "",
+    },
+  ],
+  isFailSoftEnabled: true,
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
-export const createConfig = (): Plugin.Config => ({
-  version: 3,
+export const createConfig = (): PluginConfig => ({
+  version: 9,
+  common: {},
   conditions: [getNewCondition()],
 });
 
 /**
  * 古いバージョンの設定情報を新しいバージョンに変換します
- * @param anyConfig 過去全てのバージョンを含む、プラグインがアプリ単位で保存する設定情報
+ * 各バージョンは次のバージョンへの変換処理を持ち、再帰的なアクセスによって最新のバージョンに変換されます
+ *
+ * @param anyConfig 保存されている設定情報
  * @returns 新しいバージョンの設定情報
  */
-export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
+export const migrateConfig = (anyConfig: AnyConfig): PluginConfig => {
   const { version } = anyConfig;
   switch (version) {
-    case 2:
-      return {
-        ...anyConfig,
-        version: 3,
-        conditions: anyConfig.conditions.map((condition) => ({
-          ...condition,
-          srcField: condition.srcField || condition.related || '',
-          dstField: condition.dstField || condition.target || '',
-          srcAppId: String(getAppId()!),
-          srcSpaceId: GUEST_SPACE_ID ?? null,
-          isSrcAppGuestSpace: !!GUEST_SPACE_ID,
-        })),
-      };
     case undefined:
     case 1:
       return migrateConfig({
@@ -57,21 +92,131 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
         version: 2,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
-          srcField: condition.srcField || condition.related || '',
-          dstField: condition.dstField || condition.target || '',
+          srcField: condition.srcField || condition.related || "",
+          dstField: condition.dstField || condition.target || "",
           isCaseSensitive: !(condition.ignoresLetterCase ?? true),
           isKatakanaSensitive: !(condition.ignoresKatakana ?? true),
           isZenkakuEisujiSensitive: !(condition.ignoresZenkakuEisuji ?? true),
-          isHankakuKatakanaSensitive: !(condition.ignoresHankakuKatakana ?? true),
+          isHankakuKatakanaSensitive: !(
+            condition.ignoresHankakuKatakana ?? true
+          ),
         })),
       });
+    case 2:
+      return migrateConfig({
+        ...anyConfig,
+        version: 3,
+        conditions: anyConfig.conditions.map((condition) => ({
+          srcSpaceId: null,
+          isSrcAppGuestSpace: false,
+          ...condition,
+        })),
+      });
+    case 3:
+      return migrateConfig({
+        common: {},
+        ...anyConfig,
+        version: 4,
+        conditions: anyConfig.conditions.map((condition) => ({
+          id: nanoid(),
+          ...condition,
+        })),
+      });
+    case 4:
+      return migrateConfig({
+        ...anyConfig,
+        version: 5,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          type: "single",
+          sortCriteria: [{ fieldCode: "", order: "asc" }],
+          displayFields: [
+            {
+              id: nanoid(),
+              fieldCode: condition.srcField,
+              isLookupField: true,
+            },
+            ...condition.sees.map((fieldCode) => ({
+              id: nanoid(),
+              fieldCode,
+              isLookupField: false,
+            })),
+          ],
+        })),
+      });
+    case 5:
+      return migrateConfig({
+        version: 6,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          dstSubtableFieldCode: "",
+          dstInsubtableFieldCode: "",
+          insubtableCopies: [],
+        })),
+      });
+    case 6:
+      return migrateConfig({
+        version: 7,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          isAutoCompletionEnabled: true,
+          dynamicCondition: [
+            {
+              type: "include",
+              isFuzzySearchEnabled: true,
+              sourceFieldCode: "",
+              targetFieldCode: "",
+            },
+          ],
+        })),
+      });
+    case 7:
+      return migrateConfig({
+        version: 8,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          dynamicConditions: condition.dynamicCondition.map(
+            (dynamicCondition) => ({
+              ...dynamicCondition,
+              srcAppFieldCode: dynamicCondition.sourceFieldCode,
+              dstAppFieldCode: dynamicCondition.targetFieldCode,
+            }),
+          ),
+        })),
+      });
+    case 8:
+      return migrateConfig({
+        version: 9,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          filterMode: "freeWord",
+          filterQuery: condition.query ?? "",
+          filterConditionType: "and",
+          filterConditions: [
+            {
+              fieldCode: "",
+              operator: "equal",
+              value: {
+                type: "single",
+                value: "",
+              },
+            },
+          ],
+          isFailSoftEnabled: true,
+        })),
+      });
+    case 9:
     default:
       return {
         ...anyConfig,
         conditions: anyConfig.conditions.map((condition) => ({
           ...condition,
-          srcField: condition.srcField || condition.related || '',
-          dstField: condition.dstField || condition.target || '',
+          srcField: condition.srcField || condition.related || "",
+          dstField: condition.dstField || condition.target || "",
           srcAppId: String(getAppId()!),
         })),
       };
@@ -83,11 +228,16 @@ export const migrateConfig = (anyConfig: Plugin.AnyConfig): Plugin.Config => {
  * @param target プラグインの設定情報
  * @returns 整理したプラグインの設定情報
  */
-export const cleanse = (target: Plugin.Config): Plugin.Config => {
+export const cleanse = (target: PluginConfig): PluginConfig => {
   const cleansed = produce(target, (draft) => {
     for (const condition of draft.conditions) {
       condition.copies = condition.copies.filter(({ from, to }) => from && to);
-      condition.sees = condition.sees.filter((field) => field);
+      condition.displayFields = condition.displayFields.filter(
+        (field) => !!field.fieldCode,
+      );
+      condition.sortCriteria = condition.sortCriteria.filter(
+        ({ fieldCode }) => !!fieldCode,
+      );
     }
   });
   return cleansed;
@@ -96,33 +246,19 @@ export const cleanse = (target: Plugin.Config): Plugin.Config => {
 /**
  * プラグインの設定情報を復元します
  */
-export const restorePluginConfig = (): Plugin.Config => {
-  const config = restoreStorage<Plugin.Config>(PLUGIN_ID) ?? createConfig();
+export const restorePluginConfig = (): PluginConfig => {
+  const config = restore<PluginConfig>(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
 };
 
-export const getUpdatedStorage = <T extends keyof Plugin.Condition>(
-  storage: Plugin.Config,
+export const getConditionField = <T extends keyof PluginCondition>(
+  storage: PluginConfig,
   props: {
     conditionIndex: number;
     key: T;
-    value: Plugin.Condition[T];
-  }
-) => {
-  const { conditionIndex, key, value } = props;
-  return produce(storage, (draft) => {
-    draft.conditions[conditionIndex][key] = value;
-  });
-};
-
-export const getConditionField = <T extends keyof Plugin.Condition>(
-  storage: Plugin.Config,
-  props: {
-    conditionIndex: number;
-    key: T;
-    defaultValue: NonNullable<Plugin.Condition[T]>;
-  }
-): NonNullable<Plugin.Condition[T]> => {
+    defaultValue: NonNullable<PluginCondition[T]>;
+  },
+): NonNullable<PluginCondition[T]> => {
   const { conditionIndex, key, defaultValue } = props;
   if (!storage.conditions[conditionIndex]) {
     return defaultValue;

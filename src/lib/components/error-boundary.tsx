@@ -1,12 +1,12 @@
 import React, { FC, useState } from 'react';
 import { Alert, AlertTitle, Button } from '@mui/material';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
-import { URL_INQUIRY } from '@/lib/statics';
+import { URL_INQUIRY } from '@/lib/constants';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import styled from '@emotion/styled';
 import config from 'plugin.config.mjs';
 
-const Component: FC<FallbackProps & { className?: string }> = ({
+const ErrorFallbackComponent: FC<FallbackProps & { className?: string }> = ({
   className,
   error,
   resetErrorBoundary,
@@ -30,23 +30,23 @@ const Component: FC<FallbackProps & { className?: string }> = ({
       <Alert severity='error'>
         <AlertTitle title={error.message}>エラーが発生しました</AlertTitle>
         <h2>解決方法</h2>
-        <ul>
+        <ol>
           <li>
-            <h3>1. 処理をリトライ</h3>
+            <h3>処理をリトライ</h3>
             <p>以下の「リトライ」ボタンをクリックして、処理を再実行してください。</p>
-            <Button size='large' variant='contained' color='error' onClick={onRetry}>
+            <Button variant='contained' color='error' onClick={onRetry}>
               リトライ
             </Button>
           </li>
           {!!config.pluginReleasePageUrl && (
             <li>
-              <h3>2. 最新版のプラグインをインストール</h3>
-              <p>プラグインの最新版をインストールすることで、問題が解決する可能性があります。</p>
+              <h3>最新版のプラグインをインストール</h3>
               <p>
+                プラグインの最新版をインストールすることで、問題が解決する可能性があります。
+                <br />
                 以下のリンクから最新版のプラグインをダウンロードし、再度インストールしてください。
               </p>
               <Button
-                size='large'
                 variant='contained'
                 color='error'
                 onClick={() => window.open(config.pluginReleasePageUrl, '_blank')}
@@ -56,7 +56,15 @@ const Component: FC<FallbackProps & { className?: string }> = ({
             </li>
           )}
           <li>
-            <h3>3. お問い合わせ</h3>
+            <h3>プラグイン設定を更新</h3>
+            <p>
+              保存されているプラグイン設定情報が古くなっている可能性があります。
+              <br />
+              アプリ設定からこのプラグインの設定を開き、再度保存した上でアプリを更新してください。
+            </p>
+          </li>
+          <li>
+            <h3>お問い合わせ</h3>
             <p>
               上記全てを試しても解決しない場合、下記のエラー内容を添えて開発者までお問い合わせください。
             </p>
@@ -85,30 +93,33 @@ const Component: FC<FallbackProps & { className?: string }> = ({
               お問い合わせ
             </Button>
           </li>
-        </ul>
+        </ol>
       </Alert>
     </div>
   );
 };
 
-const StyledComponent = styled(Component)`
+const StyledErrorFallback = styled(ErrorFallbackComponent)`
   margin: 8px;
 
   h2 {
     font-size: 20px;
     margin-bottom: 8px;
+    font-weight: bold;
   }
   h3 {
     font-size: 18px;
-    margin-bottom: 8px;
+    margin: 0 0 6px;
+    font-weight: bold;
   }
   p {
-    margin-bottom: 8px;
+    margin: 0 0 8px;
   }
 
-  ul {
+  ol {
     display: grid;
-    gap: 24px;
+    gap: 32px;
+    padding-inline-start: 16px;
   }
 
   pre {
@@ -117,6 +128,7 @@ const StyledComponent = styled(Component)`
     color: rgb(243 244 246);
     padding: 16px;
     margin-bottom: 8px;
+    max-width: 400px;
   }
 
   code {
@@ -125,8 +137,6 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC<{ children: React.ReactNode }> = ({ children }) => (
-  <ErrorBoundary FallbackComponent={StyledComponent}>{children}</ErrorBoundary>
+export const PluginErrorBoundary: FC<{ children: React.ReactNode }> = ({ children }) => (
+  <ErrorBoundary FallbackComponent={StyledErrorFallback}>{children}</ErrorBoundary>
 );
-
-export const PluginErrorBoundary = Container;

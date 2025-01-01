@@ -1,34 +1,37 @@
-import React, { ChangeEventHandler, FC } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
 import { TextField } from '@mui/material';
+import { useAtom, useSetAtom } from 'jotai';
+import { ChangeEventHandler, FC } from 'react';
+import { searchInputAtom } from '../../states';
+import { dialogPageIndexAtom } from '../../states/dialog';
+import { useAttachmentProps } from '../attachment-context';
+import { isProd } from '@/lib/global';
 
-import { dialogPageIndexState, searchInputState } from '../../states';
+const DialogSearchInputContainer: FC = () => {
+  const attachmentProps = useAttachmentProps();
+  const [value, setValue] = useAtom(searchInputAtom(attachmentProps));
+  const setPageIndex = useSetAtom(dialogPageIndexAtom(attachmentProps));
 
-type Props = {
-  value: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-};
-
-const Component: FC<Props> = ({ value, onChange }) => (
-  <TextField
-    label='レコードを検索'
-    variant='outlined'
-    color='primary'
-    size='small'
-    {...{ value, onChange }}
-  />
-);
-
-const Container: FC = () => {
-  const [value, setValue] = useRecoilState(searchInputState);
-  const setPageIndex = useSetRecoilState(dialogPageIndexState);
+  !isProd &&
+    console.log('🔍 DialogSearchInputContainer', {
+      conditionId: attachmentProps.conditionId,
+      rowIndex: attachmentProps.rowIndex,
+      value: value,
+    });
 
   const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
     setValue(e.target.value);
     setPageIndex(1);
   };
 
-  return <Component {...{ value, onChange }} />;
+  return (
+    <TextField
+      label='レコードを検索'
+      variant='outlined'
+      color='primary'
+      size='small'
+      {...{ value, onChange }}
+    />
+  );
 };
 
-export default Container;
+export default DialogSearchInputContainer;

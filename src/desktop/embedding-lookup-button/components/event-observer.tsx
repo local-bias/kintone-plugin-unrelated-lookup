@@ -1,11 +1,13 @@
-import { useEffect, FC } from 'react';
-import { useRecoilValue } from 'recoil';
-import { useLookup } from '../hooks/use-lookup';
-import { pluginConditionState } from '../states';
 import { getMetaFields_UNSTABLE } from '@konomi-app/kintone-utilities';
+import { useAtomValue } from 'jotai';
+import { FC, useEffect } from 'react';
+import { useLookup } from '../hooks/use-lookup';
+import { pluginConditionAtom } from '../states';
+import { useConditionId } from './attachment-context';
 
-const Container: FC = () => {
-  const condition = useRecoilValue(pluginConditionState);
+const FieldKeyEventListener: FC = () => {
+  const conditionId = useConditionId();
+  const condition = useAtomValue(pluginConditionAtom(conditionId));
   const { start } = useLookup();
 
   useEffect(() => {
@@ -13,7 +15,7 @@ const Container: FC = () => {
       return;
     }
     const fields = getMetaFields_UNSTABLE() ?? [];
-    const targetField = fields.find((field) => field.var === condition.dstField);
+    const targetField = fields.find((field) => field?.var === condition.dstField);
     if (!targetField) {
       return;
     }
@@ -36,4 +38,4 @@ const Container: FC = () => {
   return null;
 };
 
-export default Container;
+export default FieldKeyEventListener;

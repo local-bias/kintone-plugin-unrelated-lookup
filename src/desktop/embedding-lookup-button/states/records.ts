@@ -1,56 +1,125 @@
-import { atom, selector } from 'recoil';
+import { isProd } from '@/lib/global';
 import {
-  dialogPageChunkState,
-  dialogPageIndexState,
-  pluginConditionState,
-  searchInputState,
-} from '.';
-import { kintoneAPI, getYuruChara } from '@konomi-app/kintone-utilities';
+  getFieldValueAsString,
+  getYuruChara,
+  kintoneAPI,
+  sortField,
+} from '@konomi-app/kintone-utilities';
+import { atom } from 'jotai';
+import { atomFamily } from 'jotai/utils';
+import { areAttachmentsEqual, AttachmentAtomParams, pluginConditionAtom, searchInputAtom } from '.';
+import { dialogPageChunkAtom, dialogPageIndexAtom } from './dialog';
 
 export type HandledRecord = { __quickSearch: string; record: kintoneAPI.RecordData };
 
-export const srcAllRecordsState = atom<HandledRecord[]>({
-  key: 'srcAllRecordsState',
-  default: [],
-});
+export const srcAllRawRecordsAtom = atomFamily((_conditionId: string) =>
+  atom<kintoneAPI.RecordData[]>([])
+);
 
-export const filteredRecordsState = selector<kintoneAPI.RecordData[]>({
-  key: 'filteredRecordsState',
-  get: ({ get }) => {
-    const condition = get(pluginConditionState);
-    const cachedRecords = get(srcAllRecordsState);
-    const text = get(searchInputState);
+const srcAllSortedRecordsAtom = atomFamily((conditionId: string) =>
+  atom<kintoneAPI.RecordData[]>((get) => {
+    const condition = get(pluginConditionAtom(conditionId));
+    const records = get(srcAllRawRecordsAtom(conditionId));
+
+    const sortCriteria = condition.sortCriteria.filter(({ fieldCode }) => !!fieldCode);
+
+    return records.toSorted((a, b) => {
+      for (const { fieldCode, order } of sortCriteria) {
+        const aField = a[fieldCode];
+        const bField = b[fieldCode];
+
+        if (!aField || !bField) {
+          continue;
+        }
+
+        const sortResult = sortField(aField, bField);
+        if (sortResult === 0) {
+          continue;
+        }
+        return order === 'asc' ? sortResult : -sortResult;
+      }
+      return 0;
+    });
+  })
+);
+
+export const srcAllHandledRecordsAtom = atomFamily((conditionId: string) =>
+  atom<HandledRecord[]>((get) => {
+    const condition = get(pluginConditionAtom(conditionId));
+    const rawRecords = get(srcAllSortedRecordsAtom(conditionId));
 
     const {
       isCaseSensitive,
       isKatakanaSensitive,
       isZenkakuEisujiSensitive,
       isHankakuKatakanaSensitive,
-    } = condition || {};
+    } = condition;
 
-    let input = getYuruChara(text, {
-      isCaseSensitive,
-      isKatakanaSensitive,
-      isZenkakuEisujiSensitive,
-      isHankakuKatakanaSensitive,
+    return rawRecords.map((record) => {
+      let __quickSearch = Object.values(record)
+        .map((field) => getFieldValueAsString(field))
+        .join('__');
+
+      __quickSearch = getYuruChara(__quickSearch, {
+        isCaseSensitive,
+        isKatakanaSensitive,
+        isZenkakuEisujiSensitive,
+        isHankakuKatakanaSensitive,
+      });
+
+      return { record, __quickSearch };
     });
+  })
+);
 
-    const words = input.split(/\s+/g);
-    const filtered = cachedRecords.filter(({ __quickSearch }) =>
-      words.every((word) => ~__quickSearch.indexOf(word))
-    );
+export const filteredRecordsAtom = atomFamily(
+  (params: AttachmentAtomParams) =>
+    atom<kintoneAPI.RecordData[]>((get) => {
+      const { conditionId } = params;
+      const condition = get(pluginConditionAtom(conditionId));
+      const records = get(srcAllHandledRecordsAtom(conditionId));
+      const text = get(searchInputAtom(params));
 
-    return filtered.map(({ record }) => record);
-  },
-});
+      const {
+        isCaseSensitive,
+        isKatakanaSensitive,
+        isZenkakuEisujiSensitive,
+        isHankakuKatakanaSensitive,
+      } = condition || {};
 
-export const displayingRecordsState = selector<kintoneAPI.RecordData[]>({
-  key: 'displayingRecordsState',
-  get: ({ get }) => {
-    const records = get(filteredRecordsState);
-    const index = get(dialogPageIndexState);
-    const chunk = get(dialogPageChunkState);
+      const input = getYuruChara(text, {
+        isCaseSensitive,
+        isKatakanaSensitive,
+        isZenkakuEisujiSensitive,
+        isHankakuKatakanaSensitive,
+      });
 
-    return records.slice((index - 1) * chunk, index * chunk);
-  },
-});
+      const words = input.split(/\s+/g);
+      const filtered = records.filter(({ __quickSearch }) =>
+        words.every((word) => ~__quickSearch.indexOf(word))
+      );
+
+      !isProd &&
+        console.log(`🔎 applied text filtering`, {
+          conditionId,
+          rowIndex: params.rowIndex,
+          text,
+          recordLength: filtered.length,
+        });
+
+      return filtered.map(({ record }) => record);
+    }),
+  areAttachmentsEqual
+);
+
+export const displayingRecordsAtom = atomFamily(
+  (params: AttachmentAtomParams) =>
+    atom<kintoneAPI.RecordData[]>((get) => {
+      const { conditionId } = params;
+      const records = get(filteredRecordsAtom(params));
+      const index = get(dialogPageIndexAtom(params));
+      const chunk = get(dialogPageChunkAtom(conditionId));
+      return records.slice((index - 1) * chunk, index * chunk);
+    }),
+  areAttachmentsEqual
+);

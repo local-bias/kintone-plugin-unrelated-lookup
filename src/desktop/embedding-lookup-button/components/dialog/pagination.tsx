@@ -1,10 +1,11 @@
-import React, { FC, FCX } from 'react';
-import { SetterOrUpdater, useRecoilState, useRecoilValue } from 'recoil';
 import styled from '@emotion/styled';
 import { Pagination } from '@mui/material';
-
-import { dialogPageChunkState, dialogPageIndexState } from '../../states';
-import { filteredRecordsState } from '../../states/records';
+import { useAtom, useAtomValue } from 'jotai';
+import { FC, FCX } from 'react';
+import { SetterOrUpdater } from 'recoil';
+import { dialogPageChunkAtom, dialogPageIndexAtom } from '../../states/dialog';
+import { filteredRecordsAtom } from '../../states/records';
+import { useAttachmentProps } from '../attachment-context';
 
 type Props = {
   size: number;
@@ -13,7 +14,7 @@ type Props = {
   chunkSize: number;
 };
 
-const Component: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) => (
+const DialogPagination: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) => (
   <div className={className}>
     <Pagination
       count={Math.ceil(size / chunkSize)}
@@ -24,16 +25,17 @@ const Component: FCX<Props> = ({ className, size, index, setIndex, chunkSize }) 
   </div>
 );
 
-const StyledComponent = styled(Component)``;
+const StyledComponent = styled(DialogPagination)``;
 
-const Container: FC = () => {
-  const records = useRecoilValue(filteredRecordsState);
-  const [index, setIndex] = useRecoilState(dialogPageIndexState);
-  const chunkSize = useRecoilValue(dialogPageChunkState);
+const DialogPaginationContainer: FC = () => {
+  const attachmentProps = useAttachmentProps();
+  const records = useAtomValue(filteredRecordsAtom(attachmentProps));
+  const [index, setIndex] = useAtom(dialogPageIndexAtom(attachmentProps));
+  const chunkSize = useAtomValue(dialogPageChunkAtom(attachmentProps.conditionId));
 
   const size = records.length || 0;
 
   return <>{!!size && <StyledComponent {...{ size, index, setIndex, chunkSize }} />}</>;
 };
 
-export default Container;
+export default DialogPaginationContainer;

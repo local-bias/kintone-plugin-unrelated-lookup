@@ -1,7 +1,7 @@
-import React, { FCX } from 'react';
 import styled from '@emotion/styled';
+import { FCX } from 'react';
 
-const Component: FCX = ({ className }) => (
+const Empty: FCX = ({ className }) => (
   <div {...{ className }}>
     <svg height='200' viewBox='0 0 512 512' width='200'>
       <g>
@@ -30,7 +30,7 @@ const Component: FCX = ({ className }) => (
   </div>
 );
 
-const StyledComponent = styled(Component)`
+const StyledEmpty = styled(Empty)`
   min-height: 400px;
   height: 100%;
   display: flex;
@@ -58,4 +58,4 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-export default StyledComponent;
+export default StyledEmpty;

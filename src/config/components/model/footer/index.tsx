@@ -1,15 +1,15 @@
-import React, { FC, useState, FCX, useCallback, ChangeEventHandler } from 'react';
-import { useRecoilCallback } from 'recoil';
-import { useSnackbar } from 'notistack';
-import { Button } from '@mui/material';
 import { PluginFooterBundle } from '@konomi-app/kintone-utilities-react';
+import { Button } from '@mui/material';
+import { useSnackbar } from 'notistack';
+import { ChangeEventHandler, FC, useCallback, useState } from 'react';
+import { useRecoilCallback } from 'recoil';
 
 import { storeStorage } from '@konomi-app/kintone-utilities';
 
 import { storageState } from '../../../states/plugin';
 
-import { PLUGIN_NAME } from '@/lib/statics';
-import { createConfig } from '@/lib/plugin';
+import { createConfig, migrateConfig } from '@/lib/plugin';
+import { PLUGIN_NAME } from '@/lib/constants';
 
 const Container: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -50,7 +50,7 @@ const Container: FC = () => {
           const [file] = Array.from(files);
           const fileEvent = await onFileLoad(file);
           const text = (fileEvent.target?.result ?? '') as string;
-          set(storageState, JSON.parse(text));
+          set(storageState, migrateConfig(JSON.parse(text)));
           enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
         } catch (error) {
           enqueueSnackbar(

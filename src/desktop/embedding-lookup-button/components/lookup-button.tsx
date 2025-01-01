@@ -1,31 +1,67 @@
-import React, { FC, FCX } from 'react';
 import styled from '@emotion/styled';
-import { Button, CircularProgress } from '@mui/material';
-
+import { LoadingButton } from '@mui/lab';
+import { Button } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { FC, FCX } from 'react';
 import { useLookup } from '../hooks/use-lookup';
+import { loadingAtom } from '../states';
+import { useConditionId } from './attachment-context';
+import { isMobile } from '@konomi-app/kintone-utilities';
 
 type Props = {
   onLookupButtonClick: () => void;
   onClearButtonClick: () => void;
-  loading: boolean;
 };
 
-const Component: FCX<Props> = ({ className, onLookupButtonClick, onClearButtonClick, loading }) => (
-  <div {...{ className }}>
-    <div>
-      <Button color='primary' onClick={onLookupButtonClick} disabled={loading}>
+const LookupButtonComponent: FCX<Props> = ({
+  className,
+  onLookupButtonClick,
+  onClearButtonClick,
+}) => {
+  const conditionId = useConditionId();
+  const loading = useAtomValue(loadingAtom(conditionId));
+  return (
+    <div {...{ className }}>
+      <LoadingButton
+        color='primary'
+        size={isMobile() ? 'large' : 'medium'}
+        variant={isMobile() ? 'contained' : 'text'}
+        onClick={onLookupButtonClick}
+        loading={loading}
+        sx={{
+          fontSize: isMobile() ? '14px' : undefined,
+        }}
+      >
         取得
+      </LoadingButton>
+      <Button
+        color='primary'
+        size={isMobile() ? 'large' : 'medium'}
+        variant={isMobile() ? 'contained' : 'text'}
+        onClick={onClearButtonClick}
+        disabled={loading}
+        sx={{
+          fontSize: isMobile() ? '14px' : undefined,
+          width: isMobile() ? '100%' : undefined,
+        }}
+      >
+        クリア
       </Button>
-      {loading && <CircularProgress className='circle' size={24} />}
     </div>
-    <Button color='primary' onClick={onClearButtonClick} disabled={loading}>
-      クリア
-    </Button>
-  </div>
-);
+  );
+};
 
-const StyledComponent = styled(Component)`
+const StyledLookupButtonComponent = styled(LookupButtonComponent)`
   display: flex;
+
+  ${isMobile() &&
+  `
+    width: 100%;
+    gap: 4px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  `};
+
   & > div {
     position: relative;
 
@@ -38,13 +74,13 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
-  const { loading, start, clear } = useLookup();
+const LookupButtonContainer: FC = () => {
+  const { start, clear } = useLookup();
 
   const onClearButtonClick = clear;
   const onLookupButtonClick = start;
 
-  return <StyledComponent {...{ onLookupButtonClick, onClearButtonClick, loading }} />;
+  return <StyledLookupButtonComponent {...{ onLookupButtonClick, onClearButtonClick }} />;
 };
 
-export default Container;
+export default LookupButtonContainer;

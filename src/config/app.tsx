@@ -1,5 +1,6 @@
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { URL_BANNER, URL_PROMOTION } from '@/lib/statics';
+import { MUIThemeProvider } from '@/lib/components/theme-provider';
+import { URL_BANNER, URL_PROMOTION } from '@/lib/constants';
 import {
   Notification,
   PluginBanner,
@@ -9,17 +10,14 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { SnackbarProvider } from 'notistack';
-import React, { FC, Suspense } from 'react';
+import { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import config from '../../plugin.config.mjs';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import Sidebar from './components/model/sidebar';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { jaJP, enUS, zhCN, esES } from '@mui/material/locale';
-import { LANGUAGE } from '@/lib/global';
+import Sidebar from './components/sidebar';
 
-const Component: FC = () => {
+const App: FC = () => {
   return (
     <>
       <Sidebar />
@@ -34,14 +32,9 @@ const Component: FC = () => {
   );
 };
 
-const Container: FC = () => (
+const AppContainer: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
-    <ThemeProvider
-      theme={createTheme(
-        {},
-        LANGUAGE === 'en' ? enUS : LANGUAGE === 'zh' ? zhCN : LANGUAGE === 'es' ? esES : jaJP
-      )}
-    >
+    <MUIThemeProvider>
       <RecoilRoot>
         <PluginErrorBoundary>
           <PluginConfigProvider config={config}>
@@ -49,16 +42,16 @@ const Container: FC = () => (
             <SnackbarProvider maxSnack={1}>
               <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
                 <PluginLayout>
-                  <Component />
+                  <App />
                 </PluginLayout>
               </Suspense>
             </SnackbarProvider>
           </PluginConfigProvider>
         </PluginErrorBoundary>
       </RecoilRoot>
-    </ThemeProvider>
+    </MUIThemeProvider>
     <iframe title='promotion' loading='lazy' src={URL_PROMOTION} className='border-0 w-full h-16' />
   </Suspense>
 );
 
-export default Container;
+export default AppContainer;

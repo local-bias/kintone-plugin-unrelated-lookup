@@ -1,7 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 @layer plugin {
-  .🐸 {
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
+  .MuiAutocomplete-popper[role='presentation'],
+  .MuiPaper-root,
+  .MuiDialogContent-root {
+    ::-webkit-scrollbar {
+      @apply w-1 h-1 md:w-2 md:h-2;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply rounded-full bg-gray-300;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
   }
 }

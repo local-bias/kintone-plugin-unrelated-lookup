@@ -1,21 +1,22 @@
-import React, { Suspense, FC, FCX } from 'react';
-import { useRecoilState } from 'recoil';
 import styled from '@emotion/styled';
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-
-import { dialogVisibleState } from '../../states';
-
+import { useAtom } from 'jotai';
+import { FC, FCX, Suspense } from 'react';
+import { isDialogShownAtom } from '../../states/dialog';
+import { useAttachmentProps } from '../attachment-context';
 import Header from './header';
-import Title from './title';
 import Table from './table';
+import Title from './title';
+import FailSoftAlert from '../../fail-soft-alert';
 
 type Props = Readonly<{
   open: boolean;
   onClose: () => void;
 }>;
 
-const Component: FCX<Props> = ({ className, open, onClose }) => (
+const DialogComponent: FCX<Props> = ({ className, open, onClose }) => (
   <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
+    <FailSoftAlert />
     <Suspense fallback={<DialogTitle>アプリからデータを取得</DialogTitle>}>
       <Title />
     </Suspense>
@@ -31,7 +32,7 @@ const Component: FCX<Props> = ({ className, open, onClose }) => (
   </Dialog>
 );
 
-const StyledComponent = styled(Component)`
+const StyledDialogComponent = styled(DialogComponent)`
   & > div {
     & > div {
       height: 90vh;
@@ -49,12 +50,13 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
-  const [open, setOpen] = useRecoilState(dialogVisibleState);
+const DialogContainer: FC = () => {
+  const attachmentProps = useAttachmentProps();
+  const [open, setOpen] = useAtom(isDialogShownAtom(attachmentProps));
 
   const onClose = () => setOpen(false);
 
-  return <StyledComponent {...{ open, onClose }} />;
+  return <StyledDialogComponent {...{ open, onClose }} />;
 };
 
-export default Container;
+export default DialogContainer;
