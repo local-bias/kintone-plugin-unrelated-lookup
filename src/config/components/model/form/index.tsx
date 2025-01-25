@@ -1,22 +1,23 @@
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { JotaiSwitch, JotaiText, JotaiTogglePanel } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { RecoilSwitch, RecoilText, RecoilTogglePanel } from '@konomi-app/kintone-utilities-recoil';
 import { FC } from 'react';
 import {
-  autoLookupState,
-  conditionTypeState,
-  enablesValidationState,
-  isCaseSensitiveState,
-  isFailSoftEnabledState,
-  isHankakuKatakanaSensitiveState,
-  isKatakanaSensitiveState,
-  isZenkakuEisujiSensitiveState,
-  queryState,
-  saveAndLookupState,
+  autoLookupAtom,
+  conditionTypeAtom,
+  dstSubtableFieldCodeAtom,
+  enablesValidationAtom,
+  isCaseSensitiveAtom,
+  isFailSoftEnabledAtom,
+  isHankakuKatakanaSensitiveAtom,
+  isKatakanaSensitiveAtom,
+  isZenkakuEisujiSensitiveAtom,
+  queryAtom,
+  saveAndLookupAtom,
 } from '../../../states/plugin';
 import DeleteButton from './condition-delete-button';
 import ConditionTypeForm from './form-condition-type';
@@ -25,32 +26,12 @@ import DisplayFieldsForm from './form-display-fields';
 import DstFieldForm from './form-dst-field';
 import DstSubtableForm from './form-dst-subtable';
 import DynamicConditionsForm from './form-dynamic-conditions';
+import SortCriteriaForm from './form-sort-criteria';
 import SrcAppForm from './form-src-app';
 import SrcFieldForm from './form-src-field';
-import SortCriteriaForm from './form-sort-criteria';
 
 const Component: FC = () => (
   <div className='p-4'>
-    <PluginFormSection>
-      <PluginFormTitle>サブテーブルモード</PluginFormTitle>
-      <PluginFormDescription last>
-        サブテーブル内の文字列１行フィールドを対象とする場合は、この設定を有効にしてください。
-      </PluginFormDescription>
-      <ConditionTypeForm />
-      <RecoilTogglePanel
-        className='px-4 py-2 ml-4 mt-2 border-l'
-        atom={conditionTypeState}
-        shouldShow={(value) => value === 'subtable'}
-      >
-        <PluginFormSection>
-          <h3 className='text-base font-bold'>対象となるサブテーブル</h3>
-          <PluginFormDescription last>
-            ルックアップを設定するサブテーブルを選択してください。
-          </PluginFormDescription>
-          <DstSubtableForm />
-        </PluginFormSection>
-      </RecoilTogglePanel>
-    </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>対象フィールド(ルックアップボタンを設置するフィールド)</PluginFormTitle>
       <PluginFormDescription>
@@ -62,7 +43,43 @@ const Component: FC = () => (
       <PluginFormDescription last>
         また、対象フィールドにボタンを設置するため、アプリ設定からフィールドの幅に余裕を持たせてください。
       </PluginFormDescription>
-      <DstFieldForm />
+
+      <ConditionTypeForm />
+
+      <JotaiTogglePanel
+        className='px-4 py-2 ml-4 mt-2 border-l'
+        atom={conditionTypeAtom}
+        shouldShow={(value) => value === 'subtable'}
+      >
+        <PluginFormSection>
+          <h3 className='text-base font-bold'>対象となるサブテーブル</h3>
+          <PluginFormDescription last>
+            ルックアップを設定するサブテーブルを選択してください。
+          </PluginFormDescription>
+          <DstSubtableForm />
+
+          <JotaiTogglePanel
+            className='px-4 py-2 ml-4 mt-2 border-l'
+            atom={dstSubtableFieldCodeAtom}
+            shouldShow={(value) => !!value}
+          >
+            <PluginFormSection>
+              <h3 className='text-base font-bold'>対象フィールド</h3>
+              <PluginFormDescription last>
+                サブテーブル内の対象フィールドを選択してください。
+              </PluginFormDescription>
+              <DstFieldForm />
+            </PluginFormSection>
+          </JotaiTogglePanel>
+        </PluginFormSection>
+      </JotaiTogglePanel>
+      <JotaiTogglePanel
+        className='mt-8'
+        atom={conditionTypeAtom}
+        shouldShow={(value) => value !== 'subtable'}
+      >
+        <DstFieldForm />
+      </JotaiTogglePanel>
     </PluginFormSection>
 
     <PluginFormSection>
@@ -113,11 +130,11 @@ const Component: FC = () => (
       <PluginFormDescription last>
         ここで指定した条件に合致するレコードのみが、ルックアップの対象となります。
       </PluginFormDescription>
-      <RecoilText
+      <JotaiText
         label='クエリー'
         placeholder='例: 契約ステータス not in ("解約")'
         width={400}
-        state={queryState}
+        atom={queryAtom}
       />
     </PluginFormSection>
 
@@ -143,21 +160,21 @@ const Component: FC = () => (
       <div className='flex flex-col gap-1'>
         <div className='px-4 py-2 ml-4 mt-2 border-l'>
           <h3 className='text-base font-bold'>標準機能との連携</h3>
-          <RecoilSwitch
+          <JotaiSwitch
             label='コピー先に標準のルックアップフィールドが存在する場合、取得完了後自動的にルックアップを実行する'
-            state={autoLookupState}
+            atom={autoLookupAtom}
           />
         </div>
         <div className='px-4 py-2 ml-4 mt-2 border-l'>
           <h3 className='text-base font-bold'>レコード保存時のふるまい</h3>
           <div className='grid gap-1'>
-            <RecoilSwitch
+            <JotaiSwitch
               label='レコード保存時に、ルックアップが実行されていない場合はエラーを表示する'
-              state={enablesValidationState}
+              atom={enablesValidationAtom}
             />
-            <RecoilSwitch
+            <JotaiSwitch
               label='レコード保存時に、ルックアップを実行する'
-              state={saveAndLookupState}
+              atom={saveAndLookupAtom}
             />
           </div>
         </div>
@@ -165,21 +182,21 @@ const Component: FC = () => (
         <div className='px-4 py-2 ml-4 mt-2 border-l'>
           <h3 className='text-base font-bold'>あいまい検索の設定</h3>
           <div className='grid gap-1'>
-            <RecoilSwitch
+            <JotaiSwitch
               label='絞り込みの際、アルファベットの大文字と小文字を区別する'
-              state={isCaseSensitiveState}
+              atom={isCaseSensitiveAtom}
             />
-            <RecoilSwitch
+            <JotaiSwitch
               label='絞り込みの際、カタカナとひらがなを区別する'
-              state={isKatakanaSensitiveState}
+              atom={isKatakanaSensitiveAtom}
             />
-            <RecoilSwitch
+            <JotaiSwitch
               label='絞り込みの際、半角カナと全角カナを区別する'
-              state={isHankakuKatakanaSensitiveState}
+              atom={isHankakuKatakanaSensitiveAtom}
             />
-            <RecoilSwitch
+            <JotaiSwitch
               label='絞り込みの際、全角英数字と半角英数字を区別する'
-              state={isZenkakuEisujiSensitiveState}
+              atom={isZenkakuEisujiSensitiveAtom}
             />
           </div>
         </div>
@@ -188,7 +205,7 @@ const Component: FC = () => (
           <PluginFormDescription>
             フェールソフトモードを有効にすると、プラグイン設定に誤りがありレコードの取得が正常に行えない場合でも、全件取得を行うことでエラーを回避します。
           </PluginFormDescription>
-          <RecoilSwitch label='フェールソフトモードを有効にする' state={isFailSoftEnabledState} />
+          <JotaiSwitch label='フェールソフトモードを有効にする' atom={isFailSoftEnabledAtom} />
         </div>
       </div>
     </PluginFormSection>
