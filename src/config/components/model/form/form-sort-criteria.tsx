@@ -1,11 +1,11 @@
 import { srcAppPropertiesState } from '@/config/states/kintone';
-import { sortCriteriaState } from '@/config/states/plugin';
-import { RecoilFieldSelect, useArray } from '@konomi-app/kintone-utilities-recoil';
-import { IconButton, MenuItem, TextField, Tooltip } from '@mui/material';
-import { type FC } from 'react';
-import { useRecoilValue } from 'recoil';
+import { sortCriteriaAtom } from '@/config/states/plugin';
+import { JotaiFieldSelect, useArray } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, MenuItem, TextField, Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { type FC } from 'react';
 
 const SortOrder = [
   { label: '昇順', value: 'asc' },
@@ -13,16 +13,16 @@ const SortOrder = [
 ] as const;
 
 const SortCriteriaForm: FC = () => {
-  const sortCriteria = useRecoilValue(sortCriteriaState);
-  const { addItem, deleteItem, updateItem } = useArray(sortCriteriaState);
+  const sortCriteria = useAtomValue(sortCriteriaAtom);
+  const { addItem, deleteItem, updateItem } = useArray(sortCriteriaAtom);
 
   return (
     <div className='grid gap-4'>
       {sortCriteria.map((criteria, index) => (
         <div key={index} className='flex items-center gap-4'>
-          <RecoilFieldSelect
+          <JotaiFieldSelect
+            fieldPropertiesAtom={srcAppPropertiesState}
             label='対象フィールド'
-            state={srcAppPropertiesState}
             fieldCode={criteria.fieldCode}
             onChange={(fieldCode) => updateItem({ index, newItem: { ...criteria, fieldCode } })}
           />
