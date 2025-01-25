@@ -1,15 +1,16 @@
-import { conditionsState, selectedConditionIdState } from '@/config/states/plugin';
+import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
 import { getNewCondition, validateCondition } from '@/lib/plugin';
 import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
+import { useAtom } from 'jotai';
+import { RESET } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { FC, useCallback } from 'react';
-import { useRecoilState } from 'recoil';
 
 const Sidebar: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const [conditions, setConditions] = useRecoilState(conditionsState);
-  const [selectedConditionId, setSelectedConditionId] = useRecoilState(selectedConditionIdState);
+  const [conditions, setConditions] = useAtom(pluginConditionsAtom);
+  const [selectedConditionId, setSelectedConditionId] = useAtom(selectedConditionIdAtom);
   const label = useCallback((params: { condition: PluginCondition; index: number }) => {
     const { condition, index } = params;
 
@@ -27,7 +28,7 @@ const Sidebar: FC = () => {
   }, []);
 
   const onSelectedConditionChange = (condition: PluginCondition | null) => {
-    setSelectedConditionId(condition?.id ?? null);
+    setSelectedConditionId(condition?.id ?? RESET);
   };
 
   const onConditionDelete = () => {
