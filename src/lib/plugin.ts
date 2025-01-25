@@ -21,7 +21,7 @@ export const getNewCondition = (): PluginCondition => ({
   isSrcAppGuestSpace: false,
   srcField: '',
   dstField: '',
-  copies: [{ from: '', to: '' }],
+  copies: [{ from: '', to: '', disabled: false }],
   displayFields: [
     {
       id: nanoid(),
@@ -53,7 +53,7 @@ export const getNewCondition = (): PluginCondition => ({
   isHankakuKatakanaSensitive: false,
   dstSubtableFieldCode: '',
   dstInsubtableFieldCode: '',
-  insubtableCopies: [{ from: '', to: '' }],
+  insubtableCopies: [{ from: '', to: '', disabled: true }],
   isAutoCompletionEnabled: true,
   dynamicConditions: [
     {
@@ -70,7 +70,7 @@ export const getNewCondition = (): PluginCondition => ({
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 9,
+  version: 10,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -204,6 +204,20 @@ export const migrateConfig = (anyConfig: AnyConfig): PluginConfig => {
         })),
       });
     case 9:
+      return migrateConfig({
+        version: 10,
+        common: anyConfig.common,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          copies: condition.copies.map(({ from, to }) => ({ from, to, disabled: false })),
+          insubtableCopies: condition.insubtableCopies.map(({ from, to }) => ({
+            from,
+            to,
+            disabled: false,
+          })),
+        })),
+      });
+    case 10:
     default:
       return anyConfig;
   }
