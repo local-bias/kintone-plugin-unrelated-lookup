@@ -1,51 +1,54 @@
 import { getNewCondition } from '@/lib/plugin';
 import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useRecoilRow } from '@konomi-app/kintone-utilities-react';
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
+import { JotaiFieldSelect, useArray } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton, Skeleton, Tooltip } from '@mui/material';
+import { FormControlLabel, IconButton, Skeleton, Switch, Tooltip } from '@mui/material';
 import { produce } from 'immer';
-import { FC, FCX, Suspense } from 'react';
-import { RecoilState, RecoilValueReadOnly, useRecoilCallback, useRecoilValue } from 'recoil';
+import { Atom, PrimitiveAtom, useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { FC, FCX, Suspense, useCallback } from 'react';
 import SelectSrcFields from '../select-src-fields';
 
 type Props = {
-  appPropertiesState: RecoilValueReadOnly<kintoneAPI.FieldProperty[]>;
-  copiesState: RecoilState<PluginCondition['copies'] | PluginCondition['insubtableCopies']>;
+  appPropertiesAtom: Atom<Promise<kintoneAPI.FieldProperty[]>>;
+  copiesAtom: PrimitiveAtom<PluginCondition['copies'] | PluginCondition['insubtableCopies']>;
 };
 
-const Component: FCX<Props> = ({ appPropertiesState, copiesState }) => {
-  const copies = useRecoilValue(copiesState);
-  const { addRow, deleteRow } = useRecoilRow({
-    state: copiesState,
-    getNewRow: () => getNewCondition().copies[0],
-  });
+const Component: FCX<Props> = ({ appPropertiesAtom, copiesAtom }) => {
+  const copies = useAtomValue(copiesAtom);
+  const { addItem, deleteItem } = useArray(copiesAtom);
 
-  const onCopyFromChange = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number, value: string) => {
-        set(copiesState, (current) =>
-          produce(current, (draft) => {
-            draft[rowIndex].from = value;
-          })
-        );
-      },
-    []
+  const onCopyFromChange = useAtomCallback(
+    useCallback((_, set, rowIndex: number, value: string) => {
+      set(copiesAtom, (current) =>
+        produce(current, (draft) => {
+          draft[rowIndex].from = value;
+        })
+      );
+    }, [])
   );
 
-  const onCopyToChange = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number, value: string) => {
-        set(copiesState, (current) =>
-          produce(current, (draft) => {
-            draft[rowIndex].to = value;
-          })
-        );
-      },
-    []
+  const onCopyToChange = useAtomCallback(
+    useCallback((_, set, rowIndex: number, value: string) => {
+      set(copiesAtom, (current) =>
+        produce(current, (draft) => {
+          draft[rowIndex].to = value;
+        })
+      );
+    }, [])
+  );
+
+  const onDisabledChange = useAtomCallback(
+    useCallback((_, set, rowIndex: number, value: boolean) => {
+      set(copiesAtom, (current) =>
+        produce(current, (draft) => {
+          draft[rowIndex].disabled = value;
+        })
+      );
+    }, [])
   );
 
   return (
@@ -58,20 +61,39 @@ const Component: FCX<Props> = ({ appPropertiesState, copiesState }) => {
             onChange={(code) => onCopyFromChange(i, code)}
           />
           <ArrowForwardIcon />
-          <RecoilFieldSelect
+          <JotaiFieldSelect
+            sx={{ width: 320 }}
             label='コピー先'
-            state={appPropertiesState}
+            fieldPropertiesAtom={appPropertiesAtom}
             fieldCode={to}
             onChange={(code) => onCopyToChange(i, code)}
           />
+          <FormControlLabel
+            sx={{ whiteSpace: 'nowrap', ml: '16px' }}
+            control={
+              <Switch
+                checked={copies[i].disabled}
+                onChange={(_, checked) => onDisabledChange(i, checked)}
+              />
+            }
+            label='編集を禁止する'
+          />
           <Tooltip title='コピー設定を追加する'>
-            <IconButton size='small' onClick={() => addRow(i)}>
+            <IconButton
+              size='small'
+              onClick={() =>
+                addItem({
+                  index: i + 1,
+                  newItem: getNewCondition().copies[0],
+                })
+              }
+            >
               <AddIcon fontSize='small' />
             </IconButton>
           </Tooltip>
           {copies.length > 1 && (
             <Tooltip title='このコピー設定を削除する'>
-              <IconButton size='small' onClick={() => deleteRow(i)}>
+              <IconButton size='small' onClick={() => deleteItem(i)}>
                 <DeleteIcon fontSize='small' />
               </IconButton>
             </Tooltip>
