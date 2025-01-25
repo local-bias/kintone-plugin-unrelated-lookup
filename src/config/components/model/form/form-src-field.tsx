@@ -1,36 +1,35 @@
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton } from '@mui/material';
 import { produce } from 'immer';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 import { nanoid } from 'nanoid';
-import { FC, FCX, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { FC, FCX, memo, Suspense, useCallback } from 'react';
 import { srcAppPropertiesState } from '../../../states/kintone';
-import { selectedConditionState, srcFieldState } from '../../../states/plugin';
+import { selectedConditionAtom, srcFieldAtom } from '../../../states/plugin';
 
 const Component: FCX = () => {
-  const fieldCode = useRecoilValue(srcFieldState);
+  const fieldCode = useAtomValue(srcFieldAtom);
 
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(selectedConditionState, (prev) =>
-          produce(prev, (draft) => {
-            draft.srcField = value;
-            const index = draft.displayFields.findIndex((field) => field.isLookupField);
-            if (index === -1) {
-              draft.displayFields.unshift({ id: nanoid(), fieldCode: value, isLookupField: true });
-              return draft;
-            }
-            draft.displayFields[index].fieldCode = value;
-          })
-        );
-      },
-    []
+  const onFieldChange = useAtomCallback(
+    useCallback((_, set, value: string) => {
+      set(selectedConditionAtom, (prev) =>
+        produce(prev, (draft) => {
+          draft.srcField = value;
+          const index = draft.displayFields.findIndex((field) => field.isLookupField);
+          if (index === -1) {
+            draft.displayFields.unshift({ id: nanoid(), fieldCode: value, isLookupField: true });
+            return draft;
+          }
+          draft.displayFields[index].fieldCode = value;
+        })
+      );
+    }, [])
   );
 
   return (
-    <RecoilFieldSelect
-      state={srcAppPropertiesState}
+    <JotaiFieldSelect
+      fieldPropertiesAtom={srcAppPropertiesState}
       fieldCode={fieldCode}
       onChange={onFieldChange}
     />
