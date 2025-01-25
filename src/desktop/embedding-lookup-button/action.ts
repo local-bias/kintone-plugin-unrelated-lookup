@@ -1,5 +1,6 @@
 import { PLUGIN_NAME } from '@/lib/constants';
 import { isProd } from '@/lib/global';
+import { t } from '@/lib/i18n';
 import {
   getQueryValue,
   isMultipleSearchableFieldType,
@@ -16,14 +17,14 @@ import {
   setCurrentRecord,
 } from '@konomi-app/kintone-utilities';
 import { OptionsObject, SnackbarKey, SnackbarMessage } from 'notistack';
-import { SetterOrUpdater } from 'recoil';
+import { SetStateAction } from 'react';
 import { clone } from 'remeda';
 import { convertFieldValueByTargetType, getDstField } from '../common';
 import { isAlreadyLookupedAtom, valueAtLookupAtom } from '../states';
 import { AttachmentProps } from './app';
 import { alreadyCacheAtom } from './states';
 import { srcAppPropertiesAtom } from './states/kintone';
-import { srcAllHandledRecordsAtom } from './states/records';
+import { filteredRecordsAtom, srcAllHandledRecordsAtom } from './states/records';
 
 type CurrentKintoneField = kintoneAPI.Field & {
   lookup?: boolean | 'CLEAR';
@@ -42,7 +43,7 @@ export const lookup = async (params: {
   option?: {
     input: string;
     enqueueSnackbar: EnqueueSnackbar;
-    setShown: SetterOrUpdater<boolean>;
+    setShown: (value: SetStateAction<boolean>) => void;
   };
 }): Promise<kintoneAPI.RecordData> => {
   const { attachmentProps, condition, record, option } = params;
@@ -53,7 +54,7 @@ export const lookup = async (params: {
 
   const dstField = getDstField({ condition, record, rowIndex: attachmentProps.rowIndex });
   if (!dstField) {
-    throw new Error('ルックアップ先のフィールドが見つかりません');
+    throw new Error(t('desktop.error.dstFieldNotFound'));
   }
 
   const isAlreadyCached = store.get(alreadyCacheAtom(attachmentProps.conditionId));
@@ -83,16 +84,28 @@ export const lookup = async (params: {
         option,
       });
       return applied;
+    } else if (filtered.length === 0) {
+      const yuruFilteredRecords = store.get(filteredRecordsAtom(attachmentProps));
+      console.log('yuruFilteredRecords', yuruFilteredRecords);
+      if (yuruFilteredRecords.length === 1) {
+        const applied = apply({
+          condition,
+          targetRecord: record,
+          sourceRecord: yuruFilteredRecords[0]!,
+          attachmentProps,
+          option,
+        });
+        return applied;
+      }
     }
+
     if (option?.setShown) {
       option.setShown(true);
     } else {
       if (filtered.length > 1) {
-        throw new Error(
-          '入力された値に一致するレコードが複数見つかりました。取得ボタンを押して選択してください'
-        );
+        throw new Error(t('desktop.error.multipleSrcRecordsFound'));
       }
-      throw new Error('入力された値に一致するレコードが見つかりませんでした');
+      throw new Error(t('desktop.error.srcRecordNotFound'));
     }
     return record;
   }
@@ -145,7 +158,7 @@ export const lookup = async (params: {
 
   if (lookupRecords.length !== 1) {
     if (!option?.setShown) {
-      throw new Error('入力された値に一致するレコードが見つかりませんでした');
+      throw new Error(t('desktop.error.srcRecordNotFound'));
     }
     option.setShown(true);
     return record;
@@ -194,22 +207,31 @@ export const apply = async (params: {
 
   const dstField = getDstField({ condition, record, rowIndex: attachmentProps.rowIndex });
   if (!dstField) {
-    throw new Error('ルックアップ先のフィールドが見つかりません');
+    throw new Error(t('desktop.error.dstFieldNotFound'));
   }
 
   const srcField = sourceRecord[condition.srcField];
   if (!srcField) {
-    throw new Error(
-      'ルックアップの参照元フィールドが存在しません。プラグインの設定を確認してください。'
-    );
+    throw new Error(t('desktop.error.srcFieldNotFound'));
   }
 
   const srcValue = srcField.value;
 
-  dstField.value = convertFieldValueByTargetType({
-    targetFieldType: dstField.type,
+  const { value, dstError } = await convertFieldValueByTargetType({
+    condition,
+    destinationFieldType: dstField.type,
+    destinationFieldCode:
+      condition.type === 'single' ? condition.dstField : condition.dstInsubtableFieldCode,
     sourceField: srcField,
   });
+
+  if (value !== null) {
+    dstField.value = value;
+  }
+  if (dstError && option?.enqueueSnackbar) {
+    option.enqueueSnackbar(dstError, { variant: 'error' });
+  }
+
   (dstField as CurrentKintoneField).lookup = true;
   store.set(valueAtLookupAtom(attachmentProps), srcValue);
 
@@ -226,7 +248,19 @@ export const apply = async (params: {
       continue;
     }
 
-    toField.value = fromField.value;
+    const { value: sourceValue, dstError } = await convertFieldValueByTargetType({
+      condition,
+      destinationFieldType: toField.type,
+      destinationFieldCode: to,
+      sourceField: fromField,
+    });
+
+    if (sourceValue !== null) {
+      toField.value = sourceValue;
+    }
+    if (dstError && option?.enqueueSnackbar) {
+      option.enqueueSnackbar(dstError, { variant: 'error' });
+    }
 
     if (option && condition.autoLookup && ['SINGLE_LINE_TEXT', 'NUMBER'].includes(toField.type)) {
       setTimeout(() => {
