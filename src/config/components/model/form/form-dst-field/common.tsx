@@ -1,27 +1,30 @@
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton } from '@mui/material';
-import { FC, FCX, Suspense } from 'react';
-import { RecoilState, RecoilValueReadOnly, useRecoilCallback, useRecoilValue } from 'recoil';
+import { Atom, PrimitiveAtom, useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { FC, FCX, Suspense, useCallback } from 'react';
 
 type Props = {
-  appPropertiesState: RecoilValueReadOnly<kintoneAPI.FieldProperty[]>;
-  fieldCodeState: RecoilState<string>;
+  appPropertiesAtom: Atom<Promise<kintoneAPI.FieldProperty[]>>;
+  fieldCodeAtom: PrimitiveAtom<string>;
 };
 
-const Component: FCX<Props> = ({ appPropertiesState, fieldCodeState }) => {
-  const fieldCode = useRecoilValue(fieldCodeState);
+const Component: FCX<Props> = ({ appPropertiesAtom, fieldCodeAtom }) => {
+  const fieldCode = useAtomValue(fieldCodeAtom);
 
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(fieldCodeState, value);
-      },
-    []
+  const onFieldChange = useAtomCallback(
+    useCallback((_, set, value: string) => {
+      set(fieldCodeAtom, value);
+    }, [])
   );
 
   return (
-    <RecoilFieldSelect state={appPropertiesState} fieldCode={fieldCode} onChange={onFieldChange} />
+    <JotaiFieldSelect
+      fieldPropertiesAtom={appPropertiesAtom}
+      fieldCode={fieldCode}
+      onChange={onFieldChange}
+    />
   );
 };
 
