@@ -1,24 +1,23 @@
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-recoil';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton } from '@mui/material';
-import { FC, FCX, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { FC, FCX, Suspense, useCallback } from 'react';
 import { dstAppSubtablePropertiesState } from '../../../states/kintone';
-import { dstSubtableFieldCodeState } from '../../../states/plugin';
+import { dstSubtableFieldCodeAtom } from '../../../states/plugin';
 
 const Component: FCX = () => {
-  const fieldCode = useRecoilValue(dstSubtableFieldCodeState);
+  const fieldCode = useAtomValue(dstSubtableFieldCodeAtom);
 
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(dstSubtableFieldCodeState, value);
-      },
-    []
+  const onFieldChange = useAtomCallback(
+    useCallback((_, set, value: string) => {
+      set(dstSubtableFieldCodeAtom, value);
+    }, [])
   );
 
   return (
-    <RecoilFieldSelect
-      state={dstAppSubtablePropertiesState}
+    <JotaiFieldSelect
+      fieldPropertiesAtom={dstAppSubtablePropertiesState}
       fieldCode={fieldCode}
       onChange={onFieldChange}
     />
