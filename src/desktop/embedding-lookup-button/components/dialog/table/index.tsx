@@ -1,10 +1,16 @@
-import { isDialogShownAtom } from '@/desktop/embedding-lookup-button/states/dialog';
+import {
+  dialogLoadingAtom,
+  isDialogShownAtom,
+} from '@/desktop/embedding-lookup-button/states/dialog';
 import { PluginCondition } from '@/schema/plugin-config';
+import { css } from '@emotion/css';
 import { getCurrentRecord, kintoneAPI, setCurrentRecord } from '@konomi-app/kintone-utilities';
-import { LoaderWithLabel } from '@konomi-app/ui-react';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { CloudOff } from '@mui/icons-material';
+import { Skeleton } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, useDeferredValue } from 'react';
+import { FC, useCallback, useDeferredValue } from 'react';
 import { apply } from '../../../action';
 import { alreadyCacheAtom, cacheErrorAtom, pluginConditionAtom } from '../../../states';
 import { displayingRecordsAtom } from '../../../states/records';
@@ -12,8 +18,6 @@ import { useAttachmentProps } from '../../attachment-context';
 import Cell from './cell';
 import Empty from './empty';
 import Layout from './layout';
-import { CloudOff } from '@mui/icons-material';
-import { css } from '@emotion/css';
 import TableHeader from './table-header';
 
 type Props = {
@@ -23,28 +27,41 @@ type Props = {
   hasCached: boolean;
 };
 
-const DialogTable: FC<Props> = ({ records, onRowClick, condition, hasCached }) => (
-  <>
-    {!records.length && !hasCached && <LoaderWithLabel label='レコードを取得しています' />}
-    {!records.length && hasCached && <Empty />}
-    {!!records.length && (
-      <table>
-        <TableHeader />
-        <tbody>
-          {records.map((record, i) => (
-            <tr key={i} onClick={() => onRowClick(record)}>
-              {condition.displayFields.map((field, j) => (
-                <td key={j}>
-                  <Cell field={record[field.fieldCode]} />
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    )}
-  </>
-);
+const DialogTable: FC<Props> = ({ records, onRowClick, condition, hasCached }) => {
+  if (!records.length && hasCached) {
+    return <Empty />;
+  }
+
+  return (
+    <table>
+      <TableHeader />
+      <tbody>
+        {!records.length && !hasCached && (
+          <tr>
+            {condition.displayFields.map((field, j) => (
+              <td key={j}>
+                <Skeleton variant='text' />
+              </td>
+            ))}
+          </tr>
+        )}
+        {!!records.length && (
+          <>
+            {records.map((record, i) => (
+              <tr key={i} onClick={() => onRowClick(record)}>
+                {condition.displayFields.map((field, j) => (
+                  <td key={j}>
+                    <Cell field={record[field.fieldCode]} />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </>
+        )}
+      </tbody>
+    </table>
+  );
+};
 
 const DialogTableComponent: FC = () => {
   const attachmentProps = useAttachmentProps();
@@ -53,30 +70,37 @@ const DialogTableComponent: FC = () => {
   const rawRecords = useAtomValue(displayingRecordsAtom(attachmentProps));
   const records = useDeferredValue(rawRecords);
   const hasCached = useAtomValue(alreadyCacheAtom(attachmentProps.conditionId));
-  const setDialogShown = useSetAtom(isDialogShownAtom(attachmentProps));
   const { enqueueSnackbar } = useSnackbar();
 
-  const onRowClick = async (sourceRecord: kintoneAPI.RecordData) => {
-    try {
-      const { record } = getCurrentRecord();
-      const applied = await apply({
-        condition,
-        targetRecord: record,
-        sourceRecord,
-        attachmentProps,
-        option: { enqueueSnackbar },
-      });
-      setCurrentRecord({ record: applied });
-      setDialogShown(false);
-    } catch (error) {
-      console.error(error);
-      if (error instanceof Error) {
-        enqueueSnackbar(error.message, { variant: 'error' });
-      } else {
-        enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
-      }
-    }
-  };
+  const onRowClick = useAtomCallback(
+    useCallback(
+      async (_, set, sourceRecord: kintoneAPI.RecordData) => {
+        try {
+          set(dialogLoadingAtom(attachmentProps), true);
+          const { record } = getCurrentRecord();
+          const applied = await apply({
+            condition,
+            targetRecord: record,
+            sourceRecord,
+            attachmentProps,
+            option: { enqueueSnackbar },
+          });
+          setCurrentRecord({ record: applied });
+          set(isDialogShownAtom(attachmentProps), false);
+        } catch (error) {
+          console.error(error);
+          if (error instanceof Error) {
+            enqueueSnackbar(error.message, { variant: 'error' });
+          } else {
+            enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
+          }
+        } finally {
+          set(dialogLoadingAtom(attachmentProps), false);
+        }
+      },
+      [attachmentProps, enqueueSnackbar, condition]
+    )
+  );
 
   if (cacheError) {
     return (
