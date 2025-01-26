@@ -1,13 +1,15 @@
+import { dstAppPropertiesState } from '@/config/states/kintone';
+import { isProd } from '@/lib/global';
+import { t } from '@/lib/i18n';
 import {
   FIELD_TYPES_ENTITY_VALUE,
-  FIELD_TYPES_META,
-  FIELD_TYPES_SYSTEM,
   isEntityArrayValueField,
   isEntityValueField,
   isStringArrayValueField,
   isStringArrayValueFieldType,
   isStringValueFieldType,
 } from '@/lib/kintone-api';
+import { store } from '@/lib/store';
 import { PluginCondition } from '@/schema/plugin-config';
 import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
 
@@ -70,28 +72,200 @@ export const getDstField = (params: {
  * 値を反映する先のフィールドタイプに応じて、変換した参照元のフィールドの値を返します。
  * @param params
  */
-export const convertFieldValueByTargetType = (params: {
-  targetFieldType: kintoneAPI.Field['type'];
+export const convertFieldValueByTargetType = async (params: {
+  condition: PluginCondition;
+  destinationFieldType: kintoneAPI.Field['type'];
+  destinationFieldCode: string;
   sourceField: kintoneAPI.Field;
-}): kintoneAPI.Field['value'] => {
-  const { targetFieldType, sourceField } = params;
+}): Promise<{
+  value: kintoneAPI.Field['value'] | null;
+  dstError?: string;
+}> => {
+  const { condition, destinationFieldType, destinationFieldCode, sourceField } = params;
 
-  if (isStringValueFieldType(targetFieldType)) {
-    return getFieldValueAsString(sourceField);
+  if (destinationFieldType === sourceField.type) {
+    return { value: sourceField.value };
   }
-  if (isStringArrayValueFieldType(targetFieldType)) {
-    if (isStringArrayValueField(sourceField)) {
-      return sourceField.value;
+
+  const getDstProperty = async () => {
+    const dstProperties = await store.get(dstAppPropertiesState);
+
+    if (condition.type === 'single') {
+      return dstProperties[destinationFieldCode] ?? null;
     }
-    return [getFieldValueAsString(sourceField)];
+    const dstSubtableProperty = dstProperties[condition.dstSubtableFieldCode];
+    if (dstSubtableProperty?.type !== 'SUBTABLE') {
+      return null;
+    }
+    return dstSubtableProperty.fields[destinationFieldCode] ?? null;
+  };
+
+  const getDstError = async (errorMessage: string) => {
+    const dstFieldProperty = await getDstProperty();
+    if (!dstFieldProperty) {
+      console.warn('Destination field properties is not found.', destinationFieldCode);
+    }
+    let dstFieldName = dstFieldProperty?.label ?? destinationFieldCode;
+    return `${dstFieldName}: ${errorMessage}`;
+  };
+
+  if (
+    destinationFieldType === 'CALC' ||
+    destinationFieldType === '__ID__' ||
+    destinationFieldType === '__REVISION__' ||
+    destinationFieldType === 'CREATOR' ||
+    destinationFieldType === 'MODIFIER' ||
+    destinationFieldType === 'RECORD_NUMBER' ||
+    destinationFieldType === 'CREATED_TIME' ||
+    destinationFieldType === 'UPDATED_TIME'
+  ) {
+    const dstError = await getDstError(t('desktop.fieldError.invalidFieldType'));
+    return { value: null, dstError };
   }
-  if (FIELD_TYPES_ENTITY_VALUE.includes(targetFieldType)) {
+
+  if (destinationFieldType === 'NUMBER') {
+    const isNumber = (value: any): boolean => value !== null && !isNaN(value);
+
+    if (isEntityArrayValueField(sourceField)) {
+      for (const entity of sourceField.value) {
+        if (isNumber(entity.code)) {
+          return { value: entity.code };
+        }
+        if (isNumber(entity.name)) {
+          return { value: entity.name };
+        }
+      }
+      const dstError = await getDstError(t('desktop.fieldError.invalidNumber'));
+      return { value: null, dstError };
+    } else if (isEntityValueField(sourceField)) {
+      if (isNumber(sourceField.value.code)) {
+        return { value: sourceField.value.code };
+      }
+      if (isNumber(sourceField.value.name)) {
+        return { value: sourceField.value.name };
+      }
+      const dstError = await getDstError(t('desktop.fieldError.invalidNumber'));
+      return { value: null, dstError };
+    } else if (isStringArrayValueField(sourceField)) {
+      const matched = sourceField.value.find((v) => isNumber(v));
+      if (matched) {
+        return { value: matched };
+      }
+      const dstError = await getDstError(t('desktop.fieldError.invalidNumber'));
+      return { value: null, dstError };
+    } else {
+      // 🚧 ファイル一覧などのフィールドタイプの条件が抜けているため、追加する必要がある
+    }
+
+    const sourceFieldValue = getFieldValueAsString(sourceField);
+    if (isNumber(sourceFieldValue)) {
+      return { value: sourceFieldValue };
+    }
+    const dstError = await getDstError(t('desktop.fieldError.invalidNumber'));
+    return { value: null, dstError };
+  }
+
+  if (
+    destinationFieldType === 'DATE' ||
+    destinationFieldType === 'DATETIME' ||
+    destinationFieldType === 'TIME'
+  ) {
+    if (
+      isStringArrayValueField(sourceField) ||
+      isEntityArrayValueField(sourceField) ||
+      isEntityValueField(sourceField)
+    ) {
+      const dstError = await getDstError(t('desktop.fieldError.invalidDate'));
+      return { value: null, dstError };
+    }
+
+    const sourceFieldValue = sourceField.value;
+    if (
+      Array.isArray(sourceFieldValue) ||
+      sourceFieldValue === null ||
+      !Date.parse(sourceFieldValue)
+    ) {
+      const dstError = await getDstError(t('desktop.fieldError.invalidDate'));
+      return { value: null, dstError };
+    }
+
+    return { value: sourceFieldValue };
+  }
+
+  if (destinationFieldType === 'DROP_DOWN' || destinationFieldType === 'RADIO_BUTTON') {
+    const dstFieldProperty = await getDstProperty();
+    if (
+      !dstFieldProperty ||
+      (dstFieldProperty.type !== 'DROP_DOWN' && dstFieldProperty.type !== 'RADIO_BUTTON')
+    ) {
+      return { value: null };
+    }
+    const optionValues = Object.values(dstFieldProperty.options).map((option) => option.label);
+    if (isEntityArrayValueField(sourceField)) {
+      for (const entity of sourceField.value) {
+        if (optionValues.includes(entity.code)) {
+          return { value: entity.code };
+        }
+        if (optionValues.includes(entity.name)) {
+          return { value: entity.name };
+        }
+      }
+      const dstError = await getDstError(t('desktop.fieldError.invalidOption'));
+      return { value: null, dstError };
+    } else if (isEntityValueField(sourceField)) {
+      if (optionValues.includes(sourceField.value.code)) {
+        return { value: sourceField.value.code };
+      }
+      if (optionValues.includes(sourceField.value.name)) {
+        return { value: sourceField.value.name };
+      }
+      const dstError = await getDstError(t('desktop.fieldError.invalidOption'));
+      return { value: null, dstError };
+    } else if (isStringArrayValueField(sourceField)) {
+      const matched = sourceField.value.find((v) => optionValues.includes(v));
+      if (matched) {
+        return { value: matched };
+      }
+      const dstError = await getDstError(t('desktop.fieldError.invalidOption'));
+      return { value: null, dstError };
+    } else {
+      // 🚧 ファイル一覧などのフィールドタイプの条件が抜けているため、追加する必要がある
+    }
+
+    const sourceFieldValue = getFieldValueAsString(sourceField);
+
+    if (optionValues.includes(sourceFieldValue)) {
+      return { value: sourceFieldValue };
+    }
+    const dstError = await getDstError(t('desktop.fieldError.invalidOption'));
+    return { value: null, dstError };
+  }
+
+  // 💡 ここまでのコンバート処理で対象とならなかったデータについては
+  // フィールドタイプではなく、フィールドの値による変換を行う
+
+  if (isStringValueFieldType(destinationFieldType)) {
+    return {
+      value: getFieldValueAsString(sourceField),
+    };
+  }
+  if (isStringArrayValueFieldType(destinationFieldType)) {
+    if (isStringArrayValueField(sourceField)) {
+      return {
+        value: sourceField.value,
+      };
+    }
+    return {
+      value: [getFieldValueAsString(sourceField)],
+    };
+  }
+  if (FIELD_TYPES_ENTITY_VALUE.includes(destinationFieldType)) {
     if (isEntityValueField(sourceField)) {
-      return sourceField.value;
+      return { value: sourceField.value };
     }
     if (isEntityArrayValueField(sourceField)) {
-      return sourceField.value[0]!;
+      return { value: sourceField.value[0]! };
     }
   }
-  return sourceField.value;
+  return { value: sourceField.value };
 };
