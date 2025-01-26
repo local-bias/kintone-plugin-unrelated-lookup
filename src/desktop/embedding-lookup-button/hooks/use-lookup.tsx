@@ -1,9 +1,12 @@
+import { getDstField } from '@/desktop/common';
 import { isAlreadyLookupedAtom } from '@/desktop/states';
+import { t } from '@/lib/i18n';
 import {
   getCurrentRecord,
   getFieldValueAsString,
   setCurrentRecord,
 } from '@konomi-app/kintone-utilities';
+import { Button } from '@mui/material';
 import { useSetAtom } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
@@ -18,8 +21,6 @@ import {
 } from '../states';
 import { dialogPageIndexAtom, isDialogShownAtom } from '../states/dialog';
 import { currentRecordAtom } from '../states/kintone';
-import { getDstField } from '@/desktop/common';
-import { Button } from '@mui/material';
 
 export const useLookup = () => {
   const attachmentProps = useAttachmentProps();
@@ -64,7 +65,7 @@ export const useLookup = () => {
           if (error instanceof Error) {
             enqueueSnackbar(error.message, { variant: 'error' });
           } else {
-            enqueueSnackbar('ルックアップ時にエラーが発生しました', { variant: 'error' });
+            enqueueSnackbar(t('desktop.toast.error.unknown'), { variant: 'error' });
           }
           throw error;
         } finally {
@@ -85,14 +86,14 @@ export const useLookup = () => {
         const undo = () => {
           setCurrentRecord({ record: originalRecord });
           set(isAlreadyLookupedAtom(attachmentProps), true);
-          enqueueSnackbar('ルックアップを元に戻しました', { variant: 'success' });
+          enqueueSnackbar(t('desktop.toast.success.undo'), { variant: 'success' });
         };
 
-        enqueueSnackbar('参照先フィールドをクリアしました', {
+        enqueueSnackbar(t('desktop.toast.success.clear'), {
           variant: 'success',
           action: (
             <Button onClick={undo} color='inherit' variant='outlined' size='small'>
-              元に戻す
+              {t('desktop.toast.action.undo')}
             </Button>
           ),
         });
