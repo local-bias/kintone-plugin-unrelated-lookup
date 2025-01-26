@@ -1,3 +1,4 @@
+import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
 import { FCX } from 'react';
 
@@ -22,10 +23,10 @@ const Empty: FCX = ({ className }) => (
         <path d='m313.209 372.217-57.209-90.872 198.791-65.895 57.209 90.872z' fill='#ccc' />
       </g>
     </svg>
-    <h2>条件に一致するレコードが見つかりませんでした。</h2>
+    <h2>{t('desktop.lookupDialog.empty.title')}</h2>
     <div>
-      <p>左上の検索フィールドの値をご確認ください。</p>
-      <p>検索はプラグインに設定した表示フィールドに対してのみ実行されています。</p>
+      <p>{t('desktop.lookupDialog.empty.description.1')}</p>
+      <p>{t('desktop.lookupDialog.empty.description.2')}</p>
     </div>
   </div>
 );
