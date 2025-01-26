@@ -1,15 +1,15 @@
-import { getConditionPropertyState } from '@/config/states/plugin';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { ArrowRight } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, TextField, Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
 import { Suspense, type FC } from 'react';
-import { useRecoilValue } from 'recoil';
 
-const state = getConditionPropertyState('dynamicConditions');
+const state = getConditionPropertyAtom('dynamicConditions');
 
 const DynamicConditionsFormComponent: FC = () => {
-  const dynamicConditions = useRecoilValue(state);
+  const dynamicConditions = useAtomValue(state);
 
   return (
     <Tooltip title='この機能は拡張ルックアップ プラスでのみご利用いただけます'>
