@@ -1,4 +1,6 @@
+import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
+import { isMobile } from '@konomi-app/kintone-utilities';
 import { LoadingButton } from '@mui/lab';
 import { Button } from '@mui/material';
 import { useAtomValue } from 'jotai';
@@ -6,46 +8,39 @@ import { FC, FCX } from 'react';
 import { useLookup } from '../hooks/use-lookup';
 import { loadingAtom } from '../states';
 import { useConditionId } from './attachment-context';
-import { isMobile } from '@konomi-app/kintone-utilities';
 
-type Props = {
-  onLookupButtonClick: () => void;
-  onClearButtonClick: () => void;
-};
+type Props = {};
 
-const LookupButtonComponent: FCX<Props> = ({
-  className,
-  onLookupButtonClick,
-  onClearButtonClick,
-}) => {
+const LookupButtonComponent: FCX<Props> = ({ className }) => {
+  const { start, clear } = useLookup();
   const conditionId = useConditionId();
   const loading = useAtomValue(loadingAtom(conditionId));
   return (
-    <div {...{ className }}>
+    <div className={className}>
       <LoadingButton
         color='primary'
         size={isMobile() ? 'large' : 'medium'}
         variant={isMobile() ? 'contained' : 'text'}
-        onClick={onLookupButtonClick}
+        onClick={start}
         loading={loading}
         sx={{
           fontSize: isMobile() ? '14px' : undefined,
         }}
       >
-        取得
+        {t('common.get')}
       </LoadingButton>
       <Button
         color='primary'
         size={isMobile() ? 'large' : 'medium'}
         variant={isMobile() ? 'contained' : 'text'}
-        onClick={onClearButtonClick}
+        onClick={clear}
         disabled={loading}
         sx={{
           fontSize: isMobile() ? '14px' : undefined,
           width: isMobile() ? '100%' : undefined,
         }}
       >
-        クリア
+        {t('common.clear')}
       </Button>
     </div>
   );
@@ -75,12 +70,7 @@ const StyledLookupButtonComponent = styled(LookupButtonComponent)`
 `;
 
 const LookupButtonContainer: FC = () => {
-  const { start, clear } = useLookup();
-
-  const onClearButtonClick = clear;
-  const onLookupButtonClick = start;
-
-  return <StyledLookupButtonComponent {...{ onLookupButtonClick, onClearButtonClick }} />;
+  return <StyledLookupButtonComponent />;
 };
 
 export default LookupButtonContainer;
