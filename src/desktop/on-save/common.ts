@@ -2,6 +2,7 @@ import { store } from '@/lib/store';
 import { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { currentAppPropertiesAtom } from '../states';
+import { t } from '@/lib/i18n';
 
 export const applyError = async (params: {
   condition: PluginCondition;
@@ -41,14 +42,14 @@ export const applyError = async (params: {
   if (typeof error === 'string') {
     //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
     targetField.error = error;
-    event.error = `${fieldName}のルックアップを実行しましたが、${error}`;
+    event.error = t('desktop.eventError.lookupFailed', fieldName, error);
   } else if (error instanceof Error || 'message' in error) {
     //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
     targetField.error = error.message;
-    event.error = `${fieldName}のルックアップを実行しましたが、${error.message}`;
+    event.error = t('desktop.eventError.lookupFailed', fieldName, error.message);
   } else {
     //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
-    targetField.error = '入力値に誤りがあります';
-    event.error = `${fieldName}のルックアップを実行しましたが、正しく取得することができませんでした。入力値に誤りがないか確認してください。`;
+    targetField.error = t('desktop.fieldError.unknownError');
+    event.error = t('desktop.eventError.lookupFailedUnknown', fieldName);
   }
 };
