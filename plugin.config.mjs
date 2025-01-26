@@ -23,7 +23,7 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '2.3.0',
+      version: '2.8.0',
       type: 'APP',
       name: {
         en: 'Unrelated Lookup Plugin',
