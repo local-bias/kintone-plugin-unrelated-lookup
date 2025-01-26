@@ -1,29 +1,37 @@
+import { currentKintoneEventTypeAtom } from '@/desktop/states';
+import { isProd } from '@/lib/global';
 import { getMetaFields_UNSTABLE } from '@konomi-app/kintone-utilities';
 import { useAtomValue } from 'jotai';
 import { FC, useEffect } from 'react';
 import { useLookup } from '../hooks/use-lookup';
 import { pluginConditionAtom } from '../states';
-import { useConditionId } from './attachment-context';
+import { useAttachmentProps } from './attachment-context';
 
 const FieldKeyEventListener: FC = () => {
-  const conditionId = useConditionId();
-  const condition = useAtomValue(pluginConditionAtom(conditionId));
+  const attachmentProps = useAttachmentProps();
+  const condition = useAtomValue(pluginConditionAtom(attachmentProps.conditionId));
+  const kintoneEvent = useAtomValue(currentKintoneEventTypeAtom);
   const { start } = useLookup();
 
   useEffect(() => {
     if (!condition) {
       return;
     }
+    let inputElement = null;
+
     const fields = getMetaFields_UNSTABLE() ?? [];
     const targetField = fields.find((field) => field?.var === condition.dstField);
     if (!targetField) {
+      !isProd && console.error('targetField not found', condition);
       return;
     }
 
-    const inputElement = document.querySelector<HTMLInputElement>(
+    inputElement = document.querySelector<HTMLInputElement>(
       `.value-${targetField.id} > div > input`
     );
+
     if (!inputElement) {
+      !isProd && console.error('targetField not found', condition);
       return;
     }
 
@@ -33,7 +41,7 @@ const FieldKeyEventListener: FC = () => {
       }
       start();
     });
-  }, [condition]);
+  }, [condition, kintoneEvent]);
 
   return null;
 };
