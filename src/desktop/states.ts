@@ -17,6 +17,8 @@ export const singleTypePluginConditionsAtom = atom((get) =>
   get(validPluginConditionsAtom).filter((c) => c.type === 'single' && c.dstField)
 );
 
+export const currentKintoneEventTypeAtom = atom<kintoneAPI.js.EventType | null>(null);
+
 export const valueAtStartAtom = atomFamily(
   (_params: AttachmentAtomParams) => atom<kintoneAPI.Field['value']>(null),
   areAttachmentsEqual
