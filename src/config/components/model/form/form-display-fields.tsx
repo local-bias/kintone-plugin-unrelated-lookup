@@ -1,20 +1,20 @@
-import { PluginCondition } from '@/schema/plugin-config';
 import { cn } from '@/lib/utils';
+import { PluginCondition } from '@/schema/plugin-config';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
-  RecoilDndContext,
-  RecoilSortableContext,
-  useRecoilRow,
-} from '@konomi-app/kintone-utilities-react';
+  JotaiDndContext,
+  JotaiSortableContext,
+  useArray,
+} from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
 import { GripVertical } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { FC, FCX, Suspense } from 'react';
-import { useRecoilValue } from 'recoil';
-import { displayFieldsState } from '../../../states/plugin';
+import { displayFieldsAtom } from '../../../states/plugin';
 import SelectSrcFields from './select-src-fields';
 
 type DisplayField = PluginCondition['displayFields'][number];
@@ -83,11 +83,13 @@ const Row: FC<{
 };
 
 const Component: FCX = () => {
-  const displayFields = useRecoilValue(displayFieldsState);
-  const { addRow, deleteRow, changeRow } = useRecoilRow({
-    state: displayFieldsState,
-    getNewRow: () => ({ id: nanoid(), fieldCode: '', isLookupField: false }),
-  });
+  const displayFields = useAtomValue(displayFieldsAtom);
+  const { addItem, deleteItem, updateItem } = useArray(displayFieldsAtom);
+
+  const addRow = (index: number) =>
+    addItem({ index: index + 1, newItem: { id: nanoid(), fieldCode: '', isLookupField: false } });
+
+  const changeRow = (index: number, row: DisplayField) => updateItem({ index, newItem: row });
 
   return (
     <div className='flex flex-col gap-4'>
@@ -99,7 +101,7 @@ const Component: FCX = () => {
           deletable={displayFields.length > 1}
           onFieldChange={changeRow}
           addRow={addRow}
-          deleteRow={deleteRow}
+          deleteRow={deleteItem}
         />
       ))}
     </div>
@@ -128,11 +130,11 @@ const Container: FC = () => {
 const DnDContainer: FC = () => {
   return (
     <>
-      <RecoilDndContext state={displayFieldsState}>
-        <RecoilSortableContext state={displayFieldsState}>
+      <JotaiDndContext atom={displayFieldsAtom}>
+        <JotaiSortableContext atom={displayFieldsAtom}>
           <Container />
-        </RecoilSortableContext>
-      </RecoilDndContext>
+        </JotaiSortableContext>
+      </JotaiDndContext>
     </>
   );
 };
