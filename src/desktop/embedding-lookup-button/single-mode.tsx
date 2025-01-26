@@ -21,15 +21,14 @@ export const embeddingSingleMode = (params: {
   }
 
   // 対象フィールドは入力可
-  //@ts-ignore
+  //@ts-expect-error @kintone/dts-genに`disabled`がないため
   targetField.disabled = false;
 
-  // コピーするフィールドは入力不可
-  for (const { to } of condition.copies) {
-    //@ts-ignore
-    if (record[to]?.disabled) {
-      //@ts-ignore
-      record[to].disabled = true;
+  // コピーするフィールドは、プラグイン設定に従って入力可/不可を切り替える
+  for (const { to, disabled } of condition.copies) {
+    if (record[to]) {
+      //@ts-expect-error @kintone/dts-genに`disabled`がないため
+      record[to].disabled = disabled;
     }
   }
 
