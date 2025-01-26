@@ -3,17 +3,18 @@ import { FCX } from 'react';
 import Pagination from './pagination';
 import Input from './search-input';
 
-const DialogTitleComponent: FCX = ({ className }) => (
+const DialogTitleComponent: FCX<{
+  searchInputRef: React.RefObject<HTMLInputElement | null>;
+}> = ({ className, searchInputRef }) => (
   <div {...{ className }}>
-    <Input />
-    <div></div>
+    <Input ref={searchInputRef} />
     <Pagination />
   </div>
 );
 
 const StyledDialogTitleComponent = styled(DialogTitleComponent)`
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   background-color: #fff;
   padding: 0 16px;
