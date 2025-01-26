@@ -1,36 +1,55 @@
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { useAtom } from 'jotai';
-import { FC, FCX, Suspense } from 'react';
+import { FC, FCX, useEffect, useRef } from 'react';
+import FailSoftAlert from '../../fail-soft-alert';
 import { isDialogShownAtom } from '../../states/dialog';
 import { useAttachmentProps } from '../attachment-context';
 import Header from './header';
 import Table from './table';
 import Title from './title';
-import FailSoftAlert from '../../fail-soft-alert';
+import DialogLoading from './loading';
 
-type Props = Readonly<{
-  open: boolean;
-  onClose: () => void;
-}>;
+const DialogComponent: FCX = ({ className }) => {
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const attachmentProps = useAttachmentProps();
+  const [open, setOpen] = useAtom(isDialogShownAtom(attachmentProps));
 
-const DialogComponent: FCX<Props> = ({ className, open, onClose }) => (
-  <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
-    <FailSoftAlert />
-    <Suspense fallback={<DialogTitle>アプリからデータを取得</DialogTitle>}>
+  const onClose = () => setOpen(false);
+
+  useEffect(() => {
+    // ダイアログを開いたときに検索入力欄にフォーカスを当てる
+    if (open) {
+      const focusInput = () => {
+        searchInputRef.current?.focus();
+      };
+
+      const timeoutId = setTimeout(focusInput, 100);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [open]);
+
+  return (
+    <Dialog {...{ open, onClose, className }} maxWidth='xl' fullWidth>
+      <FailSoftAlert />
       <Title />
-    </Suspense>
-    <DialogContent dividers>
-      <Header />
-      <Table />
-    </DialogContent>
-    <DialogActions>
-      <Button color='secondary' onClick={onClose}>
-        キャンセル
-      </Button>
-    </DialogActions>
-  </Dialog>
-);
+      <DialogContent dividers>
+        <Header searchInputRef={searchInputRef} />
+        <PluginErrorBoundary>
+          <Table />
+        </PluginErrorBoundary>
+      </DialogContent>
+      <DialogActions>
+        <Button color='secondary' onClick={onClose}>
+          {t('common.cancel')}
+        </Button>
+      </DialogActions>
+      <DialogLoading />
+    </Dialog>
+  );
+};
 
 const StyledDialogComponent = styled(DialogComponent)`
   & > div {
@@ -51,12 +70,7 @@ const StyledDialogComponent = styled(DialogComponent)`
 `;
 
 const DialogContainer: FC = () => {
-  const attachmentProps = useAttachmentProps();
-  const [open, setOpen] = useAtom(isDialogShownAtom(attachmentProps));
-
-  const onClose = () => setOpen(false);
-
-  return <StyledDialogComponent {...{ open, onClose }} />;
+  return <StyledDialogComponent />;
 };
 
 export default DialogContainer;
