@@ -19,3 +19,8 @@ export const dialogTitleAtom = atomFamily((conditionId: string) => {
     return app.name;
   });
 });
+
+export const dialogLoadingAtom = atomFamily(
+  (_params: AttachmentAtomParams) => atom(false),
+  areAttachmentsEqual
+);
