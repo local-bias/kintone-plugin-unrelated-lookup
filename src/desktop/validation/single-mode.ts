@@ -4,6 +4,7 @@ import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { AttachmentProps } from '../embedding-lookup-button/app';
 import { alreadyCacheAtom } from '../embedding-lookup-button/states';
 import { valueAtStartAtom } from '../states';
+import { t } from '@/lib/i18n';
 
 export const validateSingleMode = (params: {
   record: kintoneAPI.RecordData;
@@ -24,7 +25,7 @@ export const validateSingleMode = (params: {
   // レコード編集開始時から値が変更されており、かつルックアップが実行されていない場合はエラー
   if (valueAtStart !== currentValue && !isAlreadyLookuped) {
     //@ts-expect-error dts-genの型情報に`error`プロパティが存在しないため
-    record[dstField].error = '[取得]を押し、参照先からデータを取得してください。';
+    record[dstField].error = t('desktop.fieldError.buttonNotPressedError');
     return { result: false };
   }
   return { result: true };
