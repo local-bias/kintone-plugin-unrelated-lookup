@@ -57,6 +57,7 @@ export const srcAllHandledRecordsAtom = atomFamily((conditionId: string) =>
 
     return rawRecords.map((record) => {
       let __quickSearch = Object.values(record)
+        .filter((field) => field.type !== '__ID__')
         .map((field) => getFieldValueAsString(field))
         .join('__');
 
