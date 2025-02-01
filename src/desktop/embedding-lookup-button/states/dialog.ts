@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atomFamily, atomWithDefault, atomWithReset } from 'jotai/utils';
 import { srcAppAtom } from './kintone';
 import { areAttachmentsEqual, AttachmentAtomParams } from '.';
 
@@ -22,5 +22,10 @@ export const dialogTitleAtom = atomFamily((conditionId: string) => {
 
 export const dialogLoadingAtom = atomFamily(
   (_params: AttachmentAtomParams) => atom(false),
+  areAttachmentsEqual
+);
+
+export const focusedRowIndexAtom = atomFamily(
+  (_params: AttachmentAtomParams) => atomWithReset(-1),
   areAttachmentsEqual
 );
