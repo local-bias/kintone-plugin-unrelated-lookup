@@ -259,7 +259,7 @@ export const apply = async (params: {
       toField.value = sourceValue;
     }
     if (dstError && option?.enqueueSnackbar) {
-      option.enqueueSnackbar(dstError, { variant: 'error' });
+      option.enqueueSnackbar(dstError, { variant: 'warning' });
     }
 
     if (option && condition.autoLookup && ['SINGLE_LINE_TEXT', 'NUMBER'].includes(toField.type)) {
