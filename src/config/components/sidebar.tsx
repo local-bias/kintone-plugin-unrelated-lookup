@@ -1,4 +1,5 @@
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
+import { isProd } from '@/lib/global';
 import { getNewCondition, validateCondition } from '@/lib/plugin';
 import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
@@ -60,6 +61,7 @@ const Sidebar: FC = () => {
           try {
             validateCondition(condition);
           } catch (error) {
+            !isProd && console.error(error);
             return false;
           }
           return true;
