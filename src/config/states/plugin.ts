@@ -7,7 +7,7 @@ import { SetStateAction } from 'react';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
-export const loadingState = atom<boolean>(false);
+export const loadingAtom = atom<boolean>(false);
 
 export const pluginConditionsAtom = atom(
   (get) => get(pluginConfigAtom).conditions,
