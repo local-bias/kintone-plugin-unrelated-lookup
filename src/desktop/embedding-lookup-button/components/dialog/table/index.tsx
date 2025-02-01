@@ -1,5 +1,6 @@
 import {
   dialogLoadingAtom,
+  focusedRowIndexAtom,
   isDialogShownAtom,
 } from '@/desktop/embedding-lookup-button/states/dialog';
 import { PluginCondition } from '@/schema/plugin-config';
@@ -23,11 +24,12 @@ import TableHeader from './table-header';
 type Props = {
   records: kintoneAPI.RecordData[];
   onRowClick: (record: any) => void;
+  focusedRowIndex: number;
   condition: PluginCondition;
   hasCached: boolean;
 };
 
-const DialogTable: FC<Props> = ({ records, onRowClick, condition, hasCached }) => {
+const DialogTable: FC<Props> = ({ records, focusedRowIndex, onRowClick, condition, hasCached }) => {
   if (!records.length && hasCached) {
     return <Empty />;
   }
@@ -48,7 +50,11 @@ const DialogTable: FC<Props> = ({ records, onRowClick, condition, hasCached }) =
         {!!records.length && (
           <>
             {records.map((record, i) => (
-              <tr key={i} onClick={() => onRowClick(record)}>
+              <tr
+                key={i}
+                onClick={() => onRowClick(record)}
+                data-focused={focusedRowIndex === i ? '' : undefined}
+              >
                 {condition.displayFields.map((field, j) => (
                   <td key={j}>
                     <Cell field={record[field.fieldCode]} />
@@ -68,6 +74,7 @@ const DialogTableComponent: FC = () => {
   const cacheError = useAtomValue(cacheErrorAtom(attachmentProps.conditionId));
   const condition = useAtomValue(pluginConditionAtom(attachmentProps.conditionId));
   const rawRecords = useAtomValue(displayingRecordsAtom(attachmentProps));
+  const focusedRowIndex = useAtomValue(focusedRowIndexAtom(attachmentProps));
   const records = useDeferredValue(rawRecords);
   const hasCached = useAtomValue(alreadyCacheAtom(attachmentProps.conditionId));
   const { enqueueSnackbar } = useSnackbar();
@@ -134,7 +141,7 @@ const DialogTableComponent: FC = () => {
     );
   }
 
-  return <DialogTable {...{ records, onRowClick, condition, hasCached }} />;
+  return <DialogTable {...{ records, focusedRowIndex, onRowClick, condition, hasCached }} />;
 };
 
 const DialogTableContainer: FC = () => {
