@@ -1,5 +1,3 @@
-import { dstAppPropertiesState } from '@/config/states/kintone';
-import { isProd } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import {
   FIELD_TYPES_ENTITY_VALUE,
@@ -12,6 +10,7 @@ import {
 import { store } from '@/lib/store';
 import { PluginCondition } from '@/schema/plugin-config';
 import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { currentAppPropertiesAtom } from './states';
 
 export const getDstSubtable = (params: {
   condition: PluginCondition;
@@ -88,7 +87,7 @@ export const convertFieldValueByTargetType = async (params: {
   }
 
   const getDstProperty = async () => {
-    const dstProperties = await store.get(dstAppPropertiesState);
+    const dstProperties = await store.get(currentAppPropertiesAtom);
 
     if (condition.type === 'single') {
       return dstProperties[destinationFieldCode] ?? null;
