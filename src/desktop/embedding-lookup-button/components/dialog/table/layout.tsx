@@ -80,6 +80,10 @@ const StyledDialogTableLayout = styled(DialogTableLayout)`
             filter: brightness(0.95);
           }
         }
+
+        &[data-focused] td {
+          background-color: #ffedd5;
+        }
       }
     }
   }
