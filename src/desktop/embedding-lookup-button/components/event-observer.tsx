@@ -22,16 +22,18 @@ const FieldKeyEventListener: FC = () => {
     const fields = getMetaFields_UNSTABLE() ?? [];
     const targetField = fields.find((field) => field?.var === condition.dstField);
     if (!targetField) {
-      !isProd && console.error('targetField not found', condition);
+      !isProd && console.error('dstFieldのメタ情報が取得できませんでした', condition);
       return;
     }
 
-    inputElement = document.querySelector<HTMLInputElement>(
-      `.value-${targetField.id} > div > input`
-    );
+    inputElement = document.querySelector<HTMLInputElement>(`.value-${targetField.id} > div input`);
 
     if (!inputElement) {
-      !isProd && console.error('targetField not found', condition);
+      !isProd &&
+        console.error(
+          'ルックアップボタンを設置するフィールドのinput要素の取得に失敗しました',
+          condition
+        );
       return;
     }
 
